@@ -1,0 +1,401 @@
+{
+  "schema_version": 1,
+  "availability_states": {
+    "available": "Disponible",
+    "in_development": "En desarrollo",
+    "pending_environment": "Pendiente de entorno",
+    "blocked_prerequisites": "Bloqueado por requisitos previos",
+    "planned": "Planificado"
+  },
+  "profiles": [
+    {
+      "id": "cloud-production-support",
+      "title": "Cloud / Production Support",
+      "description": "Preparación progresiva para soporte técnico de producción: investigar incidentes, interpretar evidencia, analizar datos y documentar resoluciones o escalamientos.",
+      "availability": "in_development",
+      "route_id": "cloud-production-support"
+    },
+    {
+      "id": "full-stack-developer",
+      "title": "Full Stack Developer",
+      "description": "Perfil planificado; todavía no cuenta con una ruta de cursos disponible.",
+      "availability": "planned"
+    },
+    {
+      "id": "frontend-developer",
+      "title": "Frontend Developer",
+      "description": "Perfil planificado; todavía no cuenta con una ruta de cursos disponible.",
+      "availability": "planned"
+    },
+    {
+      "id": "backend-developer",
+      "title": "Backend Developer",
+      "description": "Perfil planificado; todavía no cuenta con una ruta de cursos disponible.",
+      "availability": "planned"
+    },
+    {
+      "id": "data-analyst",
+      "title": "Data Analyst",
+      "description": "Perfil planificado; todavía no cuenta con una ruta de cursos disponible.",
+      "availability": "planned"
+    },
+    {
+      "id": "data-engineer",
+      "title": "Data Engineer",
+      "description": "Perfil planificado; todavía no cuenta con una ruta de cursos disponible.",
+      "availability": "planned"
+    },
+    {
+      "id": "qa-testing",
+      "title": "QA / Testing",
+      "description": "Perfil planificado; todavía no cuenta con una ruta de cursos disponible.",
+      "availability": "planned"
+    }
+  ],
+  "levels": [
+    {
+      "id": "basic",
+      "title": "Básico",
+      "order": 1,
+      "description": "Adquirí fundamentos para leer evidencia operativa, comprender conceptos esenciales y reconocer problemas frecuentes.",
+      "competency_summary": "Comprender fundamentos y completar tareas guiadas de análisis y documentación."
+    },
+    {
+      "id": "intermediate",
+      "title": "Intermedio",
+      "order": 2,
+      "description": "Investigá fallas habituales combinando comandos, consultas, herramientas de diagnóstico y seguimiento técnico.",
+      "competency_summary": "Investigar incidentes comunes, validar hallazgos y documentar o escalar con evidencia."
+    },
+    {
+      "id": "advanced",
+      "title": "Avanzado",
+      "order": 3,
+      "description": "Integrá diagnósticos, automatización y análisis de causa raíz en escenarios operativos de mayor alcance.",
+      "competency_summary": "Analizar escenarios complejos, automatizar verificaciones y proponer prevención operativa."
+    }
+  ],
+  "routes": [
+    {
+      "id": "cloud-production-support",
+      "profile_id": "cloud-production-support",
+      "levels": [
+        {
+          "level_id": "basic",
+          "course_ids": ["linux", "networking", "sql", "aws", "python", "production-support"],
+          "capstone": {
+            "id": "support-basic-integrator",
+            "title": "Proyecto integrador: incidente de operaciones",
+            "objective": "Investigar logs y datos sintéticos, ejecutar comandos Linux en Ubuntu, usar SQL y Python, interpretar conectividad y documentar el incidente.",
+            "prerequisites": ["networking-basic-concepts", "sql-basic-queries", "aws-basic-concepts", "python-basic-programming", "support-basic-triage"],
+            "acceptance_criteria": [
+              "Identificar correctamente las operaciones ERROR y PENDIENTE en el log de proyecto.",
+              "Ejecutar una consulta SQL de solo lectura que resuma estados, cantidades e importes del conjunto del proyecto.",
+              "Calcular el importe total de las operaciones ERROR con el procesador Python y validarlo contra el CSV.",
+              "Interpretar la señal de conectividad y distinguir evidencia de hipótesis.",
+              "Seleccionar una fuente de observabilidad AWS apropiada como referencia, sin acceder a la cuenta.",
+              "Completar resumen, impacto, evidencia, estado de causa y siguiente paso sin afirmar información no observada.",
+              "Demostrar comandos Linux básicos sobre el espacio de práctica Ubuntu real."
+            ],
+            "availability": "pending_environment"
+          }
+        },
+        {
+          "level_id": "intermediate",
+          "course_ids": ["linux", "networking", "sql", "aws", "python", "production-support"],
+          "capstone": {
+            "id": "support-intermediate-investigation",
+            "title": "Investigación de incidente con múltiples señales",
+            "objective": "Correlacionar logs, datos operativos y señales de conectividad para explicar una falla habitual, su impacto y el escalamiento.",
+            "acceptance_criteria": [
+              "Correlaciona las fuentes usando identificadores o tiempo y señala límites de la evidencia.",
+              "Valida consultas y procesamiento mediante resultados reproducibles.",
+              "Distingue hechos, hipótesis y datos faltantes.",
+              "Produce una actualización técnica y un escalamiento accionable."
+            ],
+            "availability": "blocked_prerequisites"
+          }
+        },
+        {
+          "level_id": "advanced",
+          "course_ids": ["linux", "networking", "sql", "aws", "python", "production-support"],
+          "capstone": {
+            "id": "support-advanced-rca",
+            "title": "Diagnóstico integral y prevención",
+            "objective": "Investigar un incidente de varios componentes, establecer una causa raíz sustentada, automatizar verificaciones seguras y proponer prevención.",
+            "acceptance_criteria": [
+              "Construye una línea temporal y correlaciona evidencia de todas las fuentes disponibles.",
+              "Diferencia causa raíz, factores contribuyentes y síntomas.",
+              "Entrega automatización probada con manejo de errores y sin acciones destructivas.",
+              "Propone acciones preventivas priorizadas y documenta riesgos, límites y evidencias."
+            ],
+            "availability": "blocked_prerequisites"
+          }
+        }
+      ]
+    }
+  ],
+  "courses": [
+    {
+      "id": "linux",
+      "title": "Linux",
+      "objective": "Usar Linux para tareas de soporte dentro de un entorno de práctica controlado.",
+      "contents_by_level": {
+        "basic": {
+          "contents": ["Terminal y shell", "Rutas y navegación", "Archivos y directorios", "Lectura y búsqueda de logs", "Redirecciones y tuberías", "Permisos y propiedad", "Procesos", "Variables y diagnóstico"],
+          "module_ids": ["linux-foundations", "linux-file-operations", "linux-log-investigation", "linux-streams", "linux-permissions", "linux-processes", "linux-support-workflow"],
+          "prerequisites": [],
+          "competency_ids": ["linux-basic-operations"],
+          "availability": "pending_environment",
+          "availability_note": "Requiere Ubuntu en WSL 2 y aprobación de siete módulos con prácticas de comandos reales."
+        },
+        "intermediate": {
+          "contents": ["Usuarios y permisos", "Procesos y servicios", "Redirecciones y pipes", "Búsqueda y filtrado de logs", "Troubleshooting habitual"],
+          "prerequisites": ["linux-basic-operations"],
+          "competency_ids": ["linux-intermediate-troubleshooting"],
+          "availability": "pending_environment",
+          "availability_note": "Requiere Ubuntu operativo y aprobación de Linux Básico."
+        },
+        "advanced": {
+          "contents": ["Diagnóstico integral", "Shell scripting", "Automatización", "Administración operativa", "Análisis de fallas"],
+          "prerequisites": ["linux-intermediate-troubleshooting"],
+          "competency_ids": ["linux-advanced-automation"],
+          "availability": "pending_environment",
+          "availability_note": "Requiere Ubuntu operativo y aprobación de Linux Intermedio."
+        }
+      }
+    },
+    {
+      "id": "networking",
+      "title": "Redes",
+      "objective": "Comprender y diagnosticar conectividad relevante para soporte de producción.",
+      "contents_by_level": {
+        "basic": {
+          "contents": ["IP", "DNS", "HTTP y HTTPS", "Puertos", "Conceptos de conectividad"],
+          "module_ids": ["networking-support-basics"],
+          "prerequisites": [],
+          "competency_ids": ["networking-basic-concepts"],
+          "availability": "available",
+          "availability_note": "Curso básico con escenarios y evaluación conceptual disponibles; no ejecuta diagnósticos de red reales."
+        },
+        "intermediate": {
+          "contents": ["Herramientas de diagnóstico", "Resolución de problemas de conectividad", "Análisis de fallas habituales"],
+          "prerequisites": ["networking-basic-concepts", "linux-basic-operations"],
+          "competency_ids": ["networking-intermediate-diagnostics"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere Redes Básico y fundamentos Linux."
+        },
+        "advanced": {
+          "contents": ["Diagnóstico entre componentes", "Escenarios complejos de conectividad", "Análisis de evidencia y límites"],
+          "prerequisites": ["networking-intermediate-diagnostics"],
+          "competency_ids": ["networking-advanced-analysis"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere Redes Intermedio."
+        }
+      }
+    },
+    {
+      "id": "sql",
+      "title": "SQL",
+      "objective": "Consultar datos operativos para identificar excepciones, medir impacto y sustentar una investigación.",
+      "contents_by_level": {
+        "basic": {
+          "contents": ["SELECT", "WHERE", "ORDER BY", "GROUP BY", "Agregaciones básicas"],
+          "module_ids": ["sql-operational-queries"],
+          "prerequisites": [],
+          "competency_ids": ["sql-basic-queries"],
+          "availability": "available",
+          "availability_note": "Las consultas y prácticas usan SQLite local en memoria con una tabla sintética de solo lectura."
+        },
+        "intermediate": {
+          "contents": ["JOIN", "Subconsultas", "Análisis de excepciones", "Consultas sobre datos operativos"],
+          "prerequisites": ["sql-basic-queries"],
+          "competency_ids": ["sql-intermediate-investigation"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere SQL Básico."
+        },
+        "advanced": {
+          "contents": ["Consultas complejas", "Optimización", "Análisis de grandes conjuntos de datos operativos"],
+          "prerequisites": ["sql-intermediate-investigation"],
+          "competency_ids": ["sql-advanced-analysis"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere SQL Intermedio."
+        }
+      }
+    },
+    {
+      "id": "aws",
+      "title": "AWS",
+      "objective": "Interpretar servicios y señales AWS pertinentes para soporte de producción, respetando el modo de solo lectura.",
+      "contents_by_level": {
+        "basic": {
+          "contents": ["Cloud Computing", "Fundamentos de AWS", "IAM y seguridad", "Amazon S3", "Observabilidad", "Integración y soporte"],
+          "module_ids": ["aws-cloud-computing-foundations", "aws-fundamentals", "aws-iam-security", "aws-s3-fundamentals", "aws-observability-introduction", "aws-support-integration"],
+          "prerequisites": [],
+          "competency_ids": ["aws-basic-concepts"],
+          "availability": "available",
+          "availability_note": "Seis módulos con prácticas y evaluaciones locales; no se conecta a AWS ni realiza operaciones."
+        },
+        "intermediate": {
+          "contents": ["CloudWatch", "Athena", "Glue", "Lambda", "Integración y análisis de datos"],
+          "prerequisites": ["aws-basic-concepts", "sql-basic-queries"],
+          "competency_ids": ["aws-intermediate-observability"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere AWS Básico y fundamentos SQL. No se ejecutan consultas ni operaciones AWS en esta etapa."
+        },
+        "advanced": {
+          "contents": ["Observabilidad", "Integración entre servicios", "Diagnóstico de fallas", "Análisis de arquitectura y operación"],
+          "prerequisites": ["aws-intermediate-observability", "networking-intermediate-diagnostics"],
+          "competency_ids": ["aws-advanced-operations"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere AWS Intermedio y fundamentos de diagnóstico de redes."
+        }
+      }
+    },
+    {
+      "id": "python",
+      "title": "Python",
+      "objective": "Aplicar Python al procesamiento de evidencia y a automatizaciones seguras de soporte.",
+      "contents_by_level": {
+        "basic": {
+          "contents": ["Sintaxis", "Variables y estructuras", "Condiciones y ciclos", "Funciones", "Lectura de archivos"],
+          "module_ids": ["python-support-basics"],
+          "prerequisites": [],
+          "competency_ids": ["python-basic-programming"],
+          "availability": "available",
+          "availability_note": "Las prácticas ejecutan procesadores Python permitidos sobre archivos CSV sintéticos locales; no aceptan código arbitrario."
+        },
+        "intermediate": {
+          "contents": ["Procesamiento de logs", "CSV y JSON", "Automatización", "Validaciones y manejo de errores"],
+          "prerequisites": ["python-basic-programming"],
+          "competency_ids": ["python-intermediate-data"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere Python Básico."
+        },
+        "advanced": {
+          "contents": ["Automatización operativa", "Scripts robustos", "Testing", "Integración de herramientas"],
+          "prerequisites": ["python-intermediate-data"],
+          "competency_ids": ["python-advanced-automation"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere Python Intermedio."
+        }
+      }
+    },
+    {
+      "id": "production-support",
+      "title": "Production Support",
+      "objective": "Investigar incidentes de producción, comunicar hallazgos y documentar resoluciones o escalamientos sustentados.",
+      "contents_by_level": {
+        "basic": {
+          "contents": ["Incidentes", "Tickets", "Logs", "Procedimientos", "Identificación de errores"],
+          "module_ids": ["support-incident-basics"],
+          "prerequisites": [],
+          "competency_ids": ["support-basic-triage"],
+          "availability": "available",
+          "availability_note": "El curso básico incluye prácticas de triage; el proyecto integrador permanece pendiente de Ubuntu real."
+        },
+        "intermediate": {
+          "contents": ["Investigación de incidentes", "Seguimiento", "Escalamiento", "Documentación técnica"],
+          "prerequisites": ["support-basic-triage", "linux-intermediate-troubleshooting", "networking-intermediate-diagnostics", "sql-intermediate-investigation", "aws-intermediate-observability", "python-intermediate-data"],
+          "competency_ids": ["support-intermediate-investigation"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere aprobar Production Support Básico y las competencias técnicas intermedias relevantes."
+        },
+        "advanced": {
+          "contents": ["Análisis de causa raíz", "Correlación de eventos", "Prevención de incidentes", "Mejora operativa"],
+          "prerequisites": ["support-intermediate-investigation", "linux-advanced-automation", "networking-advanced-analysis", "sql-advanced-analysis", "aws-advanced-operations", "python-advanced-automation"],
+          "competency_ids": ["support-advanced-rca"],
+          "availability": "blocked_prerequisites",
+          "availability_note": "Requiere completar los niveles intermedios y sus evaluaciones."
+        }
+      },
+      "resources": [
+        {
+          "id": "lab01-aws-production-support",
+          "title": "LAB 01 — AWS Production Support",
+          "availability": "available",
+          "level_ids": ["basic"],
+          "url": "/courses/aws-production-support/",
+          "description": "Laboratorio local operativo de análisis de logs, evidencia JSON y ocho pruebas automatizadas. No realiza operaciones AWS."
+        }
+      ]
+    }
+  ],
+  "competencies": [
+    {"id": "linux-basic-operations", "title": "Operar con archivos y logs en Linux"},
+    {"id": "linux-intermediate-troubleshooting", "title": "Diagnosticar problemas habituales en Linux"},
+    {"id": "linux-advanced-automation", "title": "Automatizar diagnósticos Linux de forma segura"},
+    {"id": "networking-basic-concepts", "title": "Explicar fundamentos de conectividad"},
+    {"id": "networking-intermediate-diagnostics", "title": "Diagnosticar fallas habituales de conectividad"},
+    {"id": "networking-advanced-analysis", "title": "Analizar escenarios de conectividad complejos"},
+    {"id": "sql-basic-queries", "title": "Consultar y resumir datos operativos"},
+    {"id": "sql-intermediate-investigation", "title": "Investigar excepciones con consultas relacionales"},
+    {"id": "sql-advanced-analysis", "title": "Analizar conjuntos operativos con consultas complejas"},
+    {"id": "aws-basic-concepts", "title": "Explicar fundamentos y servicios básicos AWS"},
+    {"id": "aws-intermediate-observability", "title": "Interpretar señales y flujos de servicios AWS"},
+    {"id": "aws-advanced-operations", "title": "Analizar fallas e integración operativa AWS"},
+    {"id": "python-basic-programming", "title": "Escribir programas básicos en Python"},
+    {"id": "python-intermediate-data", "title": "Procesar datos operativos con validaciones"},
+    {"id": "python-advanced-automation", "title": "Probar e integrar automatizaciones operativas"},
+    {"id": "support-basic-triage", "title": "Clasificar y documentar un incidente inicial"},
+    {"id": "support-intermediate-investigation", "title": "Investigar y escalar incidentes con evidencia"},
+    {"id": "support-advanced-rca", "title": "Sustentar causa raíz y prevención operativa"}
+  ],
+  "modules": [
+    {"id": "linux-foundations", "course_id": "linux", "level_id": "basic"},
+    {"id": "sql-operational-queries", "course_id": "sql", "level_id": "basic"},
+    {"id": "aws-cloud-computing-foundations", "course_id": "aws", "level_id": "basic"},
+    {"id": "aws-fundamentals", "course_id": "aws", "level_id": "basic"},
+    {"id": "aws-iam-security", "course_id": "aws", "level_id": "basic"},
+    {"id": "aws-s3-fundamentals", "course_id": "aws", "level_id": "basic"},
+    {"id": "aws-observability-introduction", "course_id": "aws", "level_id": "basic"},
+    {"id": "aws-support-integration", "course_id": "aws", "level_id": "basic"},
+    {"id": "networking-support-basics", "course_id": "networking", "level_id": "basic"},
+    {"id": "python-support-basics", "course_id": "python", "level_id": "basic"},
+    {"id": "support-incident-basics", "course_id": "production-support", "level_id": "basic"},
+    {"id": "support-basic-integrator", "course_id": "production-support", "level_id": "basic", "type": "project"}
+  ],
+  "evaluations": [
+    {"id": "linux-foundations-assessment-v2", "module_id": "linux-foundations", "type": "conceptual"},
+    {"id": "linux-file-operations-assessment", "module_id": "linux-file-operations", "type": "conceptual"},
+    {"id": "linux-log-investigation-assessment", "module_id": "linux-log-investigation", "type": "conceptual"},
+    {"id": "linux-streams-assessment", "module_id": "linux-streams", "type": "conceptual"},
+    {"id": "linux-permissions-assessment", "module_id": "linux-permissions", "type": "conceptual"},
+    {"id": "linux-processes-assessment", "module_id": "linux-processes", "type": "conceptual"},
+    {"id": "linux-support-workflow-assessment", "module_id": "linux-support-workflow", "type": "conceptual"},
+    {"id": "sql-basics-assessment", "module_id": "sql-operational-queries", "type": "conceptual"},
+    {"id": "aws-cloud-foundations-assessment", "module_id": "aws-cloud-computing-foundations", "type": "conceptual"},
+    {"id": "aws-fundamentals-assessment", "module_id": "aws-fundamentals", "type": "conceptual"},
+    {"id": "aws-iam-assessment", "module_id": "aws-iam-security", "type": "conceptual"},
+    {"id": "aws-s3-assessment", "module_id": "aws-s3-fundamentals", "type": "conceptual"},
+    {"id": "aws-observability-assessment", "module_id": "aws-observability-introduction", "type": "conceptual"},
+    {"id": "aws-support-integration-assessment", "module_id": "aws-support-integration", "type": "incident_resolution"},
+    {"id": "networking-basics-assessment", "module_id": "networking-support-basics", "type": "conceptual"},
+    {"id": "python-basics-assessment", "module_id": "python-support-basics", "type": "conceptual"},
+    {"id": "support-basics-assessment", "module_id": "support-incident-basics", "type": "incident_resolution"},
+    {"id": "support-basic-integrator", "module_id": "support-basic-integrator", "type": "project", "availability": "pending_environment"}
+  ],
+  "evidence": [
+    {"kind": "exercise_result", "source": "verified exercise attempt"},
+    {"kind": "assessment_result", "source": "scored module assessment"},
+    {"kind": "project_attempt", "source": "integrator criteria and environment blockers"}
+  ],
+  "entity_contracts": {
+    "module_fields": ["id", "course_id", "level_id", "objective", "concepts", "worked_example", "guided_practice", "independent_practice", "result_verification", "troubleshooting", "evaluation_ids"],
+    "evaluation_fields": ["id", "module_id", "type", "criteria", "feedback_rules", "competency_ids", "minimum_score_percent"],
+    "evidence_fields": ["id", "attempt_id", "kind", "safe_local_reference", "created_at"]
+  },
+  "evaluation_model": {
+    "minimum_score_percent": 80,
+    "unlimited_attempts": true,
+    "retain_attempt_history": true,
+    "certifications_enabled": false,
+    "competency_approval": "Aprobar solo cuando se cumplan todos los criterios de aceptación asociados y el puntaje mínimo aplicable."
+  },
+  "progress_storage": {
+    "engine": "SQLite local mediante la biblioteca estándar sqlite3",
+    "implemented": true,
+    "entities": ["learner_profile", "learner_session", "course_progress", "module_progress", "exercise_progress", "learning_attempt", "competency_award", "evidence"],
+    "limitation": "La base local vincula un perfil anónimo por cookie de navegador; no implementa cuentas, autenticación de personas, sincronización multiusuario ni concurrencia distribuida."
+  }
+}

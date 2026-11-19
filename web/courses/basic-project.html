@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <title>Proyecto integrador Básico | academyLab</title>
+  <link rel="stylesheet" href="/assets/platform.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="academyLab, inicio">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a class="site-nav__link" href="/">Perfiles</a>
+      <a class="site-nav__link" href="/progress/">Mi progreso</a>
+    </nav>
+  </header>
+
+  <main class="course-page learning-page">
+    <nav class="breadcrumbs" aria-label="Ruta de navegación">
+      <a href="/">Perfiles</a><span aria-hidden="true">/</span>
+      <a href="/routes/cloud-production-support/basic/">Básico</a><span aria-hidden="true">/</span>
+      <span aria-current="page">Proyecto integrador</span>
+    </nav>
+    <section class="course-hero" aria-labelledby="project-title">
+      <div class="course-hero__icon" aria-hidden="true">INT</div>
+      <div class="course-hero__copy">
+        <p class="eyebrow">EVALUACIÓN FINAL · NIVEL BÁSICO</p>
+        <div class="course-hero__title-row">
+          <h1 id="project-title">Cargando proyecto...</h1>
+          <span id="project-status" class="status-badge status-badge--preparing">Pendiente de entorno</span>
+        </div>
+        <p id="project-objective"></p>
+        <p id="environment-notice" class="environment-notice">
+          El criterio Linux ejecuta grep sobre el log del proyecto en Ubuntu real y requiere la competencia Linux Básica verificada.
+        </p>
+      </div>
+    </section>
+
+    <section class="lesson-block">
+      <h2>Escenario</h2>
+      <p id="project-scenario"></p>
+      <p><strong>Requisito de entorno:</strong> <span id="environment-requirement"></span></p>
+    </section>
+
+    <section class="fixture-grid" aria-label="Fuentes del escenario">
+      <article class="fixture-card">
+        <h2>Eventos sintéticos</h2>
+        <p>Lee las observaciones y registra los identificadores, sin inferir una causa no documentada.</p>
+        <pre id="event-fixture">Cargando...</pre>
+      </article>
+      <article class="fixture-card">
+        <h2>Datos sintéticos</h2>
+        <p>Filas de operaciones utilizadas por las verificaciones SQL y Python locales.</p>
+        <pre id="operations-fixture">Cargando...</pre>
+      </article>
+    </section>
+
+    <section class="lesson-block">
+      <h2>Tareas y criterios</h2>
+      <ul id="project-tasks"></ul>
+      <ul id="acceptance-criteria"></ul>
+    </section>
+
+    <form id="project-form" class="assessment-card">
+      <h2>Entrega del proyecto</h2>
+      <p>Las consultas se ejecutan en SQLite en memoria; Python usa procesadores predefinidos; AWS se trata solo como escenario conceptual. Linux ejecuta grep en Ubuntu sobre una copia aislada del log. Cada envío se conserva como un intento.</p>
+
+      <label class="form-field">
+        <span>IDs de operaciones ERROR (separados por coma)</span>
+        <input id="error-ids" type="text" maxlength="400" autocomplete="off" required>
+      </label>
+      <label class="form-field">
+        <span>IDs de operaciones PENDIENTE (separados por coma)</span>
+        <input id="pending-ids" type="text" maxlength="400" autocomplete="off" required>
+      </label>
+      <label class="form-field">
+        <span>Consulta SQL de solo lectura para resumir estados e importes</span>
+        <textarea id="project-sql" rows="4" maxlength="4000" required placeholder="Agrupa por estado y calcula cantidad e importe total"></textarea>
+      </label>
+      <label class="form-field">
+        <span>Importe total de las operaciones ERROR según Python (2 decimales)</span>
+        <input id="python-error-amount" type="number" min="0" step="0.01" required>
+      </label>
+
+      <fieldset id="network-options" class="assessment-question">
+        <legend></legend>
+      </fieldset>
+      <fieldset id="aws-options" class="assessment-question">
+        <legend></legend>
+      </fieldset>
+
+      <h3>Informe del incidente</h3>
+      <label class="form-field">
+        <span id="primary-id-label"></span>
+        <input id="primary-id" type="text" maxlength="40" required>
+      </label>
+      <label class="form-field">
+        <span>Estado de la causa</span>
+        <select id="cause-status" required></select>
+      </label>
+      <label class="form-field">
+        <span>Siguiente paso</span>
+        <select id="next-step" required></select>
+      </label>
+      <label class="form-field">
+        <span>Resumen del alcance</span>
+        <select id="impact-statement" required></select>
+      </label>
+      <label class="form-field">
+        <span>Resumen técnico (mínimo 30 caracteres)</span>
+        <textarea id="incident-summary" rows="4" maxlength="500" minlength="30" required></textarea>
+      </label>
+      <button id="submit-project" class="button button--primary" type="submit">Verificar y guardar intento</button>
+      <div id="project-result" class="learning-result" aria-live="polite"></div>
+    </form>
+
+    <a class="back-link" href="/routes/cloud-production-support/basic/">← Volver a cursos Básicos</a>
+  </main>
+  <footer class="site-footer">
+    <a class="brand brand--footer" href="/">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <p>Proyecto local con datos sintéticos · sin operaciones AWS</p>
+  </footer>
+  <script src="/learning/common.js"></script>
+  <script src="/learning/project.js"></script>
+</body>
+</html>

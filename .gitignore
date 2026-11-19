@@ -1,0 +1,80 @@
+﻿# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Variables de entorno y credenciales
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+credentials
+credentials.*
+*aws_credentials*
+*secret*
+*secrets*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Persistencia local y procesos locales
+web/data/*.sqlite3
+web/data/*.sqlite3-shm
+web/data/*.sqlite3-wal
+.platform_server.pid
+.platform_server-*.pid
+.web_server.pid
+.web_server-*.pid
+labs/*/.platform_server.pid
+labs/*/.platform_server-*.pid
+labs/*/.web_server.pid
+labs/*/.web_server-*.pid
+
+# Logs y temporales (evitar logs reales con datos privados)
+*.tmp
+*.temp
+*.swp
+*.swo
+logs/real/
+logs/private/
+**/*private*.log
+**/*sensitive*.log
+
+# Datos sensibles
+data/real/
+data/private/
+**/*confidencial*
+**/*pii*
+
+# Docker / generados
+docker-compose.override.yml
+**/.docker/
+*.tar
+
+# IDE / OS
+.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archivos locales de prueba del workspace
+test_kilo.txt
+test_write.txt
+
+# Node (si aplica)
+node_modules/

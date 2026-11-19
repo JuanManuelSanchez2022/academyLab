@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>academyLab - LAB 01</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<nav class="lab-navigation" aria-label="Navegación de academyLab">
+  <a href="http://127.0.0.1:8765/">← Inicio</a>
+  <span aria-hidden="true">/</span>
+  <a href="http://127.0.0.1:8765/courses/aws-production-support/">academyLab</a>
+</nav>
+<header>
+  <h1>academyLab - LAB 01</h1>
+  <p>Production Support: seguimiento y análisis de operaciones</p>
+</header>
+
+<main>
+  <section id="summary">
+    <h2>Panel de resumen</h2>
+    <div id="summary-cards">
+      <div class="card"><span class="label">Estado</span><span id="status">Cargando...</span></div>
+      <div class="card"><span class="label">Eventos</span><span id="events">-</span></div>
+      <div class="card"><span class="label">Operaciones unicas</span><span id="unique-ops">-</span></div>
+      <div class="card"><span class="label">Lineas invalidas</span><span id="invalid-lines">-</span></div>
+      <div class="card"><span class="label">Errores</span><span id="errors">-</span></div>
+      <div class="card"><span class="label">Pruebas</span><span id="tests-status">Pendientes</span></div>
+    </div>
+    <p id="refresh-message" class="empty">El estado y la lista se actualizan automáticamente cada 30 segundos.</p>
+  </section>
+
+  <section id="analyze">
+    <h2>Analisis de logs</h2>
+    <div class="controls">
+      <label for="file-select">Archivo:
+        <select id="file-select" aria-label="Archivo de log para analizar"></select>
+      </label>
+      <button id="analyze-btn" type="button">EJECUTAR ANÁLISIS</button>
+      <button id="refresh-evidence-btn" class="secondary" type="button">ACTUALIZAR EVIDENCIA</button>
+    </div>
+    <div id="analyze-result"></div>
+  </section>
+
+  <section id="tests">
+    <h2>Pruebas automatizadas</h2>
+    <button id="run-tests-btn" type="button">EJECUTAR TODAS LAS PRUEBAS</button>
+    <div id="tests-result"></div>
+  </section>
+
+  <section id="evidence">
+    <h2>Evidencia</h2>
+    <div id="evidence-content"></div>
+  </section>
+
+  <section id="lab-session" aria-labelledby="lab-session-title">
+    <h2 id="lab-session-title">Sesión del laboratorio</h2>
+    <p id="lab-session-status" role="status" aria-live="polite">Conectando con el supervisor local...</p>
+    <div class="session-controls">
+      <button id="continue-practicing-btn" class="secondary" type="button">Continuar practicando</button>
+      <button id="stop-lab-btn" type="button">Detener laboratorio y volver al inicio</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Servidor del laboratorio: <code>http://127.0.0.1:8766</code> · Home: <a href="http://127.0.0.1:8765/">academyLab</a></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

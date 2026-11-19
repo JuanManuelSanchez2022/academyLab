@@ -1,0 +1,839 @@
+{
+  "schema_version": 1,
+  "level_id": "basic",
+  "courses": [
+    {
+      "id": "sql",
+      "title": "SQL",
+      "availability": "available",
+      "competency_id": "sql-basic-queries",
+      "environment_required": false,
+      "modules": [
+        {
+          "id": "sql-operational-queries",
+          "title": "Consultar operaciones y resumir estados",
+          "objective": "Escribir consultas de solo lectura para seleccionar, filtrar, ordenar y resumir operaciones locales.",
+          "concepts": ["Base relacional", "Tablas, columnas y filas", "SELECT", "WHERE", "ORDER BY", "LIMIT", "NULL", "COUNT, SUM y AVG", "GROUP BY y HAVING"],
+          "explanation": [
+            "Una base relacional organiza registros en tablas. Una fila representa una operación y las columnas guardan atributos como id_operacion, cliente, importe y estado. SQL expresa qué datos se quieren consultar.",
+            "SELECT enumera columnas; WHERE filtra filas; ORDER BY ordena el resultado; LIMIT acota cuántas filas se devuelven. Para investigar ERROR puede filtrarse estado='ERROR' y ordenar por importe o identificador.",
+            "NULL representa un valor ausente o desconocido, no cero ni una cadena vacía. Para probarlo se usa IS NULL o IS NOT NULL; una comparación estado = NULL no devuelve el resultado esperado.",
+            "COUNT cuenta filas, SUM agrega importes y AVG calcula promedios. GROUP BY forma grupos antes de agregar; HAVING filtra esos grupos agregados, mientras WHERE filtra filas antes de agrupar.",
+            "Las prácticas usan una base SQLite temporal con datos sintéticos locales. El verificador acepta una única consulta SELECT sobre la tabla operations; no hay conexión a AWS ni cambios persistentes."
+          ],
+          "worked_example": {
+            "title": "Priorizar operaciones pendientes",
+            "query": "SELECT id_operacion, importe FROM operations WHERE estado = 'PENDIENTE' ORDER BY importe DESC LIMIT 2;",
+            "steps": [
+              "SELECT elige las columnas que se mostrarán.",
+              "WHERE estado = 'PENDIENTE' selecciona solo las operaciones que requieren seguimiento.",
+              "ORDER BY importe DESC coloca primero el importe más alto.",
+              "LIMIT 2 acota el resultado sin modificar los datos."
+            ],
+            "result": "La consulta devuelve como máximo dos operaciones PENDIENTE priorizadas por importe; no cambia ninguna fila."
+          },
+          "guided_practice": {
+            "id": "sql-guided-errors",
+            "type": "sql_query",
+            "title": "Encontrar operaciones ERROR",
+            "instructions": "Escribe una consulta SELECT de solo lectura que devuelva id_operacion y estado para las filas ERROR, ordenadas por identificador.",
+            "prompt": "Tabla disponible: operations(id_operacion, cliente, importe, estado). La salida esperada tiene las columnas id_operacion y estado.",
+            "validator": "sql_errors",
+            "example_query": "SELECT id_operacion, estado FROM operations WHERE estado = 'ERROR' ORDER BY id_operacion;"
+          },
+          "independent_practice": {
+            "id": "sql-independent-groups",
+            "type": "sql_query",
+            "title": "Resumir operaciones por estado",
+            "instructions": "Escribe una consulta que devuelva el estado y la cantidad de operaciones de cada estado, en orden por estado.",
+            "prompt": "Usa COUNT(*) y GROUP BY. Incluye OK, ERROR y PENDIENTE en el resumen.",
+            "validator": "sql_state_counts",
+            "example_query": "SELECT estado, COUNT(*) AS cantidad FROM operations GROUP BY estado ORDER BY estado;"
+          },
+          "verification": "La API ejecuta cada sentencia en SQLite en memoria y en modo de solo lectura, limita tabla, funciones, tiempo y filas, compara las columnas y resultados con el conjunto de prueba y conserva cada intento.",
+          "common_errors": [
+            {"error": "Usar WHERE COUNT(*) > 1.", "cause": "WHERE filtra filas antes del agrupamiento.", "recovery": "Filtra agregados con HAVING después de GROUP BY."},
+            {"error": "Comparar una columna con NULL usando =.", "cause": "NULL representa ausencia y no se compara como un valor ordinario.", "recovery": "Usa IS NULL o IS NOT NULL."},
+            {"error": "Olvidar GROUP BY estado al seleccionar estado y COUNT(*).", "cause": "La columna no agregada no define grupos.", "recovery": "Agrupa por cada columna seleccionada que no esté agregada."}
+          ],
+          "assessment": {
+            "id": "sql-basics-assessment",
+            "type": "conceptual",
+            "questions": [
+              {"id": "s1", "prompt": "¿Qué cláusula filtra filas antes de agrupar?", "options": [{"id": "where", "label": "WHERE"}, {"id": "having", "label": "HAVING"}, {"id": "order", "label": "ORDER BY"}], "correct_option": "where", "feedback_by_option": {"where": "Correcto: WHERE filtra filas antes de GROUP BY.", "having": "HAVING filtra grupos después de agregar.", "order": "ORDER BY ordena la salida."}},
+              {"id": "s2", "prompt": "¿Cómo se comprueba que cliente no tiene valor?", "options": [{"id": "isnull", "label": "cliente IS NULL"}, {"id": "equals", "label": "cliente = NULL"}, {"id": "zero", "label": "cliente IS ''"}], "correct_option": "isnull", "feedback_by_option": {"isnull": "Correcto: IS NULL comprueba ausencia.", "equals": "Las comparaciones ordinarias con NULL no funcionan así.", "zero": "Una cadena vacía es un valor de texto, no NULL."}},
+              {"id": "s3", "prompt": "¿Qué devuelve COUNT(*)?", "options": [{"id": "rows", "label": "La cantidad de filas del grupo"}, {"id": "sum", "label": "La suma de importes del grupo"}, {"id": "average", "label": "El importe promedio del grupo"}], "correct_option": "rows", "feedback_by_option": {"rows": "Correcto: COUNT(*) cuenta filas.", "sum": "SUM calcula una suma.", "average": "AVG calcula el promedio."}},
+              {"id": "s4", "prompt": "¿Qué cláusula ordena resultados?", "options": [{"id": "order", "label": "ORDER BY"}, {"id": "where", "label": "WHERE"}, {"id": "group", "label": "GROUP BY"}], "correct_option": "order", "feedback_by_option": {"order": "Correcto: ORDER BY define el orden.", "where": "WHERE filtra filas.", "group": "GROUP BY agrupa filas."}},
+              {"id": "s5", "prompt": "¿Para qué se usa HAVING?", "options": [{"id": "groups", "label": "Filtrar grupos usando una condición agregada"}, {"id": "columns", "label": "Filtrar filas usando una condición de columna"}, {"id": "limit", "label": "Ordenar grupos según el valor de una columna"}], "correct_option": "groups", "feedback_by_option": {"groups": "Correcto: HAVING se aplica a grupos agregados.", "columns": "WHERE filtra filas antes de agrupar.", "limit": "ORDER BY ordena; HAVING filtra grupos."}}
+            ],
+            "review_topics": {
+              "s1": "WHERE frente a HAVING",
+              "s2": "Valores ausentes y NULL",
+              "s3": "Funciones de agregación",
+              "s4": "Orden de resultados con ORDER BY",
+              "s5": "Filtrado de grupos con HAVING"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "aws",
+      "title": "AWS",
+      "availability": "available",
+      "competency_id": "aws-basic-concepts",
+      "environment_required": false,
+      "modules": [
+        {
+          "id": "aws-cloud-computing-foundations",
+          "title": "Introducción a Cloud Computing",
+          "objective": "Distinguir modelos de servicio y explicar cómo la infraestructura global, la alta disponibilidad y la responsabilidad compartida afectan una tarea de soporte.",
+          "concepts": ["Infraestructura local y nube", "IaaS", "PaaS", "SaaS", "Responsabilidad compartida", "Regiones y zonas de disponibilidad", "Alta disponibilidad y tolerancia a fallos"],
+          "explanation": [
+            "La nube ofrece recursos informáticos bajo demanda a través de una red. A diferencia de una sala de servidores local, el equipo consume servicios administrados por un proveedor y paga según el modelo y uso aplicables; la nube no elimina diseño, controles ni costos.",
+            "IaaS ofrece componentes de infraestructura virtual que el cliente administra en mayor medida. PaaS administra más del entorno de ejecución para que el equipo despliegue una aplicación. SaaS entrega una aplicación lista para usar. Son modelos de responsabilidad creciente del proveedor, no una escala automática de calidad.",
+            "La responsabilidad compartida se reparte según el servicio. AWS protege la infraestructura que opera; el cliente sigue siendo responsable de decisiones como identidades, datos, configuración y permisos. En soporte, identifica qué capa corresponde revisar y escala cuando no tienes autorización.",
+            "Una región es un área geográfica con varias zonas de disponibilidad (AZ) aisladas. Repartir componentes entre AZ puede reducir ciertos puntos de falla, pero no garantiza por sí solo alta disponibilidad: la aplicación debe estar diseñada para recuperarse y sus dependencias también importan."
+          ],
+          "worked_example": {
+            "title": "Clasificar una aplicación de soporte",
+            "steps": [
+              "El equipo usa un servicio de correo web sin administrar servidores; eso es SaaS.",
+              "La aplicación interna se despliega sobre un entorno administrado; el equipo se enfoca en el código y los datos: es PaaS.",
+              "El sistema heredado necesita una máquina virtual que el equipo parcheará; es IaaS.",
+              "La organización elige regiones y diseña redundancia; el proveedor no decide por ella el impacto operativo."
+            ],
+            "result": "La clasificación ayuda a identificar qué capa revisar y evita atribuir al proveedor una configuración que controla el cliente."
+          },
+          "guided_practice": {
+            "id": "aws-cloud-guided-saas",
+            "type": "choice",
+            "title": "Identificar un modelo de servicio",
+            "instructions": "Usa el nivel de administración que describe el escenario, no el nombre comercial de un producto.",
+            "prompt": "El equipo de soporte utiliza una aplicación de tickets completa desde el navegador. El proveedor mantiene la aplicación y el equipo administra sus cuentas y datos. ¿Qué modelo es?",
+            "options": [
+              {"id": "saas", "label": "SaaS: aplicación lista para usar"},
+              {"id": "iaas", "label": "IaaS: infraestructura virtual que el equipo administra"},
+              {"id": "local", "label": "Infraestructura local: hardware propio operado en las instalaciones"}
+            ],
+            "correct_option": "saas",
+            "feedback_by_option": {
+              "saas": "Correcto: la aplicación completa la ofrece el proveedor; el cliente aún administra sus cuentas y datos.",
+              "iaas": "El escenario no describe una máquina virtual o infraestructura que el equipo mantenga.",
+              "local": "El equipo no opera el hardware ni la instalación física."
+            }
+          },
+          "independent_practice": {
+            "id": "aws-cloud-independent-paas",
+            "type": "choice",
+            "title": "Elegir una plataforma para desplegar",
+            "instructions": "Compara quién mantiene el entorno de ejecución y quién mantiene la aplicación.",
+            "prompt": "Un equipo quiere desplegar su código en un entorno de ejecución administrado por el proveedor, sin gestionar el sistema operativo de las máquinas. ¿Qué modelo describe mejor esa necesidad?",
+            "options": [
+              {"id": "paas", "label": "PaaS: el proveedor administra la plataforma y el equipo despliega su aplicación"},
+              {"id": "iaas", "label": "IaaS: el equipo administra la máquina y el sistema operativo"},
+              {"id": "saas", "label": "SaaS: el equipo solo consume una aplicación completa"}
+            ],
+            "correct_option": "paas",
+            "feedback_by_option": {
+              "paas": "Correcto: se delega la plataforma de ejecución, pero el código y los datos siguen bajo responsabilidad del equipo.",
+              "iaas": "IaaS implicaría administrar más componentes, incluido el sistema operativo.",
+              "saas": "El escenario describe el despliegue de una aplicación propia, no el consumo de una aplicación terminada."
+            }
+          },
+          "verification": "Cada clasificación se corrige contra las responsabilidades descritas; las prácticas son escenarios sintéticos y no acceden a AWS.",
+          "common_errors": [
+            {"error": "Tratar IaaS, PaaS y SaaS como productos específicos.", "cause": "Son modelos de servicio definidos por el reparto de administración.", "recovery": "Identifica qué administra el proveedor y qué mantiene el cliente."},
+            {"error": "Suponer que migrar a la nube garantiza disponibilidad.", "cause": "La resiliencia depende del diseño, las dependencias y las pruebas de recuperación.", "recovery": "Pregunta qué componentes fallan juntos y qué evidencia de recuperación existe."},
+            {"error": "Atribuir al proveedor toda la seguridad de los datos.", "cause": "El cliente mantiene responsabilidades sobre identidades, permisos y configuración.", "recovery": "Consulta el modelo de responsabilidad del servicio concreto y escala la duda."}
+          ],
+          "assessment": {
+            "id": "aws-cloud-foundations-assessment",
+            "type": "conceptual",
+            "questions": [
+              {"id": "c1", "prompt": "Un equipo alquila máquinas virtuales y administra el sistema operativo y la aplicación. ¿Qué modelo describe mejor el servicio?", "options": [{"id": "iaas", "label": "IaaS"}, {"id": "paas", "label": "PaaS con plataforma administrada"}, {"id": "saas", "label": "SaaS listo para el usuario"}], "correct_option": "iaas", "feedback_by_option": {"iaas": "Correcto: el equipo mantiene el sistema operativo sobre infraestructura virtual.", "paas": "En PaaS el proveedor administra una mayor parte de la plataforma de ejecución.", "saas": "SaaS entrega una aplicación completa; no describe la administración de la VM."}},
+              {"id": "c2", "prompt": "Un objeto se expone por una política demasiado amplia. ¿Quién debe revisar esa configuración del servicio?", "options": [{"id": "client", "label": "El cliente, con el responsable autorizado de los datos"}, {"id": "provider", "label": "Solo el proveedor de la infraestructura física"}, {"id": "hardware", "label": "El equipo que mantiene el hardware del centro de datos"}], "correct_option": "client", "feedback_by_option": {"client": "Correcto: los permisos y la configuración de los datos pertenecen al cliente según el servicio.", "provider": "La protección de la infraestructura no reemplaza la configuración del cliente.", "hardware": "El mantenimiento físico no corrige permisos de acceso a los datos."}},
+              {"id": "c3", "prompt": "¿Qué relación existe entre una región y una zona de disponibilidad?", "options": [{"id": "contains", "label": "Una región contiene varias zonas de disponibilidad aisladas"}, {"id": "same", "label": "Son nombres distintos para la misma unidad geográfica"}, {"id": "global", "label": "Una zona contiene varias regiones globales"}], "correct_option": "contains", "feedback_by_option": {"contains": "Correcto: las AZ son ubicaciones aisladas dentro de una región.", "same": "Una AZ no equivale a una región.", "global": "La relación está invertida: las regiones contienen zonas."}},
+              {"id": "c4", "prompt": "¿Por qué distribuir componentes entre zonas puede mejorar la resiliencia?", "options": [{"id": "isolation", "label": "Reduce la dependencia de una única ubicación aislada, si la aplicación soporta la falla"}, {"id": "guarantee", "label": "Garantiza que nunca haya interrupciones"}, {"id": "permissions", "label": "Evita tener que revisar identidades y permisos"}], "correct_option": "isolation", "feedback_by_option": {"isolation": "Correcto: la separación ayuda frente a ciertas fallas, pero el diseño de la aplicación sigue siendo necesario.", "guarantee": "Ninguna topología garantiza ausencia total de interrupciones.", "permissions": "La redundancia no reemplaza los controles de identidad y acceso."}},
+              {"id": "c5", "prompt": "Antes de atribuir un aumento de costo a una causa, ¿qué debe hacer soporte?", "options": [{"id": "evidence", "label": "Reunir periodo, servicio, región y métricas de uso disponibles y escalar según el procedimiento"}, {"id": "delete", "label": "Eliminar recursos para detener el cargo sin verificar su impacto"}, {"id": "assume", "label": "Concluir que todo cargo proviene del tráfico de red"}], "correct_option": "evidence", "feedback_by_option": {"evidence": "Correcto: recopila contexto verificable y sigue el proceso de costos aprobado.", "delete": "Eliminar recursos puede causar impacto y no es una acción de soporte autorizada.", "assume": "Un cargo puede tener múltiples fuentes; la hipótesis requiere evidencia."}}
+            ],
+            "review_topics": {
+              "c1": "Modelos IaaS, PaaS y SaaS",
+              "c2": "Responsabilidad compartida",
+              "c3": "Regiones y zonas de disponibilidad",
+              "c4": "Alta disponibilidad y tolerancia a fallos",
+              "c5": "Costos y evidencia operativa"
+            }
+          }
+        },
+        {
+          "id": "aws-fundamentals",
+          "title": "Fundamentos de AWS",
+          "objective": "Reconocer regiones, categorías de servicios y fuentes potenciales de costos para describir un escenario y escalar una consulta de forma segura.",
+          "concepts": ["Servicios y categorías", "Regiones", "Zonas de disponibilidad", "Consola de administración", "Facturación", "Costos de uso"],
+          "explanation": [
+            "AWS ofrece servicios agrupados por capacidades, como cómputo, almacenamiento, bases de datos, redes, seguridad y monitoreo. En soporte, primero identifica el servicio mencionado y su función; no deduzcas una causa solo por el nombre.",
+            "La consola de administración es una interfaz para operar una cuenta. En esta formación no se inicia sesión ni se consultan cuentas; las capturas, nombres y cifras son sintéticos. Una acción de solo lectura también puede exponer datos, por lo que requiere autorización.",
+            "Los recursos suelen crearse en una región; algunas capacidades tienen alcance global y otras se limitan a una región o zona. Una discrepancia de región puede explicar por qué un recurso esperado no aparece, pero debe confirmarse con evidencia autorizada.",
+            "El costo puede depender del tiempo activo, almacenamiento, solicitudes, transferencia, nivel de servicio y retención. Una alerta presupuestaria es una señal para investigar, no una prueba automática de consumo indebido ni permiso para eliminar recursos."
+          ],
+          "worked_example": {
+            "title": "Clasificar un reporte de costo sin operar la cuenta",
+            "steps": [
+              "Registra el periodo, la moneda y el texto de la alerta sintética.",
+              "Anota el servicio y la región que menciona el reporte, sin concluir que son la causa.",
+              "Separa la medición observada de las hipótesis sobre recursos, tráfico o retención.",
+              "Escala a la persona autorizada para consultar el detalle de costos."
+            ],
+            "result": "El ticket presenta una pregunta verificable y no ejecuta cambios ni consultas facturables."
+          },
+          "guided_practice": {
+            "id": "aws-fundamentals-guided-region",
+            "type": "choice",
+            "title": "Interpretar alcance regional",
+            "instructions": "Analiza solo los hechos incluidos; no supongas que puedes entrar a la consola.",
+            "prompt": "Un ticket indica que un recurso no aparece en la consola abierta en otra región. ¿Qué interpretación inicial es razonable?",
+            "options": [
+              {"id": "region-check", "label": "La región seleccionada puede no coincidir; recopila el identificador y escala la verificación autorizada"},
+              {"id": "deleted", "label": "El recurso fue eliminado con certeza"},
+              {"id": "global", "label": "Todos los servicios AWS son globales y siempre aparecen igual"}
+            ],
+            "correct_option": "region-check",
+            "feedback_by_option": {
+              "region-check": "Correcto: el alcance regional es una hipótesis comprobable, no una conclusión de eliminación.",
+              "deleted": "La ausencia en una vista regional no demuestra que se haya eliminado.",
+              "global": "Muchos recursos son regionales; el alcance depende del servicio."
+            }
+          },
+          "independent_practice": {
+            "id": "aws-fundamentals-independent-cost",
+            "type": "choice",
+            "title": "Clasificar una posible fuente de costo",
+            "instructions": "Elige la respuesta que mantiene la investigación sustentada y segura.",
+            "prompt": "Un informe sintético muestra más solicitudes de almacenamiento durante un periodo. ¿Qué puede concluir soporte?",
+            "options": [
+              {"id": "signal", "label": "Es una señal que requiere revisar periodo, servicio y contexto con acceso autorizado"},
+              {"id": "cause", "label": "La causa raíz es un bucket público"},
+              {"id": "delete", "label": "Debe borrarse el recurso inmediatamente"}
+            ],
+            "correct_option": "signal",
+            "feedback_by_option": {
+              "signal": "Correcto: una señal orienta la investigación, pero no prueba una causa ni autoriza cambios.",
+              "cause": "El aumento de solicitudes no demuestra exposición pública.",
+              "delete": "No se debe eliminar un recurso ni cambiar la cuenta desde este ejercicio."
+            }
+          },
+          "verification": "Se verifican la clasificación del servicio, región y señal de costo usando escenarios locales; no se consulta la consola.",
+          "common_errors": [
+            {"error": "Suponer que todos los servicios tienen el mismo alcance regional.", "cause": "El alcance depende del servicio y de la operación.", "recovery": "Registra el nombre del servicio y pide verificación en la documentación autorizada."},
+            {"error": "Tratar una alerta presupuestaria como una causa confirmada.", "cause": "Una alerta señala un umbral o tendencia, no explica por sí sola el origen.", "recovery": "Anota el periodo y las dimensiones disponibles; escala el detalle."},
+            {"error": "Usar la consola con una identidad no autorizada.", "cause": "La necesidad de investigar no concede permisos.", "recovery": "Solicita el canal de acceso de solo lectura aprobado por la organización."}
+          ],
+          "assessment": {
+            "id": "aws-fundamentals-assessment",
+            "type": "conceptual",
+            "questions": [
+              {"id": "f1", "prompt": "Una alerta afirma que aumentó el almacenamiento de un servicio en una región. ¿Qué dato ayuda a delimitar la investigación?", "options": [{"id": "period", "label": "Periodo, servicio, región y dimensión observada"}, {"id": "guess", "label": "Una suposición sobre quién creó el recurso"}, {"id": "delete", "label": "El nombre de un recurso que soporte debería borrar"}], "correct_option": "period", "feedback_by_option": {"period": "Correcto: delimita la señal y permite una verificación autorizada.", "guess": "La identidad no se deduce de la alerta.", "delete": "La alerta no autoriza a eliminar recursos."}},
+              {"id": "f2", "prompt": "¿Qué diferencia básica puede haber entre un recurso regional y uno global?", "options": [{"id": "scope", "label": "El regional se administra en una región específica; el global puede tener alcance entre regiones según el servicio"}, {"id": "cost", "label": "El global nunca genera costos"}, {"id": "owner", "label": "El global siempre pertenece al proveedor y no al cliente"}], "correct_option": "scope", "feedback_by_option": {"scope": "Correcto: el alcance debe confirmarse para el servicio concreto.", "cost": "El alcance no determina por sí solo que un servicio sea gratuito.", "owner": "El modelo de responsabilidad no se deduce solo del alcance."}},
+              {"id": "f3", "prompt": "¿Para qué se usa la consola de administración?", "options": [{"id": "manage", "label": "Interfaz para consultar y administrar servicios según permisos asignados"}, {"id": "billing-only", "label": "Herramienta exclusiva para editar facturas"}, {"id": "identity", "label": "Sustituto de las políticas de identidad"}], "correct_option": "manage", "feedback_by_option": {"manage": "Correcto: la consola expone operaciones permitidas por la identidad y el servicio.", "billing-only": "La consola no se limita a facturación.", "identity": "La consola no reemplaza los controles IAM."}},
+              {"id": "f4", "prompt": "¿Cuál es una fuente potencial de costos que soporte debería registrar como contexto?", "options": [{"id": "usage", "label": "Uso del servicio durante el periodo, solicitudes o transferencia según el servicio"}, {"id": "console", "label": "Abrir cualquier página de documentación pública"}, {"id": "region-name", "label": "El nombre de una región, sin actividad ni servicio asociados"}], "correct_option": "usage", "feedback_by_option": {"usage": "Correcto: la fuente depende del servicio y de su uso facturable.", "console": "La documentación pública no explica ese consumo específico.", "region-name": "Un nombre aislado no demuestra un cargo."}},
+              {"id": "f5", "prompt": "Un recurso no aparece en la región seleccionada. ¿Qué conclusión es válida?", "options": [{"id": "unknown", "label": "La causa aún no está confirmada; hay que verificar alcance e identificador mediante el proceso autorizado"}, {"id": "deleted", "label": "Fue eliminado definitivamente"}, {"id": "wrong-account", "label": "La cuenta fue comprometida"}], "correct_option": "unknown", "feedback_by_option": {"unknown": "Correcto: la observación admite hipótesis, no una causa probada.", "deleted": "La vista seleccionada no prueba que el recurso se haya eliminado.", "wrong-account": "No hay evidencia de compromiso de cuenta."}}
+            ],
+            "review_topics": {"f1": "Uso de señales para delimitar costos", "f2": "Alcance regional y global", "f3": "Consola y permisos", "f4": "Fuentes potenciales de costos", "f5": "Separación entre evidencia e hipótesis"}
+          }
+        },
+        {
+          "id": "aws-iam-security",
+          "title": "IAM y seguridad",
+          "objective": "Interpretar identidades, roles y políticas sencillas para formular hipótesis de AccessDenied y escalar la revisión sin ampliar permisos.",
+          "concepts": ["Usuarios", "Grupos", "Roles", "Políticas", "Acciones y recursos", "Mínimo privilegio", "MFA", "Credenciales"],
+          "explanation": [
+            "IAM organiza identidades y permisos. Un usuario representa credenciales asociadas a una persona o sistema; un grupo reúne usuarios para administrar permisos; un rol se asume temporalmente por una identidad o servicio según una relación de confianza.",
+            "Una política expresa permisos sobre acciones y recursos. Una coincidencia de Allow no garantiza el acceso: una denegación explícita u otros controles aplicables pueden impedirlo. Evalúa identidad, acción, recurso y contexto; no concluyas que falta una política sin el mensaje y la evidencia autorizada.",
+            "El principio de menor privilegio concede solo lo requerido para una tarea y durante el tiempo necesario. MFA agrega una prueba de autenticación; no concede permisos de recursos. Las credenciales son secretas, individuales y no deben compartirse ni pegarse en tickets.",
+            "Ante AccessDenied, conserva el mensaje, hora, identidad o rol reportado, acción y ARN del recurso ficticio. No agregues comodines, no desactives controles ni intentes repetir una acción con otra identidad. Escala al propietario autorizado para una revisión."
+          ],
+          "worked_example": {
+            "title": "Revisar el alcance de una política sintética",
+            "steps": [
+              "La política de ejemplo permite s3:GetObject sobre arn:aws:s3:::academy-demo/reports/*.",
+              "La solicitud es GetObject para academy-demo/reports/daily.csv, por lo que acción y patrón del recurso coinciden.",
+              "Esto solo indica que esa declaración coincide; no descarta denegaciones u otras condiciones.",
+              "Documenta la comparación y solicita revisión autorizada, sin modificar la política."
+            ],
+            "result": "Una política se interpreta en contexto y no se usa un ejercicio local para cambiar permisos reales."
+          },
+          "guided_practice": {
+            "id": "aws-iam-guided-policy",
+            "type": "choice",
+            "title": "Interpretar acción y recurso",
+            "instructions": "La política y los ARN son ficticios. Considera únicamente si la declaración coincide.",
+            "prompt": "Declaración Allow: acción s3:GetObject, recurso arn:aws:s3:::academy-demo/reports/*. La solicitud lee academy-demo/reports/daily.csv. ¿Qué describe la declaración?",
+            "options": [
+              {"id": "matches", "label": "La acción y el patrón del recurso coinciden; aún podrían aplicar otros controles"},
+              {"id": "all-s3", "label": "Permite todas las acciones S3 en todos los buckets"},
+              {"id": "deny", "label": "La declaración deniega explícitamente la lectura"}
+            ],
+            "correct_option": "matches",
+            "feedback_by_option": {"matches": "Correcto: la declaración coincide con esa acción y ese patrón, sin garantizar el resultado global.", "all-s3": "La acción y el recurso están limitados a GetObject y al prefijo indicado.", "deny": "La declaración descrita es Allow, no una denegación."}
+          },
+          "independent_practice": {
+            "id": "aws-iam-independent-denied",
+            "type": "choice",
+            "title": "Investigar AccessDenied con seguridad",
+            "instructions": "No cambies la política ni repitas la operación con credenciales distintas.",
+            "prompt": "Un trabajo programado reporta AccessDenied sobre un objeto. ¿Qué conjunto de datos conviene recopilar para escalar?",
+            "options": [
+              {"id": "context", "label": "Identidad o rol, acción, recurso, región, hora y mensaje exacto"},
+              {"id": "secret", "label": "La clave secreta y la contraseña de la persona"},
+              {"id": "wildcard", "label": "Una propuesta de permitir todas las acciones"}
+            ],
+            "correct_option": "context",
+            "feedback_by_option": {"context": "Correcto: esos datos permiten revisar el contexto sin exponer secretos ni cambiar permisos.", "secret": "No solicites ni incluyas credenciales en un ticket.", "wildcard": "Un comodín amplía permisos y no constituye una investigación segura."}
+          },
+          "verification": "La evaluación compara interpretaciones de políticas ficticias; no se crean usuarios, roles, políticas ni credenciales.",
+          "common_errors": [
+            {"error": "Interpretar un Allow como garantía de acceso.", "cause": "Otros permisos, denegaciones y condiciones pueden afectar la decisión final.", "recovery": "Describe solo la coincidencia observada y escala el contexto completo."},
+            {"error": "Resolver AccessDenied con permisos amplios.", "cause": "El problema también puede ser una identidad, recurso, región o condición distinta.", "recovery": "Recopila la solicitud exacta y pide revisión al propietario autorizado."},
+            {"error": "Compartir credenciales para reproducir el error.", "cause": "Se pierde trazabilidad y se expone la identidad.", "recovery": "Usa el procedimiento de acceso aprobado y redacta secretos."}
+          ],
+          "assessment": {
+            "id": "aws-iam-assessment",
+            "type": "conceptual",
+            "questions": [
+              {"id": "i1", "prompt": "Un servicio necesita acceso temporal a un recurso. ¿Qué identidad se suele evaluar para esa función?", "options": [{"id": "role", "label": "Un rol que el servicio asume según una relación de confianza"}, {"id": "shared-user", "label": "Un usuario humano compartido por todo el equipo"}, {"id": "group", "label": "Un grupo que almacena credenciales temporales de la aplicación"}], "correct_option": "role", "feedback_by_option": {"role": "Correcto: los roles permiten conceder permisos temporales a una identidad autorizada.", "shared-user": "Compartir usuarios reduce la trazabilidad y no es una práctica adecuada.", "group": "Los grupos organizan usuarios; no son la identidad temporal del servicio."}},
+              {"id": "i2", "prompt": "¿Qué expresa el menor privilegio?", "options": [{"id": "needed", "label": "Permitir solo las acciones y recursos necesarios para la tarea"}, {"id": "admin", "label": "Usar permisos administrativos para evitar errores"}, {"id": "public", "label": "Hacer público el recurso cuando una identidad no accede"}], "correct_option": "needed", "feedback_by_option": {"needed": "Correcto: el alcance se limita a lo necesario.", "admin": "Los permisos administrativos son excesivos para una tarea acotada.", "public": "Hacer público un recurso no es un control de identidad seguro."}},
+              {"id": "i3", "prompt": "¿Qué aporta MFA?", "options": [{"id": "auth", "label": "Una capa adicional para verificar la autenticación"}, {"id": "resource", "label": "Permisos automáticos sobre todos los recursos"}, {"id": "network", "label": "Una ruta de red privada entre regiones"}], "correct_option": "auth", "feedback_by_option": {"auth": "Correcto: MFA fortalece la autenticación, no sustituye la autorización.", "resource": "La autorización sigue dependiendo de permisos y controles.", "network": "MFA no crea conectividad de red."}},
+              {"id": "i4", "prompt": "Una declaración permite GetObject en un prefijo. ¿Qué se necesita para evaluar una solicitud concreta?", "options": [{"id": "tuple", "label": "Comparar identidad, acción, recurso y contexto con el mensaje observado"}, {"id": "mfa-only", "label": "Verificar MFA y asumir que el recurso queda autorizado"}, {"id": "all-actions", "label": "Agregar s3:* sin revisar la solicitud"}], "correct_option": "tuple", "feedback_by_option": {"tuple": "Correcto: el acceso depende de la solicitud y de controles aplicables.", "mfa-only": "MFA no concede por sí solo permisos sobre un objeto.", "all-actions": "Ampliar permisos sin evidencia viola el menor privilegio."}},
+              {"id": "i5", "prompt": "¿Qué debe hacerse si un ticket contiene una clave secreta?", "options": [{"id": "protect", "label": "No copiarla; seguir el procedimiento aprobado para reportar y proteger el secreto"}, {"id": "share", "label": "Reenviarla al equipo para que pruebe el acceso"}, {"id": "store", "label": "Guardarla en el informe para futuras investigaciones"}], "correct_option": "protect", "feedback_by_option": {"protect": "Correcto: evita expandir la exposición y sigue el proceso de seguridad.", "share": "No se deben distribuir credenciales.", "store": "Los tickets no deben conservar secretos."}}
+            ],
+            "review_topics": {"i1": "Roles y relaciones de confianza", "i2": "Principio de mínimo privilegio", "i3": "MFA y autorización", "i4": "Evaluación contextual de políticas", "i5": "Protección de credenciales"}
+          }
+        },
+        {
+          "id": "aws-s3-fundamentals",
+          "title": "Amazon S3",
+          "objective": "Interpretar buckets, claves y prefijos, y distinguir conceptos de acceso, versionado, cifrado y clases de almacenamiento en casos de soporte.",
+          "concepts": ["Buckets", "Objetos", "Claves", "Prefijos", "Región", "Clases de almacenamiento", "Permisos", "Versionado", "Cifrado"],
+          "explanation": [
+            "S3 almacena objetos dentro de buckets. Un objeto tiene datos y una clave; el bucket y la clave localizan el objeto. En un URI s3://bucket/prefix/file.csv, el bucket es el primer componente después de s3:// y el resto es la clave.",
+            "Los prefijos agrupan claves por convención. La consola puede mostrarlos como carpetas, pero no implican necesariamente directorios físicos. Una clave distingue mayúsculas, minúsculas y separadores; un error tipográfico puede apuntar a otro objeto.",
+            "Un bucket tiene una región. Las clases de almacenamiento representan opciones con distintas características de acceso, disponibilidad y costo; recuperar datos de ciertas clases puede implicar demora o cargos. La elección depende del patrón de uso y la política de datos.",
+            "Las políticas y controles de acceso determinan quién puede actuar sobre buckets u objetos. Versionado conserva versiones según su configuración; cifrado protege datos según las claves y opciones configuradas. Ninguna de estas propiedades demuestra que un objeto sea público ni que una identidad tenga permiso."
+          ],
+          "worked_example": {
+            "title": "Leer una ruta de objeto",
+            "steps": [
+              "En s3://academy-demo/operations/2026/11/batch.csv, identifica academy-demo como bucket.",
+              "El resto, operations/2026/11/batch.csv, es la clave completa del objeto.",
+              "La parte operations/2026/11 funciona como prefijo de organización.",
+              "Antes de concluir que falta el archivo, valida la región, mayúsculas, clave y contexto de acceso mediante el proceso autorizado."
+            ],
+            "result": "Una ruta válida identifica una ubicación lógica, pero no demuestra existencia ni autorización."
+          },
+          "guided_practice": {
+            "id": "aws-s3-guided-path",
+            "type": "choice",
+            "title": "Descomponer un URI S3",
+            "instructions": "La ruta es ficticia y solo se analiza su estructura.",
+            "prompt": "En s3://academy-demo/operations/daily/run-17.csv, ¿cuál es la clave del objeto?",
+            "options": [
+              {"id": "key", "label": "operations/daily/run-17.csv"},
+              {"id": "bucket", "label": "academy-demo"},
+              {"id": "region", "label": "La región donde corre la aplicación"}
+            ],
+            "correct_option": "key",
+            "feedback_by_option": {"key": "Correcto: todo lo que sigue al nombre del bucket forma la clave.", "bucket": "academy-demo es el bucket, no la clave.", "region": "La región no aparece en ese URI."}
+          },
+          "independent_practice": {
+            "id": "aws-s3-independent-access",
+            "type": "choice",
+            "title": "Analizar un problema de lectura",
+            "instructions": "No cambies permisos ni intentes hacer público el bucket.",
+            "prompt": "Una persona afirma que no puede leer un objeto existente. ¿Qué afirmación es correcta?",
+            "options": [
+              {"id": "separate", "label": "Existencia del objeto y autorización de la identidad son preguntas distintas"},
+              {"id": "public", "label": "Todo objeto existente debe ser público"},
+              {"id": "version", "label": "El versionado concede lectura a cualquier usuario"}
+            ],
+            "correct_option": "separate",
+            "feedback_by_option": {"separate": "Correcto: la existencia no implica que la identidad tenga permiso.", "public": "La existencia de un objeto no lo hace público.", "version": "El versionado conserva versiones según configuración; no concede acceso."}
+          },
+          "verification": "Las prácticas usan URI ficticios; no consultan buckets, objetos, políticas, clases ni configuraciones reales.",
+          "common_errors": [
+            {"error": "Confundir el prefijo con un directorio garantizado.", "cause": "S3 usa claves de objeto; la vista de carpetas es una convención de interfaz.", "recovery": "Compara la clave completa, incluidos separadores y mayúsculas."},
+            {"error": "Asumir que una ruta demuestra existencia o permiso.", "cause": "La ubicación lógica y la autorización son propiedades distintas.", "recovery": "Registra el URI y escala la verificación autorizada."},
+            {"error": "Cambiar la clase de almacenamiento para probar el acceso.", "cause": "Puede generar costos o modificar el comportamiento del dato.", "recovery": "No cambies la configuración; revisa el procedimiento aprobado."}
+          ],
+          "assessment": {
+            "id": "aws-s3-assessment",
+            "type": "conceptual",
+            "questions": [
+              {"id": "s1", "prompt": "¿Qué identifica la clave operations/archive/record.json en un URI S3?", "options": [{"id": "object", "label": "El nombre completo del objeto dentro del bucket"}, {"id": "region", "label": "La región de disponibilidad"}, {"id": "identity", "label": "La identidad IAM que tiene permisos"}], "correct_option": "object", "feedback_by_option": {"object": "Correcto: la clave identifica el objeto dentro del bucket.", "region": "La clave no indica por sí sola la región.", "identity": "Los permisos se evalúan aparte de la clave."}},
+              {"id": "s2", "prompt": "¿Qué significa un prefijo como archive/2026/?", "options": [{"id": "grouping", "label": "Una convención para agrupar claves que pueden mostrarse como carpetas"}, {"id": "directory", "label": "Un directorio físico obligatorio del sistema operativo"}, {"id": "policy", "label": "Una política IAM que concede acceso"}], "correct_option": "grouping", "feedback_by_option": {"grouping": "Correcto: el prefijo organiza nombres de claves.", "directory": "No es necesariamente un directorio físico.", "policy": "El prefijo no es un permiso."}},
+              {"id": "s3", "prompt": "Una solicitud al objeto recibe AccessDenied. ¿Qué se puede afirmar?", "options": [{"id": "auth", "label": "La solicitud no fue autorizada; la causa concreta requiere revisar identidad, acción, recurso y controles"}, {"id": "missing", "label": "El objeto no existe con certeza"}, {"id": "public", "label": "El bucket debe hacerse público"}], "correct_option": "auth", "feedback_by_option": {"auth": "Correcto: el mensaje señala una denegación, no una causa única.", "missing": "AccessDenied no demuestra que el objeto no exista.", "public": "Hacer público el bucket sería inseguro y no está autorizado."}},
+              {"id": "s4", "prompt": "¿Qué puede aportar el versionado de un bucket?", "options": [{"id": "versions", "label": "Conservar versiones de objetos según la configuración"}, {"id": "access", "label": "Conceder lectura automática a todas las identidades"}, {"id": "region", "label": "Mover cada versión a otra región automáticamente"}], "correct_option": "versions", "feedback_by_option": {"versions": "Correcto: el versionado conserva versiones según la configuración del bucket.", "access": "Versionar no concede permisos.", "region": "Versionado no equivale a replicación entre regiones."}},
+              {"id": "s5", "prompt": "¿Qué debe considerarse al elegir una clase de almacenamiento?", "options": [{"id": "pattern", "label": "Patrón de acceso, demora de recuperación, disponibilidad y costo"}, {"id": "name", "label": "Solo el nombre más corto de la clase"}, {"id": "permission", "label": "Que la clase sustituya las políticas de acceso"}], "correct_option": "pattern", "feedback_by_option": {"pattern": "Correcto: la clase debe corresponder al patrón y requisitos de recuperación.", "name": "El nombre no describe el ajuste operativo.", "permission": "Las clases no sustituyen los controles de acceso."}}
+            ],
+            "review_topics": {"s1": "Buckets y claves S3", "s2": "Prefijos y claves", "s3": "Acceso y existencia de objetos", "s4": "Versionado", "s5": "Clases de almacenamiento y recuperación"}
+          }
+        },
+        {
+          "id": "aws-observability-introduction",
+          "title": "Introducción a observabilidad",
+          "objective": "Distinguir logs, métricas, eventos y alarmas de CloudWatch, y usarlos como señales para una investigación sustentada.",
+          "concepts": ["Logs", "Métricas", "Eventos", "Alarmas", "CloudWatch", "CloudWatch Logs", "Monitoreo", "Escalamiento"],
+          "explanation": [
+            "Un log registra eventos o mensajes con contexto, como una respuesta de error y una hora. Una métrica es una serie de valores agregados en el tiempo, como solicitudes por minuto o latencia. Un evento describe un cambio o hecho puntual.",
+            "CloudWatch reúne capacidades de monitoreo. CloudWatch Logs almacena y permite organizar registros de texto; las métricas permiten observar tendencias y umbrales; una alarma cambia de estado cuando una regla sobre una métrica se cumple.",
+            "Una alarma comunica una condición observada, no necesariamente su causa raíz. Para investigar correlaciona periodo, recurso, dimensión, solicitud e impacto con fuentes autorizadas. Una métrica alta puede coexistir con múltiples causas.",
+            "En soporte registra la señal exacta y el intervalo, compara con el comportamiento esperado y escala cuando falte acceso o la evidencia no alcance. Este curso usa mensajes y valores sintéticos; no consulta ni crea alarmas o grupos reales."
+          ],
+          "worked_example": {
+            "title": "Separar registro, métrica y alarma",
+            "steps": [
+              "El log contiene la línea ficticia AccessDenied a las 14:06 UTC para una solicitud.",
+              "La métrica muestra 12 errores durante un intervalo de cinco minutos.",
+              "La alarma se activa cuando el conteo supera el umbral configurado.",
+              "La causa aún no está confirmada: compara las solicitudes y el cambio observado antes de escalar."
+            ],
+            "result": "Cada señal responde una pregunta distinta; una alarma no sustituye el análisis de evidencia."
+          },
+          "guided_practice": {
+            "id": "aws-observability-guided-signals",
+            "type": "choice",
+            "title": "Clasificar señales de monitoreo",
+            "instructions": "Relaciona el formato de la evidencia con su función.",
+            "prompt": "¿Cuál es el mejor ejemplo de una métrica?",
+            "options": [
+              {"id": "series", "label": "El promedio de latencia por minuto durante una hora"},
+              {"id": "line", "label": "Una línea de log con el texto AccessDenied y una hora"},
+              {"id": "alarm", "label": "Una notificación de que se superó un umbral"}
+            ],
+            "correct_option": "series",
+            "feedback_by_option": {"series": "Correcto: una métrica permite observar valores agregados a lo largo del tiempo.", "line": "Una línea textual con contexto es un log.", "alarm": "Una alarma notifica una condición derivada de una regla."}
+          },
+          "independent_practice": {
+            "id": "aws-observability-independent-alert",
+            "type": "choice",
+            "title": "Interpretar una alarma sin atribuir causa",
+            "instructions": "Distingue lo que informa la señal de lo que todavía hay que investigar.",
+            "prompt": "Una alarma sintética indica que aumentó el número de solicitudes fallidas. ¿Qué debe registrar soporte?",
+            "options": [
+              {"id": "interval", "label": "Nombre de la métrica, umbral, intervalo y recurso; la causa sigue por investigar"},
+              {"id": "cause", "label": "La alarma confirma que IAM es la causa raíz"},
+              {"id": "disable", "label": "La alarma debe desactivarse para evitar notificaciones"}
+            ],
+            "correct_option": "interval",
+            "feedback_by_option": {"interval": "Correcto: registra la señal y limita la conclusión a lo observado.", "cause": "La alarma no identifica por sí sola la causa.", "disable": "Desactivar una alarma es un cambio no autorizado y puede ocultar señales."}
+          },
+          "verification": "Las respuestas se validan con señales de ejemplo; no se consultan logs, métricas ni alarmas reales.",
+          "common_errors": [
+            {"error": "Tratar un log, una métrica y un evento como equivalentes.", "cause": "Representan formas distintas de evidencia y agregación.", "recovery": "Identifica si la señal es un mensaje, una serie de valores o un hecho puntual."},
+            {"error": "Concluir causa raíz a partir de una alarma.", "cause": "La alarma solo confirma que una condición definida se cumplió.", "recovery": "Correlaciona otras fuentes y marca la causa como hipótesis hasta confirmarla."},
+            {"error": "Cambiar umbrales para eliminar una alerta.", "cause": "El cambio puede ocultar una condición relevante.", "recovery": "Documenta el disparo y escala la revisión de la regla."}
+          ],
+          "assessment": {
+            "id": "aws-observability-assessment",
+            "type": "conceptual",
+            "questions": [
+              {"id": "o1", "prompt": "¿Qué tipo de señal suele contener un mensaje de error con hora e identificador de solicitud?", "options": [{"id": "log", "label": "Un log"}, {"id": "metric", "label": "Una métrica agregada"}, {"id": "alarm", "label": "Una alarma"}], "correct_option": "log", "feedback_by_option": {"log": "Correcto: el mensaje con contexto es un registro.", "metric": "Una métrica representa valores numéricos agregados.", "alarm": "Una alarma comunica el estado de una regla."}},
+              {"id": "o2", "prompt": "¿Qué responde mejor una métrica de latencia por minuto?", "options": [{"id": "trend", "label": "Cómo varía el valor en el tiempo"}, {"id": "identity", "label": "Qué persona autenticó cada solicitud"}, {"id": "policy", "label": "Qué permiso IAM denegó una operación"}], "correct_option": "trend", "feedback_by_option": {"trend": "Correcto: la serie permite observar tendencia por periodo.", "identity": "Una métrica no registra necesariamente la identidad individual.", "policy": "La métrica no sustituye la evidencia de autorización."}},
+              {"id": "o3", "prompt": "¿Qué significa que una alarma cambie a estado de alerta?", "options": [{"id": "threshold", "label": "La condición definida para la señal se cumplió; la causa requiere análisis"}, {"id": "cause", "label": "La causa raíz quedó demostrada"}, {"id": "repair", "label": "El servicio se reparó automáticamente"}], "correct_option": "threshold", "feedback_by_option": {"threshold": "Correcto: el estado de alarma refleja la regla configurada.", "cause": "Una alarma no demuestra causa raíz por sí sola.", "repair": "La notificación no implica reparación automática."}},
+              {"id": "o4", "prompt": "¿Qué dato ayuda a correlacionar una alarma con logs?", "options": [{"id": "time", "label": "Intervalo y marcas de tiempo comparables, junto con dimensiones relevantes"}, {"id": "title", "label": "El color del panel de monitoreo"}, {"id": "owner", "label": "Una persona supuesta como responsable"}], "correct_option": "time", "feedback_by_option": {"time": "Correcto: ventana temporal y dimensiones permiten comparar señales.", "title": "La apariencia no aporta correlación operativa.", "owner": "No se debe inferir la responsabilidad de una persona sin evidencia."}},
+              {"id": "o5", "prompt": "El volumen de errores sube, pero no hay evidencia de un cambio de permisos. ¿Cómo debe documentarse la causa?", "options": [{"id": "unknown", "label": "No confirmada; la subida es un hecho y IAM es solo una hipótesis si se investiga"}, {"id": "iam", "label": "IAM confirmada"}, {"id": "network", "label": "Red confirmada"}], "correct_option": "unknown", "feedback_by_option": {"unknown": "Correcto: separa la señal observada de las hipótesis.", "iam": "No hay evidencia que confirme IAM.", "network": "No hay evidencia que confirme una falla de red."}}
+            ],
+            "review_topics": {"o1": "Logs y contexto de eventos", "o2": "Métricas y tendencias", "o3": "Alarmas y umbrales", "o4": "Correlación temporal", "o5": "Hechos e hipótesis"}
+          }
+        },
+        {
+          "id": "aws-support-integration",
+          "title": "Integración: incidente de acceso a un objeto",
+          "objective": "Investigar un reporte de acceso a S3 junto con una alerta sintética, proponer verificaciones autorizadas y documentar hechos, hipótesis e impacto sin inventar una causa.",
+          "concepts": ["S3", "IAM", "CloudWatch", "AccessDenied", "Claves de objetos", "Hechos e hipótesis", "Escalamiento", "Informe técnico"],
+          "explanation": [
+            "Escenario sintético: una aplicación registra que un usuario no puede leer s3://nimbus-ops-demo/logs/2026/11/batch-042.csv. El ticket incluye AccessDenied a las 15:06 UTC y el monitor informa ALARM-73 por un aumento de errores.",
+            "S3 e IAM son servicios involucrados en la lectura: el primero organiza objetos por bucket y clave, y el segundo participa en la autorización. CloudWatch puede aportar logs, métricas o estados de alarma asociados, pero no se consulta una cuenta real.",
+            "AccessDenied prueba que la solicitud observada no fue autorizada en ese contexto; no identifica por sí solo si la causa es identidad, acción, recurso, condición u otro control. La alerta confirma una condición de monitoreo, no su origen.",
+            "El siguiente paso seguro es correlacionar hora, identidad o rol, acción, recurso y solicitud mediante procedimientos aprobados. Documenta el alcance reportado, lo verificado, los datos faltantes, las hipótesis y el responsable autorizado. No cambies políticas, claves ni recursos."
+          ],
+          "worked_example": {
+            "title": "Redactar un resumen sin inventar causa",
+            "steps": [
+              "Hecho: el usuario reporta AccessDenied a las 15:06 UTC para la clave s3://nimbus-ops-demo/logs/2026/11/batch-042.csv.",
+              "Hecho: se recibió la alerta sintética ALARM-73 por aumento de errores.",
+              "No confirmado: la causa puede estar relacionada con permisos, pero todavía no se revisaron las políticas ni el contexto completo.",
+              "Siguiente paso: pedir al responsable autorizado que correlacione identidad, acción, recurso y señales de CloudWatch en esa ventana."
+            ],
+            "result": "El informe conserva la evidencia, limita el impacto a lo reportado y asigna una verificación segura."
+          },
+          "guided_practice": {
+            "id": "aws-support-guided-next-step",
+            "type": "choice",
+            "title": "Elegir el siguiente paso de investigación",
+            "instructions": "El escenario es ficticio. No se debe acceder a una cuenta AWS ni modificar permisos.",
+            "prompt": "AccessDenied y ALARM-73 se observan cerca de la misma hora. ¿Cuál es el siguiente paso más sólido?",
+            "options": [
+              {"id": "correlate", "label": "Registrar hora, identidad, acción y clave; pedir correlación autorizada de señales y permisos"},
+              {"id": "wildcard", "label": "Agregar s3:* a la identidad para comprobar si se resuelve"},
+              {"id": "cause", "label": "Declarar IAM como causa raíz porque hay un AccessDenied"}
+            ],
+            "correct_option": "correlate",
+            "feedback_by_option": {"correlate": "Correcto: reúne los datos y solicita una revisión que permita confirmar o descartar hipótesis.", "wildcard": "Ampliar permisos es inseguro y no está autorizado.", "cause": "AccessDenied describe el resultado, pero no identifica por sí solo la causa raíz."}
+          },
+          "independent_practice": {
+            "id": "aws-support-independent-report",
+            "type": "incident_report",
+            "title": "Documentar el incidente con evidencia",
+            "instructions": "Completa un resumen breve, cita ambas señales sintéticas y no afirmes una causa que aún no fue confirmada.",
+            "prompt": "Usa el URI y la alerta del escenario para documentar qué se observó, el impacto reportado y una verificación segura.",
+            "fields": [
+              {"id": "service", "label": "Servicio principal", "options": [{"id": "s3", "label": "Amazon S3"}, {"id": "iam", "label": "IAM"}, {"id": "ec2", "label": "Amazon EC2"}]},
+              {"id": "evidence", "label": "Evidencia principal", "options": [{"id": "access-denied-alert", "label": "AccessDenied y ALARM-73 dentro de la ventana reportada"}, {"id": "policy-confirmed", "label": "Una política ya confirmada como causa"}, {"id": "object-deleted", "label": "El objeto confirmado como eliminado"}]},
+              {"id": "cause_status", "label": "Estado de la causa", "options": [{"id": "unconfirmed", "label": "No confirmada; permisos son una hipótesis por verificar"}, {"id": "confirmed-iam", "label": "IAM confirmada sin revisión"}, {"id": "confirmed-s3", "label": "S3 confirmado sin revisión"}]},
+              {"id": "next_step", "label": "Siguiente paso", "options": [{"id": "request-iam-review", "label": "Solicitar correlación autorizada de identidad, acción, recurso y señales"}, {"id": "grant-wildcard", "label": "Conceder permisos amplios para probar"}, {"id": "make-public", "label": "Hacer público el objeto"}]},
+              {"id": "impact", "label": "Impacto observado", "options": [{"id": "single-user-reported", "label": "Un usuario reportó que no puede acceder; alcance adicional aún no verificado"}, {"id": "all-users", "label": "Todos los usuarios están afectados"}, {"id": "data-loss", "label": "Se confirmó pérdida de datos"}]},
+              {"id": "summary", "label": "Resumen técnico", "type": "textarea", "max_length": 500}
+            ],
+            "accepted_answer": {"service": "s3", "evidence": "access-denied-alert", "cause_status": "unconfirmed", "next_step": "request-iam-review", "impact": "single-user-reported"},
+            "required_terms": ["ALARM-73", "s3://nimbus-ops-demo/logs/2026/11/batch-042.csv"],
+            "incorrect_feedback": "Revisa los campos del informe, el impacto observado y las señales ALARM-73 y la clave S3 ficticia; no afirmes una causa sin evidencia."
+          },
+          "verification": "El informe se corrige en el servidor contra los hechos y límites del escenario. No consulta CloudWatch ni modifica IAM o S3.",
+          "common_errors": [
+            {"error": "Declarar una política IAM como causa sin verla.", "cause": "AccessDenied no revela todas las condiciones que participaron en la decisión.", "recovery": "Marca la causa como no confirmada y pide revisión al responsable."},
+            {"error": "Interpretar una alarma cercana como prueba causal.", "cause": "La coincidencia temporal orienta, pero no demuestra relación causal.", "recovery": "Correlaciona identificadores, dimensiones y ventana temporal."},
+            {"error": "Afirmar que todos los usuarios están afectados.", "cause": "El reporte solo cubre a quien notificó el problema.", "recovery": "Limita el alcance a lo observado hasta recopilar evidencia."}
+          ],
+          "assessment": {
+            "id": "aws-support-integration-assessment",
+            "type": "incident_resolution",
+            "questions": [
+              {"id": "x1", "prompt": "¿Qué conclusión está respaldada por el escenario?", "options": [{"id": "request", "label": "Se reportó una solicitud denegada para una clave concreta y una alerta de errores"}, {"id": "root", "label": "Una política específica causó el incidente"}, {"id": "outage", "label": "Toda la aplicación está fuera de servicio"}], "correct_option": "request", "feedback_by_option": {"request": "Correcto: esos hechos aparecen en la evidencia sintética.", "root": "No se proporcionó una política revisada que confirme esa causa.", "outage": "El escenario no prueba indisponibilidad total."}},
+              {"id": "x2", "prompt": "¿Qué componente ubica el objeto en la ruta reportada?", "options": [{"id": "bucket-key", "label": "El bucket nimbus-ops-demo y la clave logs/2026/11/batch-042.csv"}, {"id": "alarm", "label": "El identificador ALARM-73"}, {"id": "user", "label": "La identidad del usuario, aunque no fue indicada"}], "correct_option": "bucket-key", "feedback_by_option": {"bucket-key": "Correcto: bucket y clave identifican la ubicación lógica del objeto.", "alarm": "La alarma es una señal, no la ruta del objeto.", "user": "La identidad no sustituye el bucket y la clave."}},
+              {"id": "x3", "prompt": "¿Qué podría aportar CloudWatch en una investigación autorizada?", "options": [{"id": "signals", "label": "Logs, métricas o estado de alarma dentro de una ventana y dimensiones relevantes"}, {"id": "permission", "label": "Una garantía de que IAM permitió la solicitud"}, {"id": "cause", "label": "Una causa raíz automática sin correlación"}], "correct_option": "signals", "feedback_by_option": {"signals": "Correcto: esas señales aportan contexto que aún debe correlacionarse.", "permission": "CloudWatch no garantiza el resultado de autorización.", "cause": "Las señales requieren interpretación y correlación."}},
+              {"id": "x4", "prompt": "¿Cómo debe describirse la posible relación entre AccessDenied y ALARM-73?", "options": [{"id": "hypothesis", "label": "Como una hipótesis temporal que requiere correlación adicional"}, {"id": "confirmed", "label": "Como una causa confirmada por aparecer en la misma hora"}, {"id": "unrelated", "label": "Como hechos definitivamente independientes"}], "correct_option": "hypothesis", "feedback_by_option": {"hypothesis": "Correcto: proximidad temporal justifica investigar, no confirmar causalidad.", "confirmed": "La coincidencia por sí sola no prueba causa.", "unrelated": "Tampoco hay evidencia suficiente para descartar relación."}},
+              {"id": "x5", "prompt": "¿Qué acción debe proponer el informe de soporte?", "options": [{"id": "authorized", "label": "Pedir correlación autorizada de identidad, acción, recurso y señales; documentar datos faltantes"}, {"id": "policy-change", "label": "Cambiar la política para probar una hipótesis"}, {"id": "close", "label": "Cerrar el ticket como resuelto sin verificar"}], "correct_option": "authorized", "feedback_by_option": {"authorized": "Correcto: el siguiente paso conserva controles y permite confirmar evidencia.", "policy-change": "No se autoriza modificar permisos para diagnosticar.", "close": "No se confirmó resolución ni causa."}}
+            ],
+            "review_topics": {"x1": "Hechos observados y alcance", "x2": "Buckets y claves S3", "x3": "Logs, métricas y alarmas", "x4": "Correlación e hipótesis", "x5": "Escalamiento seguro y documentación"}
+          }
+        }
+      ]
+    },
+    {
+      "id": "networking",
+      "title": "Redes",
+      "availability": "available",
+      "competency_id": "networking-basic-concepts",
+      "environment_required": false,
+      "modules": [
+        {
+          "id": "networking-support-basics",
+          "title": "Conectividad, DNS y HTTP",
+          "objective": "Interpretar conceptos de conectividad y seleccionar verificaciones iniciales apropiadas para incidentes habituales.",
+          "concepts": ["Direcciones IP", "DNS", "Cliente y servidor", "TCP y UDP", "Puertos", "HTTP y HTTPS", "Solicitudes y respuestas", "Códigos HTTP"],
+          "explanation": [
+            "Una dirección IP identifica una interfaz de red dentro de un contexto de encaminamiento. Cliente-servidor describe quién inicia una solicitud y quién presta el servicio; no demuestra que haya conectividad.",
+            "DNS resuelve nombres a direcciones. Si una aplicación no conecta, puede fallar la resolución del nombre aunque el servicio esté activo. Registra el nombre, la hora y el mensaje antes de concluir.",
+            "TCP ofrece una conexión con entrega ordenada; UDP envía datagramas sin garantizar entrega. Un puerto identifica un punto de comunicación de una aplicación, no una dirección de equipo.",
+            "HTTP define solicitudes y respuestas. HTTPS protege el transporte mediante TLS. Un código 2xx suele indicar éxito de la solicitud, 4xx un problema asociado a solicitud/autorización y 5xx un error del servidor o de un componente servidor; siempre se interpreta con contexto.",
+            "Un diagnóstico inicial separa DNS, ruta/conectividad, puerto, TLS y respuesta de aplicación. Los escenarios de este módulo son datos ficticios para razonamiento; no representan una prueba de red ejecutada."
+          ],
+          "worked_example": {
+            "title": "Interpretar un nombre que no resuelve",
+            "steps": [
+              "El usuario informa el nombre exacto, hora y aplicación afectada.",
+              "El caso registra que la resolución DNS falla antes de obtener una dirección IP.",
+              "Esto orienta la siguiente comprobación hacia nombre, DNS y alcance, no hacia un código HTTP que nunca se recibió.",
+              "Se solicita una verificación autorizada de DNS y se documenta el resultado sin declarar caída del servidor."
+            ],
+            "result": "La evidencia disponible describe una falla de resolución; la causa concreta aún requiere verificación."
+          },
+          "guided_practice": {
+            "id": "networking-guided-dns",
+            "type": "choice",
+            "title": "Ubicar la etapa de falla",
+            "instructions": "Clasifica el escenario proporcionado. No se envían paquetes ni se ejecutan pruebas de red.",
+            "prompt": "El nombre api.example.invalid no resuelve a una IP y todavía no existe respuesta HTTP. ¿Qué capa se debe investigar primero?",
+            "options": [
+              {"id": "dns", "label": "Resolución DNS y nombre utilizado"},
+              {"id": "http500", "label": "Un error HTTP 500 del servidor"},
+              {"id": "database", "label": "Una consulta SQL"}
+            ],
+            "correct_option": "dns",
+            "feedback_by_option": {
+              "dns": "Correcto: no se obtuvo una IP; HTTP aún no pudo empezar.",
+              "http500": "No hay respuesta HTTP en el escenario.",
+              "database": "No hay evidencia que conecte el incidente con una consulta SQL."
+            }
+          },
+          "independent_practice": {
+            "id": "networking-independent-http",
+            "type": "choice",
+            "title": "Interpretar una respuesta HTTP",
+            "instructions": "Usa la pista explícita del escenario y no atribuyas causas no observadas.",
+            "prompt": "Una solicitud llega al servicio y recibe HTTP 503. ¿Qué describe mejor la evidencia inicial?",
+            "options": [
+              {"id": "unavailable", "label": "El servicio no pudo atender la solicitud; hay que revisar disponibilidad y dependencias"},
+              {"id": "dns", "label": "El nombre no resolvió a ninguna dirección"},
+              {"id": "success", "label": "La solicitud fue exitosa"}
+            ],
+            "correct_option": "unavailable",
+            "feedback_by_option": {
+              "unavailable": "Correcto: 503 indica indisponibilidad temporal del servicio, pero no identifica por sí solo la causa.",
+              "dns": "Una respuesta HTTP prueba que la solicitud alcanzó algún servidor HTTP.",
+              "success": "503 no es un estado de éxito."
+            }
+          },
+          "verification": "Se verifica que el alumno distinga la etapa de diagnóstico y el límite de la evidencia; no se afirma que haya ocurrido conectividad real.",
+          "common_errors": [
+            {"error": "Tratar un puerto como una dirección IP.", "cause": "IP identifica interfaz/ruta; el puerto identifica un servicio de transporte.", "recovery": "Registra host, dirección, protocolo y puerto por separado."},
+            {"error": "Afirmar que un 503 demuestra una base de datos caída.", "cause": "El código no identifica por sí mismo la dependencia que falló.", "recovery": "Correlaciona logs y señales de dependencias antes de concluir."},
+            {"error": "Investigar HTTP antes de resolver el nombre.", "cause": "Sin destino IP no se ha establecido una conexión con el servidor.", "recovery": "Sigue el orden DNS, conectividad/puerto, TLS y HTTP."}
+          ],
+          "assessment": {
+            "id": "networking-basics-assessment",
+            "type": "conceptual",
+            "questions": [
+              {"id": "n1", "prompt": "¿Qué servicio traduce normalmente un nombre de host a una dirección?", "options": [{"id": "dns", "label": "DNS resuelve nombres de host a direcciones IP"}, {"id": "http", "label": "HTTP asocia rutas a respuestas de aplicación"}, {"id": "tcp", "label": "TCP asigna direcciones a los servicios del host"}], "correct_option": "dns", "feedback_by_option": {"dns": "Correcto: DNS resuelve nombres de host.", "http": "HTTP define solicitudes y respuestas; no resuelve nombres.", "tcp": "TCP gestiona el transporte; no asigna direcciones a servicios."}},
+              {"id": "n2", "prompt": "¿Qué identifica un puerto?", "options": [{"id": "app", "label": "Un punto de comunicación asociado a un servicio"}, {"id": "country", "label": "Una dirección numérica asignada a una interfaz"}, {"id": "domain", "label": "Un nombre lógico usado para localizar un host"}], "correct_option": "app", "feedback_by_option": {"app": "Correcto: un puerto identifica un punto de transporte de un servicio.", "country": "Una dirección IP identifica una interfaz; un puerto es un dato distinto.", "domain": "Un nombre identifica un host; no representa un puerto."}},
+              {"id": "n3", "prompt": "¿Qué implica una respuesta HTTP en el diagnóstico?", "options": [{"id": "reached", "label": "Algún servidor HTTP recibió la solicitud y respondió"}, {"id": "dnsfail", "label": "El servicio de destino respondió y la causa quedó probada"}, {"id": "root", "label": "La solicitud se resolvió mediante DNS sin llegar a HTTP"}], "correct_option": "reached", "feedback_by_option": {"reached": "Correcto: hubo una respuesta HTTP, pero no identifica automáticamente la causa.", "dnsfail": "Una respuesta no prueba que la causa raíz esté confirmada.", "root": "Una respuesta HTTP indica que se alcanzó un servidor HTTP."}},
+              {"id": "n4", "prompt": "¿Cuál describe mejor TCP?", "options": [{"id": "ordered", "label": "Transporte orientado a conexión con entrega ordenada"}, {"id": "datagram", "label": "Transporte sin conexión basado en datagramas sin garantía"}, {"id": "name", "label": "Servicio que traduce nombres de host a direcciones IP"}], "correct_option": "ordered", "feedback_by_option": {"ordered": "Correcto: TCP ofrece una conexión y entrega ordenada.", "datagram": "Esa descripción corresponde a un transporte como UDP.", "name": "La resolución de nombres la realiza DNS."}},
+              {"id": "n5", "prompt": "¿Qué comunica de manera general un HTTP 5xx?", "options": [{"id": "server", "label": "Error del servidor o de un componente servidor que requiere investigación"}, {"id": "success", "label": "Error de la solicitud del cliente que requiere corregir los datos"}, {"id": "dns", "label": "Problema de resolución de nombres que requiere revisar DNS"}], "correct_option": "server", "feedback_by_option": {"server": "Correcto: 5xx indica un error del lado servidor; falta investigar el detalle.", "success": "Los errores del cliente suelen expresarse con códigos 4xx.", "dns": "Un código HTTP no confirma por sí solo una falla DNS."}}
+            ],
+            "review_topics": {
+              "n1": "Resolución de nombres con DNS",
+              "n2": "Puertos y direcciones IP",
+              "n3": "Alcance de la evidencia HTTP",
+              "n4": "Transporte TCP frente a UDP",
+              "n5": "Interpretación de códigos HTTP 5xx"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "python",
+      "title": "Python",
+      "availability": "available",
+      "competency_id": "python-basic-programming",
+      "environment_required": false,
+      "modules": [
+        {
+          "id": "python-support-basics",
+          "title": "Fundamentos y lectura de datos operativos",
+          "objective": "Comprender estructuras básicas de Python y usar procesadores de práctica fijos para resumir archivos de operaciones.",
+          "concepts": ["Variables y tipos", "Listas y diccionarios", "Condiciones", "Ciclos", "Funciones", "Lectura de archivos", "CSV", "Excepciones básicas"],
+          "explanation": [
+            "Una variable nombra un valor; int representa enteros, float valores decimales, str texto y bool verdadero/falso. Elegir tipos adecuados facilita validar entradas y comparar resultados.",
+            "Las listas mantienen secuencias; los diccionarios asocian claves y valores. Una fila CSV puede representarse como un diccionario con campos como id_operacion y estado.",
+            "if toma decisiones y for recorre elementos. Una función agrupa una tarea con entradas y una salida, por ejemplo contar cuántas filas tienen estado ERROR.",
+            "El módulo csv permite recorrer filas respetando delimitadores. Al leer archivos, conviene declarar codificación y manejar FileNotFoundError o datos inválidos para que el fallo sea visible.",
+            "La práctica ejecuta funciones Python predefinidas sobre fixtures sintéticos. No acepta ni evalúa código arbitrario enviado por el navegador. El estudiante compara el resultado real del procesador con su respuesta."
+          ],
+          "worked_example": {
+            "title": "Contar estados en filas CSV",
+            "steps": [
+              "Se abre el archivo fijo de práctica con codificación UTF-8 y newline vacío.",
+              "csv.DictReader convierte cada fila en un diccionario.",
+              "Un ciclo lee row['estado']; un diccionario de conteos se inicializa a cero cuando aparece un estado nuevo.",
+              "La función devuelve el resumen y el llamador puede contrastarlo con el número de filas leído.",
+              "Si el archivo falta o una fila no tiene estado, se informa el error en vez de inventar un conteo."
+            ],
+            "code": "conteos = {}\\nfor fila in filas:\\n    estado = fila['estado']\\n    conteos[estado] = conteos.get(estado, 0) + 1",
+            "result": "El ejemplo muestra una técnica; el ejercicio ejecuta un procesador fijo sobre el conjunto real de práctica local."
+          },
+          "guided_practice": {
+            "id": "python-guided-error-count",
+            "type": "python_result",
+            "title": "Contar errores con el procesador local",
+            "instructions": "Elige la cantidad de operaciones ERROR que esperas. El backend ejecutará una función Python predefinida sobre el CSV sintético y comparará tu respuesta con el resultado real.",
+            "prompt": "¿Cuántas filas tienen estado ERROR en el conjunto local? No se ejecuta código suministrado por el alumno.",
+            "processor": "basic_status_counts",
+            "answer_field": "ERROR",
+            "accepted_answer": "2"
+          },
+          "independent_practice": {
+            "id": "python-independent-pending-sum",
+            "type": "python_result",
+            "title": "Sumar importes PENDIENTE",
+            "instructions": "Predice el importe total PENDIENTE. El servidor procesa el fixture con Python y muestra el cálculo real para verificar tu respuesta.",
+            "prompt": "Indica el importe total de las filas PENDIENTE con dos decimales.",
+            "processor": "pending_amount_sum",
+            "answer_field": "total",
+            "accepted_answer": "270.00"
+          },
+          "verification": "Cada envío ejecuta un procesador Python permitido sobre un fixture fijo, valida la respuesta y guarda el resultado y la retroalimentación. No se acepta código, comandos ni rutas desde el cliente.",
+          "common_errors": [
+            {"error": "Sumar valores CSV como texto.", "cause": "csv entrega campos de texto.", "recovery": "Valida y convierte el importe a un tipo numérico; informa filas inválidas."},
+            {"error": "Contar cada línea como operación sin validar encabezados.", "cause": "Los archivos CSV tienen encabezados y pueden contener filas mal formadas.", "recovery": "Usa DictReader y verifica los campos requeridos."},
+            {"error": "Capturar cualquier excepción y continuar silenciosamente.", "cause": "El resultado puede parecer válido aunque falten datos.", "recovery": "Maneja errores esperados y devuelve un mensaje explícito con el contexto permitido."}
+          ],
+          "assessment": {
+            "id": "python-basics-assessment",
+            "type": "conceptual",
+            "questions": [
+              {"id": "p1", "prompt": "¿Qué estructura asocia claves con valores?", "options": [{"id": "dict", "label": "Diccionario: asocia claves con valores"}, {"id": "list", "label": "Lista: asocia claves con posiciones y valores"}, {"id": "bool", "label": "Tupla: asocia campos con valores ordenados"}], "correct_option": "dict", "feedback_by_option": {"dict": "Correcto: el diccionario asocia claves y valores.", "list": "Una lista se indexa por posición; no asocia claves con valores.", "bool": "Una tupla mantiene valores ordenados, pero no los asocia por clave."}},
+              {"id": "p2", "prompt": "¿Qué estructura permite recorrer filas secuencialmente?", "options": [{"id": "for", "label": "Un ciclo for itera una secuencia elemento por elemento"}, {"id": "if", "label": "Una condición if itera una secuencia según una regla"}, {"id": "except", "label": "Una cláusula except itera una secuencia tras un error"}], "correct_option": "for", "feedback_by_option": {"for": "Correcto: for recorre los elementos de una colección.", "if": "if evalúa una condición, pero no itera la secuencia.", "except": "except maneja excepciones; no recorre una colección."}},
+              {"id": "p3", "prompt": "¿Qué valor representa una condición verdadera/falsa?", "options": [{"id": "bool", "label": "bool representa un valor verdadero o falso"}, {"id": "str", "label": "str representa un texto compuesto por caracteres"}, {"id": "list", "label": "list representa una colección ordenada de valores"}], "correct_option": "bool", "feedback_by_option": {"bool": "Correcto: bool representa True o False.", "str": "str almacena texto; no es el tipo lógico.", "list": "list almacena una secuencia; no es el tipo lógico."}},
+              {"id": "p4", "prompt": "¿Qué aporta csv.DictReader?", "options": [{"id": "dictreader", "label": "Entrega cada fila como un diccionario accesible por columna"}, {"id": "shell", "label": "Entrega cada fila como una lista de valores por posición"}, {"id": "cloud", "label": "Lee el CSV y convierte automáticamente cada dato a número"}], "correct_option": "dictreader", "feedback_by_option": {"dictreader": "Correcto: cada fila se puede consultar por el nombre del encabezado.", "shell": "La lectura posicional es más propia de csv.reader.", "cloud": "DictReader entrega texto; la conversión y validación de tipos son explícitas."}},
+              {"id": "p5", "prompt": "¿Qué conviene hacer si una fila no contiene el importe esperado?", "options": [{"id": "validate", "label": "Validar el campo y comunicar la fila faltante o inválida"}, {"id": "zero", "label": "Convertir la ausencia a cero y continuar el cálculo"}, {"id": "skip", "label": "Omitir la fila y presentar el total restante como completo"}], "correct_option": "validate", "feedback_by_option": {"validate": "Correcto: valida y comunica el dato faltante o inválido.", "zero": "Suponer cero puede cambiar el resultado y ocultar un problema de datos.", "skip": "Omitir sin informar produce un total incompleto como si fuera válido."}}
+            ],
+            "review_topics": {
+              "p1": "Diccionarios frente a secuencias",
+              "p2": "Ciclos e iteración",
+              "p3": "Tipos de datos lógicos",
+              "p4": "Lectura de filas con csv.DictReader",
+              "p5": "Validación de datos y errores"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "production-support",
+      "title": "Production Support",
+      "availability": "available",
+      "competency_id": "support-basic-triage",
+      "environment_required": false,
+      "modules": [
+        {
+          "id": "support-incident-basics",
+          "title": "Incidentes, evidencia y seguimiento",
+          "objective": "Clasificar incidentes, diferenciar errores confirmados de estados pendientes y documentar hallazgos sin inventar causas ni declarar resoluciones no verificadas.",
+          "concepts": ["Incidente, problema y requerimiento", "Impacto y severidad", "Tickets", "Prioridad", "Logs", "OK, ERROR y PENDIENTE", "Seguimiento", "Escalamiento", "Documentación"],
+          "explanation": [
+            "Un incidente es una interrupción o degradación no planificada; un problema busca la causa subyacente de uno o más incidentes; un requerimiento solicita un cambio o servicio no asociado necesariamente a una falla.",
+            "Impacto describe a quién o qué afecta. Severidad describe la gravedad técnica/operativa según criterios del equipo; prioridad ordena el trabajo considerando impacto, urgencia y acuerdos de servicio. No se debe asignar una severidad por intuición sin política.",
+            "Un ticket útil registra síntoma, hora, alcance, evidencia, acciones realizadas, resultado y próximo paso. Separa hechos observados de hipótesis y deja trazabilidad de quién debe continuar.",
+            "ERROR es un fallo indicado por la fuente; PENDIENTE requiere seguimiento y no equivale a error ni a éxito; OK indica el estado observado como correcto. Para transiciones de estado se necesita secuencia y fuente confiable.",
+            "Un incidente se cierra cuando existen criterios de recuperación y evidencia de verificación. Si la causa es desconocida, se documenta como desconocida y se escala con datos concretos."
+          ],
+          "worked_example": {
+            "title": "Documentar una operación pendiente sin inventar causa",
+            "steps": [
+              "Observación: la operación OP-3003 aparece PENDIENTE a las 10:14 en el registro local de práctica.",
+              "Impacto: una operación requiere seguimiento; el escenario no prueba un impacto más amplio.",
+              "Hipótesis: todavía no hay evidencia suficiente para atribuir una causa.",
+              "Acción: registrar la última señal observada y solicitar confirmación al responsable del flujo.",
+              "Cierre: mantener abierto hasta obtener una transición válida o el procedimiento aprobado."
+            ],
+            "result": "El ticket conserva el estado y la incertidumbre; no etiqueta la operación como ERROR ni declara resuelta la causa."
+          },
+          "guided_practice": {
+            "id": "support-guided-pending",
+            "type": "choice",
+            "title": "Clasificar una operación pendiente",
+            "instructions": "Responde según la evidencia concreta del escenario.",
+            "prompt": "El log registra estado PENDIENTE y causa 'esperando confirmación'. No hay evento posterior. ¿Qué debe registrar el analista?",
+            "options": [
+              {"id": "track", "label": "Estado pendiente observado; confirmación y evento posterior aún faltan"},
+              {"id": "failed", "label": "ERROR confirmado por timeout"},
+              {"id": "resolved", "label": "Operación resuelta correctamente"}
+            ],
+            "correct_option": "track",
+            "feedback_by_option": {
+              "track": "Correcto: describe el estado y los datos faltantes sin inferir un resultado.",
+              "failed": "El escenario no menciona timeout ni un estado ERROR.",
+              "resolved": "No existe evento de resolución o estado OK."
+            }
+          },
+          "independent_practice": {
+            "id": "support-independent-escalation-v2",
+            "type": "incident_report",
+            "title": "Redactar un escalamiento con evidencia",
+            "instructions": "Completa un informe estructurado que separe observaciones, causa no confirmada e información faltante.",
+            "prompt": "Registra el ERROR repetido y explica qué dato hace falta antes de atribuir una causa.",
+            "fields": [
+              {"id": "observed_status", "label": "Estado observado", "type": "select", "options": [{"id": "error-observed", "label": "ERROR repetido observado"}, {"id": "pending", "label": "PENDIENTE sin evidencia de ERROR"}]},
+              {"id": "cause_status", "label": "Estado de la causa", "type": "select", "options": [{"id": "unknown", "label": "Causa no confirmada; el log no identifica dependencia"}, {"id": "confirmed", "label": "Causa raíz confirmada"}]},
+              {"id": "next_step", "label": "Siguiente paso", "type": "select", "options": [{"id": "correlate", "label": "Correlacionar con la dependencia y pedir evidencia al responsable"}, {"id": "close", "label": "Cerrar el incidente sin verificar recuperación"}]},
+              {"id": "summary", "label": "Resumen con IDs, hora/lineas conocidas e información faltante", "type": "textarea", "max_length": 500}
+            ],
+            "accepted_answer": {"observed_status": "error-observed", "cause_status": "unknown", "next_step": "correlate"},
+            "required_terms": ["ERROR", "dependencia"],
+            "correct_feedback": "Informe aceptado: registra el ERROR, declara que la causa no está confirmada y solicita correlación de la dependencia.",
+            "feedback_by_field": {
+              "observed_status": "Registra el estado ERROR que aparece en el escenario; no lo cambies por PENDIENTE.",
+              "cause_status": "El log no identifica la dependencia, por lo que la causa sigue sin confirmar.",
+              "next_step": "Solicita correlación y evidencia al responsable antes de cerrar.",
+              "summary": "El resumen debe incluir ERROR y dependencia, con al menos 30 caracteres."
+            }
+          },
+          "verification": "La plataforma verifica campos estructurados y términos de evidencia del informe; los intentos y comentarios quedan registrados. El proyecto integrador añade Linux real en Ubuntu.",
+          "common_errors": [
+            {"error": "Tratar PENDIENTE como ERROR.", "cause": "El estado indica seguimiento pendiente, no necesariamente fallo.", "recovery": "Registra el valor observado y busca el evento posterior."},
+            {"error": "Escribir una hipótesis como causa confirmada.", "cause": "Se omite la diferencia entre observación e inferencia.", "recovery": "Etiqueta hechos, hipótesis y datos faltantes por separado."},
+            {"error": "Cerrar el ticket sin criterio de recuperación.", "cause": "No se verificó el retorno a un estado aceptado.", "recovery": "Confirma una señal de recuperación y registra quién/cuándo la verificó."}
+          ],
+          "assessment": {
+            "id": "support-basics-assessment",
+            "type": "incident_resolution",
+            "questions": [
+              {"id": "ps1", "prompt": "Un requerimiento y un incidente se diferencian principalmente porque…", "options": [{"id": "request", "label": "La solicitud pide un servicio; el incidente refleja interrupción o degradación"}, {"id": "same", "label": "La solicitud reporta interrupción; el incidente pide un cambio planificado"}, {"id": "cause", "label": "La solicitud y el incidente describen exactamente el mismo trabajo"}], "correct_option": "request", "feedback_by_option": {"request": "Correcto: son tipos de trabajo distintos.", "same": "Intercambia las definiciones de requerimiento e incidente.", "cause": "Los términos representan flujos de trabajo diferentes."}},
+              {"id": "ps2", "prompt": "¿Qué representa PENDIENTE sin evento posterior?", "options": [{"id": "unknown", "label": "Estado observado que requiere seguimiento; resultado final desconocido"}, {"id": "error", "label": "Estado confirmado como fallo por ausencia de evento posterior"}, {"id": "ok", "label": "Estado confirmado como éxito al no recibir otra alerta"}], "correct_option": "unknown", "feedback_by_option": {"unknown": "Correcto: no inventa la transición faltante.", "error": "La ausencia de un evento posterior no confirma un ERROR.", "ok": "La ausencia de una alerta no confirma una recuperación."}},
+              {"id": "ps3", "prompt": "¿Qué debe contener un ticket para facilitar continuidad?", "options": [{"id": "evidence", "label": "Hora, alcance, evidencia, acciones realizadas y siguiente paso"}, {"id": "opinion", "label": "Impacto, causa probable, responsable asignado y fecha de cierre"}, {"id": "secret", "label": "Servicio afectado, prioridad estimada y plan de recuperación"}], "correct_option": "evidence", "feedback_by_option": {"evidence": "Correcto: aporta contexto verificable y continuidad.", "opinion": "Una causa probable debe etiquetarse como hipótesis y acompañarse de evidencia.", "secret": "El servicio y la prioridad ayudan, pero no sustituyen evidencia y acciones."}},
+              {"id": "ps4", "prompt": "¿Cuándo se puede afirmar que la causa raíz está confirmada?", "options": [{"id": "proof", "label": "Evidencia correlacionada sustenta la causa según criterio del equipo"}, {"id": "first", "label": "La primera línea ERROR coincide con el inicio de la ventana afectada"}, {"id": "guess", "label": "La hipótesis más probable coincide con el síntoma observado"}], "correct_option": "proof", "feedback_by_option": {"proof": "Correcto: se requiere evidencia y criterio verificable.", "first": "La coincidencia temporal orienta, pero no confirma causalidad.", "guess": "Una hipótesis plausible todavía requiere evidencia."}},
+              {"id": "ps5", "prompt": "¿Qué hacer si el impacto o la causa no se conocen?", "options": [{"id": "state-unknown", "label": "Declarar lo desconocido, registrar evidencia y escalar con siguiente paso"}, {"id": "invent", "label": "Estimar el impacto y la causa probable para cerrar la investigación"}, {"id": "close", "label": "Cerrar el ticket como resuelto hasta recibir nueva información"}], "correct_option": "state-unknown", "feedback_by_option": {"state-unknown": "Correcto: comunica límites y próximo paso.", "invent": "Una estimación no debe presentarse como hecho confirmado.", "close": "No existe evidencia de recuperación ni criterio para cerrar."}}
+            ],
+            "review_topics": {
+              "ps1": "Incidente frente a requerimiento",
+              "ps2": "Estados pendientes y seguimiento",
+              "ps3": "Contenido verificable de un ticket",
+              "ps4": "Correlación y confirmación de causa raíz",
+              "ps5": "Comunicación de incertidumbre y escalamiento"
+            }
+          }
+        }
+      ],
+      "project_id": "support-basic-integrator"
+    }
+  ],
+  "project": {
+    "id": "support-basic-integrator",
+    "course_id": "production-support",
+    "title": "Proyecto integrador: incidente de operaciones",
+    "availability": "pending_environment",
+    "objective": "Investigar un incidente con logs y datos sintéticos, ejecutar comandos Linux en Ubuntu, usar SQL y Python, interpretar conectividad y documentar el siguiente paso.",
+    "scenario": "En una ventana breve se observan dos operaciones ERROR, una PENDIENTE y dos OK. Un servicio informa timeout al esperar a un proveedor; otro nombre de host no pudo resolverse en el escenario. No hay evento posterior que confirme recuperación ni evidencia que confirme causa raíz. Los datos son sintéticos y no representan servicios AWS reales.",
+    "tasks": [
+      "Identificar IDs ERROR y PENDIENTE en el archivo de eventos del proyecto.",
+      "Ejecutar una consulta SQL de solo lectura y resumir estados.",
+      "Calcular con el procesador Python el importe total de las operaciones ERROR.",
+      "Interpretar si la evidencia corresponde a DNS o a una respuesta HTTP.",
+      "Elegir una fuente AWS de observabilidad como referencia, sin conectarse a AWS.",
+      "Completar el informe distinguiendo hechos, hipótesis e información faltante.",
+      "Usar grep en Ubuntu sobre una copia aislada del log del proyecto y comparar los identificadores con la entrega."
+    ],
+    "network_question": "El caso informa que un host no resolvió a una dirección y no hubo respuesta HTTP. ¿Qué etapa debe investigarse primero?",
+    "network_options": [
+      {"id": "dns", "label": "Revisar el nombre consultado y su resolución DNS"},
+      {"id": "http", "label": "Revisar una respuesta del servidor en la capa HTTP"},
+      {"id": "database", "label": "Revisar la consulta de datos de la operación afectada"}
+    ],
+    "aws_question": "¿Qué servicio sería una referencia conceptual apropiada para revisar logs y señales de observabilidad si hubiera autorización?",
+    "aws_options": [
+      {"id": "cloudwatch", "label": "CloudWatch para métricas, logs y alarmas"},
+      {"id": "cloudtrail", "label": "CloudTrail para registrar actividad de API"},
+      {"id": "xray", "label": "AWS X-Ray para analizar trazas distribuidas"}
+    ],
+    "linux_notice": "El proyecto ejecuta comandos permitidos en Ubuntu sobre una copia aislada; no acepta comandos libres.",
+    "report_fields": [
+      {"id": "primary_id", "label": "ID de la operación representativa del timeout"},
+      {"id": "cause_status", "label": "Estado de la causa", "options": [{"id": "unknown", "label": "Causa raíz no confirmada; falta correlación externa"}, {"id": "confirmed", "label": "Causa confirmada por el timeout registrado"}]},
+      {"id": "next_step", "label": "Siguiente paso", "options": [{"id": "correlate-provider", "label": "Correlacionar evidencia del proveedor y solicitar verificación autorizada"}, {"id": "close", "label": "Cerrar tras registrar el timeout y continuar el monitoreo"}]},
+      {"id": "impact_statement", "label": "Resumen del alcance", "options": [{"id": "observed-only", "label": "Dos ERROR y un PENDIENTE observados; impacto externo no determinado"}, {"id": "global-outage", "label": "Todos los clientes y servicios externos están afectados por una caída"}]}
+    ],
+    "environment_requirement": "Ubuntu operativo y evidencia verificable de comandos Linux básicos.",
+    "fixture_ids": ["basic_capstone_operations", "basic_capstone_events"],
+    "acceptance_criteria": [
+      {"id": "logs", "label": "Identificar correctamente las operaciones ERROR y PENDIENTE en el log de proyecto.", "automatic": true},
+      {"id": "sql", "label": "Ejecutar una consulta SQL de solo lectura que resuma estados, cantidades e importes del conjunto del proyecto.", "automatic": true},
+      {"id": "python", "label": "Calcular el importe total de las operaciones ERROR con el procesador Python y validarlo contra el CSV.", "automatic": true},
+      {"id": "network", "label": "Interpretar la señal de conectividad y distinguir evidencia de hipótesis.", "automatic": true},
+      {"id": "aws", "label": "Seleccionar una fuente de observabilidad AWS apropiada como referencia, sin acceder a la cuenta.", "automatic": true},
+      {"id": "report", "label": "Completar resumen, impacto, evidencia, estado de causa y siguiente paso sin afirmar información no observada.", "automatic": true},
+      {"id": "linux", "label": "Ejecutar grep en Ubuntu sobre el log del proyecto y completar Linux Básico con evidencia real.", "automatic": true}
+    ]
+  }
+}

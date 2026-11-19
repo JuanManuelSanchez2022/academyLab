@@ -1,0 +1,360 @@
+{
+  "id": "linux",
+  "title": "Linux",
+  "availability": "pending_environment",
+  "competency_id": "linux-basic-operations",
+  "environment_required": true,
+  "modules": [
+    {
+      "id": "linux-foundations",
+      "title": "Terminal, shell y navegación",
+      "objective": "Usar una shell real de Ubuntu para identificar el usuario y el directorio, navegar con rutas absolutas y relativas y orientarse en el sistema de archivos.",
+      "concepts": ["Terminal y shell", "Distribución Ubuntu", "Raíz / y directorio HOME", "Rutas absolutas y relativas", "pwd, ls y cd"],
+      "explanation": [
+        "La terminal permite interactuar con Linux mediante texto; Bash es una shell que interpreta comandos y muestra su salida. El comando ejecutado devuelve evidencia que debe leerse, no suponerse.",
+        "El sistema de archivos parte de /; el usuario trabaja normalmente dentro de su HOME. Una ruta absoluta empieza por / y una relativa se interpreta desde el directorio actual.",
+        "pwd informa el directorio actual, ls enumera contenido y cd cambia de directorio. En soporte, confirmar usuario y ubicación reduce el riesgo de leer o modificar el archivo equivocado.",
+        "Las prácticas se ejecutan en Ubuntu/WSL 2, dentro de un directorio aislado del curso. No se envían comandos libres desde el navegador."
+      ],
+      "worked_example": {
+        "title": "Orientarse antes de investigar",
+        "steps": ["Ejecutar pwd para registrar la ubicación actual.", "Ejecutar ls -la para ver archivos normales y ocultos.", "Ejecutar cd con una ruta conocida y volver a confirmar pwd.", "Comparar la ruta absoluta con la ubicación esperada antes de continuar."],
+        "code": "pwd\nls -la\ncd \"$HOME\"\npwd",
+        "result": "La salida identifica el directorio de trabajo y HOME del usuario Ubuntu real."
+      },
+      "guided_practice": {
+        "id": "linux-paths-guided",
+        "type": "linux_command",
+        "title": "Identificar el usuario y HOME",
+        "instructions": "Ejecuta la práctica en Ubuntu. El servidor usa una lista fija de comandos y solo lee la configuración básica del usuario.",
+        "prompt": "Comprueba quién ejecuta la práctica, dónde estás y cuál es HOME.",
+        "commands": ["id -un", "pwd", "ls -la", "cd \"$HOME\""]
+      },
+      "independent_practice": {
+        "id": "linux-paths-independent",
+        "type": "linux_command",
+        "title": "Comparar rutas absolutas y relativas",
+        "instructions": "La práctica crea directorios de ejemplo dentro del espacio aislado de este ejercicio.",
+        "prompt": "Navega a una ubicación absoluta y luego a otra mediante una ruta relativa; confirma ambas con pwd y find.",
+        "commands": ["mkdir -p", "cd <ruta absoluta>", "cd ../<ruta relativa>", "pwd", "find"]
+      },
+      "verification": "Ubuntu ejecuta los comandos, comprueba el directorio informado y guarda la salida real de cada intento. Se requiere completar ambas prácticas antes de evaluar el módulo.",
+      "common_errors": [
+        {"error": "Confundir una ruta relativa con una absoluta.", "cause": "La ruta relativa depende del directorio actual; la absoluta comienza desde /.", "recovery": "Ejecuta pwd y compara la ruta con la ubicación de destino."},
+        {"error": "Suponer que cd cambió de ubicación sin comprobarlo.", "cause": "La ruta puede estar mal escrita o no existir.", "recovery": "Lee el error de la shell y vuelve a ejecutar pwd."}
+      ],
+      "assessment": {
+        "id": "linux-foundations-assessment-v2",
+        "type": "conceptual",
+        "questions": [
+          {"id": "lp1", "prompt": "¿Qué informa pwd?", "options": [{"id": "cwd", "label": "El directorio de trabajo actual"}, {"id": "home", "label": "Siempre la carpeta HOME"}, {"id": "root", "label": "La causa de un error del sistema"}], "correct_option": "cwd", "feedback_by_option": {"cwd": "Correcto: pwd imprime el directorio actual.", "home": "HOME es una ubicación; el directorio actual puede ser distinto.", "root": "pwd no diagnostica errores; informa una ruta."}},
+          {"id": "lp2", "prompt": "¿Cómo se reconoce una ruta absoluta?", "options": [{"id": "slash", "label": "Empieza con /"}, {"id": "dot", "label": "Empieza siempre con ."}, {"id": "tilde", "label": "No puede incluir subdirectorios"}], "correct_option": "slash", "feedback_by_option": {"slash": "Correcto: / es la raíz del sistema de archivos.", "dot": "El punto suele referirse a una ruta relativa.", "tilde": "Una ruta absoluta puede incluir muchos subdirectorios."}},
+          {"id": "lp3", "prompt": "¿Qué comando enumera contenido, incluidos archivos ocultos con la opción adecuada?", "options": [{"id": "ls", "label": "ls -la"}, {"id": "pwd", "label": "pwd -la"}, {"id": "grep", "label": "grep -la"}], "correct_option": "ls", "feedback_by_option": {"ls": "Correcto: ls -la muestra detalles y nombres ocultos.", "pwd": "pwd informa una ruta; no enumera contenido.", "grep": "grep busca texto dentro de entradas; no lista directorios."}},
+          {"id": "lp4", "prompt": "¿Qué hace cd ..?", "options": [{"id": "parent", "label": "Cambia al directorio padre"}, {"id": "home", "label": "Cambia siempre a HOME"}, {"id": "root", "label": "Reinicia la shell"}], "correct_option": "parent", "feedback_by_option": {"parent": "Correcto: .. representa el directorio padre.", "home": "cd sin argumentos suele ir a HOME; cd .. no.", "root": "cd solo cambia el directorio de trabajo."}},
+          {"id": "lp5", "prompt": "Antes de leer un archivo de incidente, ¿qué verificación reduce errores de ubicación?", "options": [{"id": "confirm", "label": "Comprobar pwd y la ruta del archivo"}, {"id": "guess", "label": "Suponer que la shell está en HOME"}, {"id": "delete", "label": "Ejecutar rm para confirmar que existe"}], "correct_option": "confirm", "feedback_by_option": {"confirm": "Correcto: confirma la ubicación antes de acceder al archivo.", "guess": "La ubicación cambia; confírmala con pwd.", "delete": "rm elimina rutas y no es una comprobación segura."}}
+        ],
+        "review_topics": {"lp1": "Directorio de trabajo y pwd", "lp2": "Rutas absolutas", "lp3": "Listado con ls", "lp4": "Navegación con cd", "lp5": "Verificación de rutas"}
+      }
+    },
+    {
+      "id": "linux-file-operations",
+      "title": "Archivos y directorios",
+      "objective": "Crear y organizar archivos de práctica con mkdir, touch, cp, mv, rm y cat, verificando el efecto de cada operación antes de continuar.",
+      "concepts": ["mkdir", "touch", "cp", "mv", "rm", "cat", "Inspección antes de cambiar"],
+      "explanation": [
+        "mkdir crea directorios y touch crea un archivo vacío o actualiza su marca de tiempo. cp copia; mv mueve o renombra; cat muestra el contenido.",
+        "rm elimina archivos y no tiene una opción de deshacer. En soporte de producción, no se usa sobre datos reales como prueba; estas prácticas se limitan a archivos sintéticos creados por el ejercicio.",
+        "Antes de una operación, comprueba la ruta con pwd y ls. Después, verifica el resultado con ls o cat; un comando sin error no demuestra que se afectó el archivo esperado."
+      ],
+      "worked_example": {
+        "title": "Copiar y verificar un archivo de evidencia",
+        "steps": ["Crear un directorio de práctica con mkdir.", "Crear un archivo con touch y escribir contenido de prueba.", "Copiarlo con cp y comparar el contenido.", "Renombrar la copia con mv y verificarla con cat.", "Eliminar solo la copia temporal identificada."],
+        "code": "mkdir -p practice\n touch practice/draft.txt\n cp practice/draft.txt practice/copy.txt\n mv practice/copy.txt practice/renamed.txt\n cat practice/renamed.txt",
+        "result": "El archivo original permanece y la copia aparece con el nombre final esperado."
+      },
+      "guided_practice": {
+        "id": "linux-files-guided",
+        "type": "linux_command",
+        "title": "Crear, copiar y renombrar un archivo",
+        "instructions": "La práctica prepara archivos sintéticos con nombres fijos en el directorio aislado del ejercicio.",
+        "prompt": "Crea un archivo, copia su contenido, renombra la copia y comprueba el texto con cat.",
+        "commands": ["mkdir", "touch", "cp", "mv", "cat"]
+      },
+      "independent_practice": {
+        "id": "linux-files-independent",
+        "type": "linux_command",
+        "title": "Eliminar solo un archivo temporal",
+        "instructions": "El ejercicio elimina una copia propia y confirma que el archivo fuente se conserva.",
+        "prompt": "Copia un archivo sintético, comprueba la copia y elimina únicamente esa ruta temporal.",
+        "commands": ["mkdir", "touch", "cp", "rm", "test -e"]
+      },
+      "verification": "Ubuntu ejecuta las operaciones sobre rutas dedicadas, verifica el contenido de la copia y confirma que el archivo fuente siga presente y la copia temporal haya desaparecido.",
+      "common_errors": [
+        {"error": "Usar rm sin inspeccionar el destino.", "cause": "rm elimina la ruta indicada y puede ser irreversible.", "recovery": "Detente, ejecuta pwd y ls y limita la eliminación al archivo temporal del ejercicio."},
+        {"error": "Confundir cp con mv.", "cause": "cp conserva el origen; mv lo mueve o renombra.", "recovery": "Comprueba ambas rutas con ls después de la operación."}
+      ],
+      "assessment": {
+        "id": "linux-file-operations-assessment",
+        "type": "conceptual",
+        "questions": [
+          {"id": "lf1", "prompt": "¿Qué comando crea un directorio?", "options": [{"id": "mkdir", "label": "mkdir"}, {"id": "touch", "label": "touch"}, {"id": "cat", "label": "cat"}], "correct_option": "mkdir", "feedback_by_option": {"mkdir": "Correcto: mkdir crea directorios.", "touch": "touch crea o actualiza archivos.", "cat": "cat muestra contenido."}},
+          {"id": "lf2", "prompt": "¿Qué diferencia básica hay entre cp y mv?", "options": [{"id": "copy", "label": "cp copia; mv mueve o renombra"}, {"id": "reverse", "label": "cp elimina; mv muestra contenido"}, {"id": "same", "label": "Ambos siempre eliminan el origen"}], "correct_option": "copy", "feedback_by_option": {"copy": "Correcto: cp deja el origen; mv cambia la ubicación o nombre.", "reverse": "Esas acciones no corresponden a cp ni mv.", "same": "cp conserva el origen; mv lo mueve o renombra."}},
+          {"id": "lf3", "prompt": "¿Qué hace touch archivo.txt si no existe?", "options": [{"id": "create", "label": "Crea un archivo vacío"}, {"id": "remove", "label": "Elimina el archivo"}, {"id": "display", "label": "Imprime su contenido"}], "correct_option": "create", "feedback_by_option": {"create": "Correcto: touch crea un archivo vacío.", "remove": "rm elimina; touch no.", "display": "cat muestra contenido."}},
+          {"id": "lf4", "prompt": "¿Por qué rm requiere especial cuidado?", "options": [{"id": "delete", "label": "Elimina la ruta indicada sin papelera garantizada"}, {"id": "copy", "label": "Crea una copia automática"}, {"id": "read", "label": "Solo muestra el contenido"}], "correct_option": "delete", "feedback_by_option": {"delete": "Correcto: verifica ruta y alcance antes de borrar.", "copy": "rm no crea copias.", "read": "cat es un comando de lectura."}},
+          {"id": "lf5", "prompt": "¿Qué comando permite inspeccionar texto de un archivo pequeño?", "options": [{"id": "cat", "label": "cat archivo.txt"}, {"id": "mv", "label": "mv archivo.txt"}, {"id": "mkdir", "label": "mkdir archivo.txt"}], "correct_option": "cat", "feedback_by_option": {"cat": "Correcto: cat imprime el contenido.", "mv": "mv cambia ubicación o nombre.", "mkdir": "mkdir crea directorios."}}
+        ],
+        "review_topics": {"lf1": "Creación de directorios", "lf2": "Copiar frente a mover", "lf3": "Creación de archivos", "lf4": "Eliminación segura", "lf5": "Lectura con cat"}
+      }
+    },
+    {
+      "id": "linux-log-investigation",
+      "title": "Lectura y búsqueda de logs",
+      "objective": "Investigar archivos y logs sin modificarlos usando cat, less, head, tail, grep y find, y separar coincidencias observadas de causas confirmadas.",
+      "concepts": ["cat", "less", "head", "tail", "grep", "find", "Número de línea y contexto"],
+      "explanation": [
+        "cat muestra contenido; less permite recorrer archivos extensos; head y tail muestran el comienzo o el final. En soporte, elegir una vista acotada ayuda a localizar eventos sin editar la fuente.",
+        "grep busca texto y puede mostrar números de línea con -n. find recorre rutas según criterios como nombre y tipo. Los resultados ayudan a ubicar evidencia, pero no prueban por sí solos una causa raíz.",
+        "Registra el archivo, la línea, la hora y el identificador de operación. Correlaciona las señales con datos adicionales antes de resolver o escalar."
+      ],
+      "worked_example": {
+        "title": "Localizar un evento sin cambiar el log",
+        "steps": ["Usar head y tail para entender los extremos del archivo.", "Usar less para recorrer el archivo.", "Buscar ERROR con grep -n para obtener las líneas.", "Usar find para confirmar qué logs existen en el directorio de evidencia.", "Registrar coincidencias como observaciones, no como causa."],
+        "code": "head -n 5 app.log\ntail -n 5 app.log\ngrep -n ERROR app.log\nfind logs -type f -name '*.log'",
+        "result": "Se obtienen líneas de evidencia y rutas de archivo sin modificar el log original."
+      },
+      "guided_practice": {
+        "id": "linux-logs-guided",
+        "type": "linux_command",
+        "title": "Inspeccionar un log de soporte",
+        "instructions": "Ubuntu lee una copia del fixture sintético del curso; la fuente del proyecto permanece intacta.",
+        "prompt": "Compara inicio y final del log, recórrelo con less y localiza eventos ERROR con números de línea.",
+        "commands": ["head", "tail", "less", "grep -n ERROR"]
+      },
+      "independent_practice": {
+        "id": "linux-logs-independent",
+        "type": "linux_command",
+        "title": "Encontrar operaciones pendientes",
+        "instructions": "Busca únicamente archivos .log dentro del directorio aislado y correlaciona el estado PENDIENTE.",
+        "prompt": "Localiza el log, encuentra coincidencias PENDIENTE y cuenta cuántos archivos de log hay.",
+        "commands": ["find", "grep -n PENDIENTE", "wc -l"]
+      },
+      "verification": "Los comandos se ejecutan realmente en Ubuntu y la salida se guarda en el intento. Las búsquedas deben devolver líneas existentes y la ruta del fixture; no se simula la salida.",
+      "common_errors": [
+        {"error": "Interpretar una coincidencia de grep como causa raíz.", "cause": "grep solo busca texto y no correlaciona dependencias.", "recovery": "Cita línea y hora, luego busca señales relacionadas."},
+        {"error": "Leer todo un log extenso sin acotar.", "cause": "La salida puede ocultar la evidencia relevante.", "recovery": "Usa head, tail, less y grep con un patrón específico."}
+      ],
+      "assessment": {
+        "id": "linux-log-investigation-assessment",
+        "type": "conceptual",
+        "questions": [
+          {"id": "ll1", "prompt": "¿Qué muestra tail -n 10 app.log?", "options": [{"id": "end", "label": "Las últimas diez líneas"}, {"id": "start", "label": "Las primeras diez líneas"}, {"id": "delete", "label": "Elimina diez líneas"}], "correct_option": "end", "feedback_by_option": {"end": "Correcto: tail muestra el final.", "start": "head muestra el inicio.", "delete": "tail no elimina contenido."}},
+          {"id": "ll2", "prompt": "¿Qué agrega grep -n a las coincidencias?", "options": [{"id": "line", "label": "Números de línea"}, {"id": "edit", "label": "Edición automática del archivo"}, {"id": "time", "label": "Una causa raíz"}], "correct_option": "line", "feedback_by_option": {"line": "Correcto: -n muestra números de línea.", "edit": "grep no modifica el archivo.", "time": "grep no infiere una causa."}},
+          {"id": "ll3", "prompt": "¿Qué comando busca archivos por nombre dentro de un árbol?", "options": [{"id": "find", "label": "find"}, {"id": "cat", "label": "cat"}, {"id": "chmod", "label": "chmod"}], "correct_option": "find", "feedback_by_option": {"find": "Correcto: find recorre rutas con filtros.", "cat": "cat muestra contenido.", "chmod": "chmod modifica permisos."}},
+          {"id": "ll4", "prompt": "¿Cuándo resulta útil less?", "options": [{"id": "pager", "label": "Para recorrer un archivo extenso"}, {"id": "delete", "label": "Para borrar líneas"}, {"id": "copy", "label": "Para copiar el log"}], "correct_option": "pager", "feedback_by_option": {"pager": "Correcto: less permite navegar por la salida.", "delete": "less es un visor, no un editor de borrado.", "copy": "cp copia archivos."}},
+          {"id": "ll5", "prompt": "Un grep encuentra ERROR. ¿Qué permite concluir?", "options": [{"id": "observed", "label": "Hay una coincidencia que debe correlacionarse"}, {"id": "root", "label": "La causa raíz está confirmada"}, {"id": "resolved", "label": "El incidente está resuelto"}], "correct_option": "observed", "feedback_by_option": {"observed": "Correcto: registra la evidencia y busca contexto.", "root": "Una coincidencia no demuestra causalidad.", "resolved": "La línea no confirma recuperación."}}
+        ],
+        "review_topics": {"ll1": "Lectura del final con tail", "ll2": "Búsqueda con grep -n", "ll3": "Búsqueda de rutas con find", "ll4": "Lectura paginada con less", "ll5": "Evidencia frente a causa"}
+      }
+    },
+    {
+      "id": "linux-streams",
+      "title": "Redirecciones y tuberías",
+      "objective": "Capturar y combinar resultados de comandos con >, >> y | sin sobrescribir evidencia original, y verificar los archivos de salida.",
+      "concepts": ["Entrada y salida estándar", "Redirección >", "Anexado >>", "Tubería |", "Conteo y validación de resultados"],
+      "explanation": [
+        "La salida estándar suele mostrarse en pantalla. > la redirige y reemplaza el destino; >> agrega al final. Verifica siempre la ruta de destino porque > puede truncar un archivo existente.",
+        "La tubería | entrega la salida de un comando como entrada del siguiente. Esto permite filtrar y contar resultados sin crear archivos intermedios.",
+        "En soporte, conserva los logs originales y dirige cualquier resultado derivado a un archivo nuevo dentro del espacio autorizado."
+      ],
+      "worked_example": {
+        "title": "Separar resultados sin alterar la fuente",
+        "steps": ["Filtrar ERROR y guardar la salida en un archivo nuevo con >.", "Agregar PENDIENTE al mismo archivo con >>.", "Contar coincidencias conectando grep y wc mediante |.", "Verificar el archivo derivado con cat."],
+        "code": "grep ERROR app.log > incident-findings.txt\ngrep PENDIENTE app.log >> incident-findings.txt\ngrep ERROR app.log | wc -l",
+        "result": "El log de entrada permanece intacto y el archivo de trabajo contiene las líneas seleccionadas."
+      },
+      "guided_practice": {
+        "id": "linux-streams-guided",
+        "type": "linux_command",
+        "title": "Guardar y anexar hallazgos",
+        "instructions": "El ejercicio escribe solo un archivo de resultados nuevo dentro del espacio aislado.",
+        "prompt": "Redirige ERROR con >, agrega PENDIENTE con >> y comprueba ambas clases de eventos.",
+        "commands": ["grep ERROR > salida nueva", "grep PENDIENTE >> salida nueva", "cat"]
+      },
+      "independent_practice": {
+        "id": "linux-streams-independent",
+        "type": "linux_command",
+        "title": "Contar eventos con una tubería",
+        "instructions": "Usa grep y wc sobre la copia del log; no se modifica el fixture.",
+        "prompt": "Cuenta ERROR y PENDIENTE por separado y compara la suma con el total obtenido mediante una tubería.",
+        "commands": ["grep -c", "grep -E", "|", "wc -l"]
+      },
+      "verification": "Ubuntu comprueba que las salidas redirigidas contienen ambos estados, que la tubería produce el total esperado y que la fuente del log sigue siendo legible.",
+      "common_errors": [
+        {"error": "Redirigir a la misma ruta que se está leyendo.", "cause": "> puede truncar el archivo antes de que grep lo lea.", "recovery": "Usa un nombre de salida nuevo y confirma la ruta con pwd."},
+        {"error": "Confundir > con >>.", "cause": "> reemplaza el destino; >> agrega al final.", "recovery": "Inspecciona el destino antes y después de cada redirección."}
+      ],
+      "assessment": {
+        "id": "linux-streams-assessment",
+        "type": "conceptual",
+        "questions": [
+          {"id": "ls1", "prompt": "¿Qué hace > archivo.txt?", "options": [{"id": "replace", "label": "Redirige y puede reemplazar el contenido"}, {"id": "append", "label": "Siempre agrega al final"}, {"id": "pipe", "label": "Envía la salida a otro proceso"}], "correct_option": "replace", "feedback_by_option": {"replace": "Correcto: verifica el destino porque puede truncarlo.", "append": ">> es el operador de anexado.", "pipe": "| conecta procesos."}},
+          {"id": "ls2", "prompt": "¿Qué operador agrega salida al final de un archivo?", "options": [{"id": "append", "label": ">>"}, {"id": "replace", "label": ">"}, {"id": "pipe", "label": "|"}], "correct_option": "append", "feedback_by_option": {"append": "Correcto: >> anexa.", "replace": "> reemplaza el destino.", "pipe": "| conecta la salida con otra entrada."}},
+          {"id": "ls3", "prompt": "¿Qué hace la tubería |?", "options": [{"id": "connect", "label": "Pasa la salida de un comando al siguiente"}, {"id": "delete", "label": "Elimina el archivo de entrada"}, {"id": "append", "label": "Agrega texto a un archivo"}], "correct_option": "connect", "feedback_by_option": {"connect": "Correcto: la salida estándar alimenta el siguiente comando.", "delete": "La tubería no borra archivos.", "append": ">> agrega salida a un archivo."}},
+          {"id": "ls4", "prompt": "¿Dónde conviene guardar un resultado derivado durante la práctica?", "options": [{"id": "new", "label": "En un archivo nuevo dentro del espacio autorizado"}, {"id": "source", "label": "Sobre el log original"}, {"id": "system", "label": "En una ruta del sistema sin autorización"}], "correct_option": "new", "feedback_by_option": {"new": "Correcto: separa evidencia original y resultado.", "source": "No sobrescribas la fuente.", "system": "Limita cambios al directorio autorizado."}},
+          {"id": "ls5", "prompt": "¿Qué composición cuenta las líneas coincidentes de ERROR?", "options": [{"id": "pipe", "label": "grep ERROR app.log | wc -l"}, {"id": "mv", "label": "mv ERROR app.log"}, {"id": "mkdir", "label": "mkdir ERROR | app.log"}], "correct_option": "pipe", "feedback_by_option": {"pipe": "Correcto: wc recibe las líneas filtradas por grep.", "mv": "mv mueve o renombra rutas.", "mkdir": "mkdir crea directorios; no filtra líneas."}}
+        ],
+        "review_topics": {"ls1": "Redirección con >", "ls2": "Anexado con >>", "ls3": "Tuberías", "ls4": "Separar fuente y resultado", "ls5": "Filtrar y contar"}
+      }
+    },
+    {
+      "id": "linux-permissions",
+      "title": "Permisos y propiedad",
+      "objective": "Leer permisos y aplicar chmod y chown de forma acotada sobre archivos de práctica, explicando cuándo una operación requiere privilegios.",
+      "concepts": ["Permisos rwx", "Propietario y grupo", "ls -l", "chmod", "chown", "Principio de mínimo privilegio"],
+      "explanation": [
+        "ls -l y stat muestran propietario, grupo y permisos. Los permisos se separan en lectura (r), escritura (w) y ejecución (x) para propietario, grupo y otros.",
+        "chmod cambia permisos; por ejemplo, 600 permite lectura y escritura solo al propietario. chown cambia propietario o grupo. Cambiar propietario normalmente requiere privilegios; un usuario puede cambiar el grupo solo a uno del que sea miembro.",
+        "No uses sudo para resolver un error sin entenderlo. En producción, confirma la identidad, el objetivo y la autorización antes de proponer un cambio."
+      ],
+      "worked_example": {
+        "title": "Restringir un archivo de notas",
+        "steps": ["Crear una nota sintética dentro del espacio aislado.", "Inspeccionar el modo inicial con ls -l.", "Aplicar chmod 600 al archivo de práctica.", "Comprobar el modo con stat.", "Explicar que el cambio no se debe aplicar a archivos de producción sin autorización."],
+        "code": "ls -l notes.txt\nchmod 600 notes.txt\nstat -c '%A %a %U:%G' notes.txt",
+        "result": "El modo observado es 600; solo el propietario conserva lectura y escritura."
+      },
+      "guided_practice": {
+        "id": "linux-permissions-guided",
+        "type": "linux_command",
+        "title": "Leer y restringir permisos",
+        "instructions": "Se crea una nota sintética y se cambia únicamente su modo dentro del espacio aislado.",
+        "prompt": "Inspecciona el modo, aplica chmod 600 y verifica el resultado real con stat.",
+        "commands": ["ls -l", "chmod 600", "stat"]
+      },
+      "independent_practice": {
+        "id": "linux-permissions-independent",
+        "type": "linux_command",
+        "title": "Consultar el grupo sin privilegios",
+        "instructions": "La práctica asigna el grupo actual del usuario a un archivo propio; no usa sudo ni cambia su propietario.",
+        "prompt": "Consulta el grupo primario con id y valida el cambio de grupo permitido con chown y stat.",
+        "commands": ["id -gn", "chown :grupo", "stat"]
+      },
+      "verification": "Ubuntu ejecuta chmod y chown en archivos propios de práctica, y comprueba modo, propietario y grupo. No se usa sudo ni se cambia la propiedad de archivos externos.",
+      "common_errors": [
+        {"error": "Suponer que chown siempre se puede ejecutar como usuario normal.", "cause": "Cambiar propietario normalmente requiere privilegios administrativos.", "recovery": "Lee el error y solicita autorización; no uses sudo automáticamente."},
+        {"error": "Aplicar permisos demasiado amplios.", "cause": "Permisos como 777 exponen escritura o ejecución innecesarias.", "recovery": "Usa el mínimo acceso requerido y valida el modo con stat."}
+      ],
+      "assessment": {
+        "id": "linux-permissions-assessment",
+        "type": "conceptual",
+        "questions": [
+          {"id": "lpm1", "prompt": "¿Qué significa chmod 600 archivo?", "options": [{"id": "owner", "label": "Lectura y escritura del propietario, sin permisos para grupo y otros"}, {"id": "all", "label": "Acceso completo para todos"}, {"id": "read", "label": "Solo lectura para todos"}], "correct_option": "owner", "feedback_by_option": {"owner": "Correcto: 6 es rw- para el propietario y 0 para los demás.", "all": "777 sería acceso completo; 600 no.", "read": "444 suele representar solo lectura para todos."}},
+          {"id": "lpm2", "prompt": "¿Qué informa ls -l?", "options": [{"id": "metadata", "label": "Permisos, propietario, grupo y nombre"}, {"id": "root", "label": "Causa raíz del incidente"}, {"id": "content", "label": "Solo el contenido del archivo"}], "correct_option": "metadata", "feedback_by_option": {"metadata": "Correcto: muestra metadatos de archivo y permisos.", "root": "ls no analiza causalidad.", "content": "cat muestra el contenido."}},
+          {"id": "lpm3", "prompt": "¿Qué modifica chmod?", "options": [{"id": "mode", "label": "Permisos de acceso"}, {"id": "name", "label": "El nombre del archivo"}, {"id": "contents", "label": "El texto del archivo"}], "correct_option": "mode", "feedback_by_option": {"mode": "Correcto: chmod cambia permisos.", "name": "mv cambia nombre o ubicación.", "contents": "chmod no edita contenido."}},
+          {"id": "lpm4", "prompt": "¿Qué debes hacer ante un error de permiso en producción?", "options": [{"id": "investigate", "label": "Leer el error y confirmar autorización antes de proponer un cambio"}, {"id": "sudo", "label": "Repetir todo con sudo sin investigar"}, {"id": "777", "label": "Cambiar permisos a 777"}], "correct_option": "investigate", "feedback_by_option": {"investigate": "Correcto: confirma alcance, identidad y autorización.", "sudo": "sudo eleva privilegios y no debe usarse a ciegas.", "777": "Permisos amplios aumentan el riesgo y no diagnostican la causa."}},
+          {"id": "lpm5", "prompt": "¿Qué puede hacer un usuario no privilegiado con chown?", "options": [{"id": "group", "label": "Cambiar el grupo a uno del que sea miembro, según el sistema"}, {"id": "any", "label": "Cambiar cualquier propietario del sistema"}, {"id": "chmod", "label": "Modificar el contenido del archivo"}], "correct_option": "group", "feedback_by_option": {"group": "Correcto: el cambio permitido de grupo está limitado a sus grupos.", "any": "Cambiar propietario suele requerir privilegios.", "chmod": "chmod cambia modos; chown cambia propietario/grupo."}}
+        ],
+        "review_topics": {"lpm1": "Permisos numéricos", "lpm2": "Lectura de metadatos", "lpm3": "chmod", "lpm4": "Mínimo privilegio", "lpm5": "chown y grupos"}
+      }
+    },
+    {
+      "id": "linux-processes",
+      "title": "Procesos y señales básicas",
+      "objective": "Inspeccionar procesos con ps y top y terminar únicamente un proceso temporal que la práctica inicia y registra por sí misma.",
+      "concepts": ["Proceso y PID", "ps", "top en modo batch", "kill", "Señales y alcance seguro"],
+      "explanation": [
+        "Un proceso es una instancia de un programa y tiene un PID. ps permite consultar procesos; top ofrece una vista de actividad y recursos.",
+        "kill envía una señal a un PID. No es un comando para cerrar procesos al azar: primero se identifica el proceso, su propietario y su relación con el incidente.",
+        "Esta práctica inicia un sleep temporal dentro de una sola ejecución, captura su PID, lo inspecciona y le envía una señal. El alumno no puede proporcionar un PID."
+      ],
+      "worked_example": {
+        "title": "Inspeccionar antes de terminar",
+        "steps": ["Consultar un proceso conocido con ps.", "Observar un muestreo finito con top -b -n1.", "En el ejercicio controlado, iniciar sleep 30 y capturar su PID.", "Inspeccionar el PID y enviar kill solo a ese proceso temporal.", "Esperar su terminación y registrar el resultado."],
+        "code": "sleep 30 &\npid=$!\nps -p \"$pid\" -o pid=,comm=\nkill \"$pid\"\nwait \"$pid\"",
+        "result": "Se termina solo el proceso sleep creado por el mismo ejercicio; no se acepta un PID del navegador."
+      },
+      "guided_practice": {
+        "id": "linux-processes-guided",
+        "type": "linux_command",
+        "title": "Consultar una vista finita de procesos",
+        "instructions": "ps y top se ejecutan dentro de Ubuntu; top usa una sola iteración y finaliza automáticamente.",
+        "prompt": "Identifica el proceso de la shell y revisa una captura de top sin dejar un proceso interactivo abierto.",
+        "commands": ["ps -p $$", "top -b -n1 -w 80"]
+      },
+      "independent_practice": {
+        "id": "linux-processes-independent",
+        "type": "linux_command",
+        "title": "Terminar el proceso temporal del ejercicio",
+        "instructions": "El servidor no acepta ni recibe PIDs. El script crea sleep, captura su propio PID y lo termina dentro de la misma ejecución.",
+        "prompt": "Observa el PID temporal, envía kill y verifica que terminó.",
+        "commands": ["sleep 30", "ps -p <PID creado>", "kill <PID creado>", "wait"]
+      },
+      "verification": "La verificación comprueba la salida de ps/top y la terminación de un proceso sleep creado por el script. Nunca se ejecuta kill sobre un PID recibido del cliente.",
+      "common_errors": [
+        {"error": "Enviar kill a un PID sin identificarlo.", "cause": "El PID puede pertenecer a un servicio o usuario distinto.", "recovery": "Consulta ps y confirma propietario y propósito; escala si no es un proceso temporal propio."},
+        {"error": "Esperar que top interactivo cierre una ejecución automatizada.", "cause": "El modo interactivo espera entrada del usuario.", "recovery": "Usa top -b -n1 para una captura finita."}
+      ],
+      "assessment": {
+        "id": "linux-processes-assessment",
+        "type": "conceptual",
+        "questions": [
+          {"id": "lpr1", "prompt": "¿Qué identifica un PID?", "options": [{"id": "process", "label": "Un proceso en el sistema"}, {"id": "file", "label": "Un archivo de log"}, {"id": "port", "label": "Un puerto DNS"}], "correct_option": "process", "feedback_by_option": {"process": "Correcto: PID significa identificador de proceso.", "file": "Los archivos no se identifican con PID.", "port": "Un puerto es un número de servicio/conexión."}},
+          {"id": "lpr2", "prompt": "¿Qué herramienta permite una captura no interactiva de procesos?", "options": [{"id": "batch", "label": "top -b -n1"}, {"id": "interactive", "label": "top sin opciones en un trabajo automatizado"}, {"id": "grep", "label": "grep -b"}], "correct_option": "batch", "feedback_by_option": {"batch": "Correcto: -b y -n1 hacen una iteración en modo batch.", "interactive": "top sin opciones puede esperar interacción.", "grep": "grep busca texto."}},
+          {"id": "lpr3", "prompt": "¿Qué debe hacerse antes de enviar kill?", "options": [{"id": "identify", "label": "Identificar el PID, proceso y alcance autorizado"}, {"id": "random", "label": "Elegir un PID al azar"}, {"id": "all", "label": "Terminar todos los procesos"}], "correct_option": "identify", "feedback_by_option": {"identify": "Correcto: verifica identidad y autorización.", "random": "Un PID equivocado puede interrumpir un servicio.", "all": "No finalices procesos indiscriminadamente."}},
+          {"id": "lpr4", "prompt": "¿Qué hace sleep 30 & en la práctica?", "options": [{"id": "background", "label": "Inicia temporalmente sleep en segundo plano"}, {"id": "system", "label": "Reinicia Ubuntu"}, {"id": "delete", "label": "Elimina un proceso existente"}], "correct_option": "background", "feedback_by_option": {"background": "Correcto: & inicia el proceso en segundo plano.", "system": "sleep no reinicia el sistema.", "delete": "sleep inicia un proceso; no elimina otro."}},
+          {"id": "lpr5", "prompt": "¿Por qué la práctica no acepta un PID desde el navegador?", "options": [{"id": "scope", "label": "Para limitar kill al proceso temporal que creó el ejercicio"}, {"id": "speed", "label": "Porque los PID no existen en Linux"}, {"id": "hide", "label": "Para evitar que ps muestre procesos"}], "correct_option": "scope", "feedback_by_option": {"scope": "Correcto: el alcance se limita a un proceso registrado por el script.", "speed": "Linux asigna PID a sus procesos.", "hide": "ps sigue mostrando procesos."}}
+        ],
+        "review_topics": {"lpr1": "Procesos y PID", "lpr2": "top en modo batch", "lpr3": "Uso seguro de kill", "lpr4": "Proceso temporal", "lpr5": "Alcance de comandos"}
+      }
+    },
+    {
+      "id": "linux-support-workflow",
+      "title": "Variables y diagnóstico inicial",
+      "objective": "Consultar variables de entorno seleccionadas y aplicar comandos de solo lectura para ubicar evidencia de un incidente, resumir el entorno y documentar límites.",
+      "concepts": ["HOME, USER y PATH", "printenv y export", "date -u", "df -h", "id", "Rutina inicial de Production Support"],
+      "explanation": [
+        "Las variables de entorno proporcionan configuración a procesos. HOME identifica el directorio personal y PATH las ubicaciones donde se buscan ejecutables. No imprimas todo el entorno: puede contener credenciales o tokens.",
+        "export define una variable para el proceso y sus hijos. printenv consulta una variable específica; evita publicar valores sensibles en tickets.",
+        "En soporte, registra hora UTC, usuario, espacio disponible y evidencia del log. Usa comandos de lectura y distingue los datos observados de una hipótesis."
+      ],
+      "worked_example": {
+        "title": "Reunir evidencia inicial de forma segura",
+        "steps": ["Consultar HOME y una variable de caso controlada.", "Registrar la hora en UTC para correlación.", "Usar id y df -h para identificar el usuario y espacio disponible.", "Buscar ERROR en una copia de log sin alterar la fuente.", "Anotar archivo y resultado sin declarar una causa no confirmada."],
+        "code": "printenv HOME\nid\ndate -u\ndf -h \"$HOME\"\ngrep -n ERROR app.log",
+        "result": "La salida aporta contexto verificable y conserva la diferencia entre señal y causa."
+      },
+      "guided_practice": {
+        "id": "linux-env-guided",
+        "type": "linux_command",
+        "title": "Consultar variables seleccionadas",
+        "instructions": "Solo se consultan HOME y una variable sintética creada durante esta shell; no se vuelca el entorno completo.",
+        "prompt": "Verifica HOME, define ACADEMY_CASE_ID y confirma su valor con printenv.",
+        "commands": ["printenv HOME", "export ACADEMY_CASE_ID=LAB-01-READONLY", "printenv ACADEMY_CASE_ID"]
+      },
+      "independent_practice": {
+        "id": "linux-env-independent",
+        "type": "linux_command",
+        "title": "Aplicar una rutina de soporte de solo lectura",
+        "instructions": "Los comandos son de lectura y se ejecutan sobre Ubuntu y una copia local del fixture sintético.",
+        "prompt": "Registra fecha UTC, usuario, espacio disponible y coincidencias ERROR como evidencia inicial.",
+        "commands": ["date -u", "id", "df -h \"$HOME\"", "grep -n ERROR"]
+      },
+      "verification": "La plataforma conserva la salida de Ubuntu, verifica variables y resultados de diagnóstico, y limita la práctica a información seleccionada y fixtures sintéticos.",
+      "common_errors": [
+        {"error": "Imprimir todas las variables con env en un ticket.", "cause": "El entorno puede incluir secretos o tokens.", "recovery": "Consulta solo variables necesarias como HOME o una variable sintética."},
+        {"error": "Declarar causa raíz a partir de una sola línea ERROR.", "cause": "La coincidencia no demuestra causalidad ni recuperación.", "recovery": "Cita la evidencia y enumera qué correlación falta."}
+      ],
+      "assessment": {
+        "id": "linux-support-workflow-assessment",
+        "type": "conceptual",
+        "questions": [
+          {"id": "lew1", "prompt": "¿Qué contiene normalmente HOME?", "options": [{"id": "home", "label": "La ruta del directorio personal del usuario"}, {"id": "root", "label": "La causa raíz de un incidente"}, {"id": "path", "label": "La lista de todos los archivos del sistema"}], "correct_option": "home", "feedback_by_option": {"home": "Correcto: HOME apunta al directorio personal.", "root": "HOME no contiene diagnóstico causal.", "path": "PATH es una lista de rutas de ejecutables."}},
+          {"id": "lew2", "prompt": "¿Qué describe PATH?", "options": [{"id": "executables", "label": "Directorios donde la shell busca ejecutables"}, {"id": "logs", "label": "La ubicación de todos los logs"}, {"id": "network", "label": "La ruta de red del host"}], "correct_option": "executables", "feedback_by_option": {"executables": "Correcto: PATH ayuda a localizar programas.", "logs": "Los logs pueden estar en muchas ubicaciones.", "network": "PATH no es una ruta de red."}},
+          {"id": "lew3", "prompt": "¿Por qué se recomienda consultar variables específicas y no todo el entorno?", "options": [{"id": "secrets", "label": "El entorno podría contener credenciales o tokens"}, {"id": "syntax", "label": "printenv no permite consultar variables"}, {"id": "empty", "label": "Las variables siempre están vacías"}], "correct_option": "secrets", "feedback_by_option": {"secrets": "Correcto: evita divulgar valores sensibles.", "syntax": "printenv puede consultar una variable específica.", "empty": "Algunas variables tienen valores importantes."}},
+          {"id": "lew4", "prompt": "¿Para qué sirve date -u en una investigación?", "options": [{"id": "utc", "label": "Registrar una referencia de hora UTC"}, {"id": "delete", "label": "Eliminar eventos antiguos"}, {"id": "sync", "label": "Confirmar que todos los servicios están sincronizados"}], "correct_option": "utc", "feedback_by_option": {"utc": "Correcto: entrega un marco temporal UTC.", "delete": "date no elimina archivos.", "sync": "Una hora local no prueba sincronización de servicios."}},
+          {"id": "lew5", "prompt": "¿Qué demuestra una coincidencia ERROR en un log sintético?", "options": [{"id": "evidence", "label": "Una observación que se debe correlacionar"}, {"id": "cause", "label": "La causa raíz completa"}, {"id": "fixed", "label": "Que el incidente ya está resuelto"}], "correct_option": "evidence", "feedback_by_option": {"evidence": "Correcto: conserva el hecho y busca contexto.", "cause": "La coincidencia sola no identifica causa.", "fixed": "No demuestra una recuperación posterior."}}
+        ],
+        "review_topics": {"lew1": "Variable HOME", "lew2": "Variable PATH", "lew3": "Manejo seguro del entorno", "lew4": "Correlación temporal", "lew5": "Evidencia frente a hipótesis"}
+      }
+    }
+  ]
+}

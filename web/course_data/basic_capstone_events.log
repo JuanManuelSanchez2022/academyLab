@@ -1,0 +1,5 @@
+2026-11-17T09:10:00Z level=ERROR id_operacion=PX-510 servicio=pago causa="timeout al esperar respuesta del proveedor"
+2026-11-17T09:11:12Z level=PENDIENTE id_operacion=PX-511 servicio=conciliacion causa="confirmacion externa pendiente"
+2026-11-17T09:12:30Z level=INFO id_operacion=PX-512 servicio=pago estado=OK causa="respuesta recibida"
+2026-11-17T09:13:05Z level=ERROR id_operacion=PX-513 servicio=pago causa="rechazo informado por proveedor"
+2026-11-17T09:14:20Z level=INFO id_operacion=PX-514 servicio=conciliacion estado=OK causa="registro conciliado"

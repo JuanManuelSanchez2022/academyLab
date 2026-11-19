@@ -1,0 +1,286 @@
+academyLab
+Guía de uso de la plataforma local
+Versión auditada: 2026-11-19
+
+1. INTRODUCCIÓN
+
+academyLab es una plataforma local de aprendizaje. Permite navegar por
+perfiles profesionales, elegir niveles y acceder a cursos y laboratorios. El
+primer perfil disponible es Cloud / Production Support.
+
+La plataforma puede:
+- Mostrar rutas y cursos disponibles.
+- Registrar progreso local.
+- Ejecutar prácticas SQL y Python sobre datos sintéticos.
+- Ejecutar prácticas Linux reales en Ubuntu 24.04 mediante WSL 2.
+- Ejecutar evaluaciones corregidas por el servidor.
+- Analizar logs en el LAB 01.
+- Ejecutar las ocho pruebas técnicas del laboratorio.
+- Consultar evidencias JSON generadas localmente.
+
+No realiza consultas, cambios o costos en cuentas AWS reales.
+
+2. INGRESO A LA PLATAFORMA
+
+Requisitos comprobados o necesarios:
+- Windows.
+- Python 3.12 en C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe.
+- Ubuntu 24.04 en WSL 2 para ejecutar Linux real.
+- Microsoft Edge o otro navegador local.
+
+Inicio:
+1. Haz doble clic en:
+   labs\lab01-aws-production-support\iniciar_web.bat
+2. El BAT comprueba si 8765 ya pertenece a academyLab.
+3. Si el servidor está detenido, inicia
+   web\platform_server.py con Python 3.12.
+4. Abre exactamente:
+   http://127.0.0.1:8765
+
+El iniciador no crea una instancia duplicada si el servidor ya responde.
+
+Detención:
+- Haz doble clic en labs\lab01-aws-production-support\detener_web.bat.
+- El cierre verifica sesiones del LAB y no finaliza procesos Python ajenos.
+- También puede usarse Ctrl+C en la consola del servidor principal.
+- Detener solo el LAB:
+  labs\lab01-aws-production-support\detener_laboratorio.bat
+
+3. PÁGINA PRINCIPAL
+
+La página principal muestra:
+- El perfil Cloud / Production Support como ruta en desarrollo.
+- Full Stack Developer, Frontend Developer, Backend Developer, Data Analyst,
+  Data Engineer y QA / Testing como perfiles planificados.
+
+Los perfiles planificados tienen un botón deshabilitado. No tienen páginas ni
+enlaces falsos. El perfil Cloud / Production Support tiene "Explorar niveles".
+
+4. RUTAS DE APRENDIZAJE
+
+Una ruta organiza cursos reutilizables por nivel. La ruta Cloud / Production
+Support contiene Linux, Redes, SQL, AWS, Python y Production Support.
+
+Orden básico recomendado:
+1. Linux.
+2. Redes.
+3. SQL.
+4. AWS.
+5. Python.
+6. Production Support.
+
+Estados reales:
+- Disponible: curso implementado y probado localmente.
+- Pendiente de entorno: curso bloqueado hasta que Ubuntu/WSL esté disponible.
+- Bloqueado por requisitos previos: exige competencias previas.
+- Planificado: perfil o ruta aún no habilitada.
+
+Niveles:
+- Básico: fundamentos y análisis guiado.
+- Intermedio: investigación y resolución combinada; bloqueado por prerrequisitos.
+- Avanzado: escenarios complejos y automatización; bloqueado por prerrequisitos.
+
+El porcentaje de progreso cuenta cursos disponibles aprobados. Linux no puede
+contribuir hasta que el alumno complete sus prácticas y evaluaciones. El
+proyecto integrador no se aprueba por completar solamente cursos.
+
+5. CURSOS
+
+Para ingresar:
+1. Abre Cloud / Production Support.
+2. Elige Básico.
+3. Pulsa "Ingresar al curso Básico" en el curso seleccionado.
+
+Un módulo disponible presenta:
+- Objetivo.
+- Explicación técnica.
+- Ejemplo resuelto.
+- Práctica guiada.
+- Práctica independiente.
+- Verificación.
+- Errores frecuentes y troubleshooting.
+- Evaluación.
+
+Linux usa una terminal real a través de WSL. Los botones ejecutan actividades
+predefinidas; no aceptan una cadena de shell escrita por el usuario.
+
+Cursos Básicos verificables:
+- Redes: escenarios conceptuales de IP, DNS, HTTP/HTTPS y puertos.
+- SQL: SELECT, WHERE, ORDER BY, GROUP BY y agregaciones sobre SQLite sintético.
+- AWS: seis módulos con escenarios locales, sin credenciales ni llamadas a AWS.
+- Python: procesadores locales sobre datos sintéticos, sin código arbitrario.
+- Production Support: triage, tickets, evidencias y documentación.
+- Linux: siete módulos y 14 prácticas reales en Ubuntu 24.04/WSL 2.
+
+6. LABORATORIOS
+
+Acceso al LAB 01:
+1. Entra a Cloud / Production Support → Básico.
+2. Abre Production Support.
+3. Selecciona LAB 01 — AWS Production Support.
+4. Pulsa el recurso operativo para iniciar el servicio bajo demanda.
+
+Uso:
+- Selecciona un archivo .log permitido de data/test.
+- Pulsa EJECUTAR ANÁLISIS.
+- Observa "en curso", "terminado" o "fallido".
+- El analizador devuelve métricas reales del archivo seleccionado.
+- Pulsa EJECUTAR TODAS LAS PRUEBAS para ver 8 resultados PASS/FAIL.
+- Consulta evidence/resumen_logs.json desde la interfaz.
+- Actualiza sin recargar manualmente.
+
+El navegador no puede ejecutar rutas externas ni comandos arbitrarios.
+
+Archivos importantes:
+- labs\lab01-aws-production-support\data\test\.
+- labs\lab01-aws-production-support\scripts\analizar_logs.py.
+- labs\lab01-aws-production-support\scripts\run_tests.py.
+- labs\lab01-aws-production-support\evidence\.
+
+Sanción de actividad:
+- Una práctica pasa solo si su verificación del servidor devuelve un resultado
+  aprobado.
+- Una práctica fallida conserva feedback y puede intentarse nuevamente.
+- No se aprueban actividades por escribir manualmente un puntaje.
+
+7. EVALUACIONES
+
+Las evaluaciones contienen cinco preguntas. Se propone un puntaje mínimo del
+80%: normalmente requieren cuatro respuestas correctas.
+
+Intentos:
+- Ilimitados.
+- Cada intento conserva puntaje, respuestas permitidas, resultado y fecha.
+- Las respuestas incorrectas muestran feedback y tema de repaso.
+- Las opciones se mezclan en la interfaz.
+- Las respuestas correctas no se exponen al navegador.
+
+Bloqueos:
+- Debe existir una sesión local.
+- Debe estar matriculado el curso.
+- Los módulos anteriores deben estar habilitados.
+- Las dos prácticas del módulo deben estar aprobadas.
+- Linux además requiere entorno Ubuntu real verificado.
+
+Tipos:
+- Conceptual.
+- Ejercicio práctico.
+- Laboratorio verificable.
+- Resolución de incidentes.
+- Proyecto integrador.
+
+8. SEGUIMIENTO DEL APRENDIZAJE
+
+Abre "Mi progreso" para consultar:
+- Cursos iniciados.
+- Módulos completados.
+- Prácticas aprobadas.
+- Intentos.
+- Puntajes.
+- Evaluaciones aprobadas.
+- Competencias otorgadas.
+- Evidencias disponibles.
+
+El progreso se guarda en web\data\learning_progress.sqlite3. Es local y está
+vinculado a la cookie emitida por el servidor. No es una cuenta multiusuario.
+Limpiar el perfil o reemplazar la cookie/base puede cambiar o perder el acceso
+al progreso mostrado en ese navegador.
+
+9. PROYECTO FINAL BÁSICO
+
+El proyecto integrador presenta un incidente sintético con:
+- Log de operaciones.
+- Operaciones ERROR y PENDIENTE.
+- Datos CSV.
+- Consulta SQL.
+- Procesador Python.
+- Conectividad.
+- Observabilidad AWS de referencia.
+- Documentación de impacto y siguiente paso.
+- Ejecución Linux real con grep.
+
+Acceso:
+1. Completa o avanza por los cursos requeridos.
+2. Abre Cloud / Production Support → Básico.
+3. Ingresa al proyecto integrador.
+
+Criterios críticos:
+- Identificar operaciones ERROR y PENDIENTE.
+- Ejecutar una consulta SQL permitida.
+- Validar el importe ERROR con Python.
+- Distinguir evidencia e hipótesis.
+- Seleccionar una referencia AWS apropiada sin consultar AWS.
+- Documentar impacto, causa y siguiente paso.
+- Ejecutar el análisis Linux real sobre el log aislado.
+
+No compensa un criterio crítico con el puntaje total. El proyecto no otorga
+competencia automáticamente.
+
+10. EJEMPLO PRÁCTICO REAL
+
+1. Ejecuta iniciar_web.bat.
+2. Abre http://127.0.0.1:8765.
+3. Abre Cloud / Production Support.
+4. Selecciona Básico.
+5. Abre Linux.
+6. Ejecuta una práctica, por ejemplo terminal y rutas.
+7. Ubuntu muestra su salida real; el servidor registra el resultado aprobado.
+8. Continúa por Redes, SQL, AWS, Python y Production Support.
+9. Abre LAB 01 desde Production Support.
+10. Selecciona normal.log y ejecuta el análisis.
+11. Ejecuta las ocho pruebas.
+12. Consulta evidencia/resumen_logs.json.
+13. Abre Mi progreso para revisar intentos y competencias.
+
+Resultados comprobados durante la auditoría:
+- 28 pruebas educativas PASS.
+- LAB 01: 8 pruebas PASS.
+- 14 prácticas Linux reales PASS.
+- Proyecto Linux: PX-510 y PX-513 ERROR; PX-511 PENDIENTE.
+
+11. SOLUCIÓN DE PROBLEMAS
+
+El servidor no inicia:
+- Confirma la ruta Python 3.12.
+- Ejecuta iniciar_web.bat desde su carpeta.
+- Revisa la consola por errores.
+- Comprueba si otro proceso ocupa 8765 sin ser academyLab.
+
+La dirección no responde:
+- Verifica que el puerto 8765 esté escuchando en 127.0.0.1.
+- Abre http://127.0.0.1:8765 exactamente.
+- No uses 0.0.0.0 ni una dirección de red.
+
+No aparece un curso:
+- Confirma que estés en el nivel correcto.
+- Revisa el estado del curso en el catálogo.
+- Intermedio y Avanzado pueden estar bloqueados.
+- Linux requiere WSL 2 y Ubuntu operativo.
+
+Una práctica Linux no se ejecuta:
+- Ejecuta wsl --list --verbose.
+- Debe existir Ubuntu-24.04 con versión 2.
+- Ejecuta wsl -d Ubuntu-24.04 -- bash -lc 'id -u; echo $HOME'.
+- Debe devolver un UID distinto de 0 y /home/<usuario>.
+- El navegador no puede enviar comandos arbitrarios.
+
+Una evaluación no registra resultado:
+- Confirma que la sesión esté creada.
+- Completa las prácticas previas.
+- Comprueba que estés dentro del módulo habilitado.
+- Revisa la consola del servidor principal.
+
+El LAB no inicia:
+- Verifica http://127.0.0.1:8765/api/lab/status.
+- Accede desde el enlace supervisado de Production Support.
+- Comprueba si 8766 está ocupado por un proceso no identificado.
+- No finalizar procesos Python ajenos.
+
+El LAB no se detiene:
+- Cierra las pestañas que usan el laboratorio.
+- Espera el timeout de inactividad configurado.
+- Usa detener_laboratorio.bat.
+- Usa detener_web.bat solo si no quedan sesiones activas.
+
+No se debe modificar la base SQLite, evidencias AWS o archivos protegidos sin
+comprender qué datos son locales y cuáles deben conservarse.

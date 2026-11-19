@@ -1,0 +1,5 @@
+2026-01-15T10:00:00Z operacion=LINUX-1001 estado=OK importe=125.50
+2026-01-15T10:02:14Z operacion=LINUX-1002 estado=ERROR importe=340.00
+2026-01-15T10:03:02Z operacion=LINUX-1003 estado=PENDIENTE importe=82.75
+2026-01-15T10:05:48Z operacion=LINUX-1004 estado=OK importe=57.00
+2026-01-15T10:07:31Z operacion=LINUX-1005 estado=ERROR importe=910.25

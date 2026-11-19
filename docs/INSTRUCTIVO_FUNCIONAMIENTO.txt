@@ -1,0 +1,273 @@
+ACADEMYLAB - INSTRUCTIVO DE FUNCIONAMIENTO
+==================================================
+
+Estado del documento: 2026-11-17
+Alcance: funcionamiento local comprobado y funciones que siguen pendientes.
+
+1. DESCRIPCION GENERAL
+----------------------
+academyLab es una plataforma local de aprendizaje. No instala paquetes
+de Python, no requiere credenciales AWS y no realiza operaciones contra AWS.
+
+La aplicacion tiene dos servicios independientes:
+
+  Servicio principal (Home, perfiles, rutas y cursos):
+    Direccion: http://127.0.0.1:8765
+    Script:    web\platform_server.py
+    Funcion:   sirve Home, perfiles, rutas, catalogo y pagina LAB; supervisa el LAB.
+
+  Servicio de laboratorio AWS:
+    Direccion: http://127.0.0.1:8766
+    Script:    labs\lab01-aws-production-support\scripts\web_server.py
+    Funcion:   sirve la interfaz del LAB 01 y su API local de analisis.
+    Estado:    se inicia bajo demanda al ingresar al laboratorio.
+
+Ambos servicios se enlazan exclusivamente a 127.0.0.1. El servidor principal
+permanece activo al salir del curso AWS. No se termina ningun proceso Python
+que no haya sido iniciado o identificado como servidor de este proyecto.
+
+2. REQUISITOS
+-------------
+- Windows 10/11.
+- Python 3.12 en:
+  C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe
+- Microsoft Edge (o el navegador predeterminado de Windows).
+- No se requieren dependencias externas ni acceso a Internet.
+
+3. INICIAR LA PLATAFORMA
+------------------------
+1. Haz doble clic en:
+   labs\lab01-aws-production-support\iniciar_web.bat
+2. El iniciador comprueba si el servicio principal ya responde en el puerto
+   8765. Si ya esta activo no crea otra instancia. Si el puerto esta ocupado
+   por un servicio no identificado, no inicia ni detiene procesos.
+3. Si estaba detenido, abre una consola para el servidor y espera su
+   respuesta HTTP. La consola del servidor permanece disponible para mensajes.
+4. El navegador predeterminado se abre en:
+   http://127.0.0.1:8765
+   Si no se abre automaticamente, copia esa direccion en Microsoft Edge.
+
+4. PERFILES, NIVELES Y CURSOS
+---------------------------
+La navegacion local es:
+  Home (/) -> Cloud / Production Support -> nivel -> cursos del nivel.
+
+La Home presenta Cloud / Production Support como perfil en desarrollo y muestra
+Full Stack Developer, Frontend Developer, Backend Developer, Data Analyst,
+Data Engineer y QA / Testing como planificados. Los perfiles planificados no
+tienen enlaces a paginas inexistentes.
+
+El selector presenta Basico, Intermedio y Avanzado. Cada nivel lista los cursos
+Linux, Redes, SQL, AWS, Python y Production Support desde un catalogo estructurado
+en web\catalog\learning_catalog.json. Los cursos se definen una sola vez; la ruta
+los referencia por identificador.
+
+Los estados visibles reflejan el estado del contenido:
+- Disponible: recurso operativo comprobado.
+- En desarrollo: el curso o sus practicas no estan completos.
+- Pendiente de entorno: requiere un entorno real que aun no esta disponible.
+- Bloqueado por requisitos previos: requiere competencias previas aprobadas.
+
+Los cursos Basicos disponibles son SQL, AWS, Redes, Python y Production Support.
+Cada modulo disponible tiene explicacion, ejemplo, dos practicas, verificacion,
+troubleshooting y evaluacion. AWS tiene seis modulos: Cloud Computing,
+Fundamentos de AWS, IAM, S3, Observabilidad e Integracion de soporte.
+AWS es conceptual, usa escenarios sinteticos y no accede a una cuenta. Redes no
+ejecuta diagnosticos reales.
+
+Linux aparece como Pendiente de entorno hasta que el servidor verifique Ubuntu
+en WSL 2, un usuario no root y las herramientas requeridas. El curso integrado
+tiene siete modulos y 14 practicas predefinidas. Sus acciones se ejecutan en
+Ubuntu real mediante el backend; no se aceptan comandos del navegador. La ruta
+Basica completa y su proyecto integrador no se consideran aprobados mientras
+falte la competencia Linux demostrada.
+
+El proyecto integrador Basico ya ofrece fixtures sinteticos y verifica los
+criterios de logs, una consulta SQL de cantidades e importes, Python predefinido
+para calcular el importe de errores, conectividad conceptual,
+referencia AWS e informe. Su aprobacion sigue bloqueada hasta verificar Linux
+en Ubuntu. LAB 01 — AWS Production Support continua como recurso operativo
+independiente. Los niveles Intermedio y Avanzado permanecen bloqueados por
+requisitos previos.
+
+Para usar AWS Basico:
+1. En Home, ingresa a Cloud / Production Support.
+2. Selecciona Basico y abre AWS.
+3. Completa las practicas guiada e independiente de cada modulo para habilitar
+   la evaluacion. Avanza en orden; el servidor rechaza actividades sin
+   matricula, practicas o requisitos previos.
+4. Cada evaluacion tiene cinco preguntas y requiere 80%. Los intentos son
+   ilimitados; las respuestas, resultados y recomendaciones se guardan en
+   Mi progreso.
+5. El sexto modulo integra S3, IAM, señales de observabilidad e informe de
+   incidente con datos ficticios. No inicia sesion ni consulta recursos AWS.
+
+Para usar LAB 01:
+1. En Home, ingresa a Cloud / Production Support.
+2. Selecciona Basico y ubica el recurso disponible LAB 01 en Production Support.
+3. Usa el enlace LAB 01. La pagina aclara que es un laboratorio local y que no
+   se conecta a AWS.
+4. La pagina muestra si el servidor del LAB 01 esta detenido o activo.
+5. Pulsa "Ingresar al laboratorio". La plataforma inicia y verifica el
+   servicio AWS si hace falta, crea una sesion para esa pestana y abre:
+   http://127.0.0.1:8766
+6. En LAB 01 selecciona un log, ejecuta el analisis Python, consulta la
+   evidencia y ejecuta las pruebas automatizadas disponibles.
+7. "Continuar practicando" mantiene activa la sesion.
+8. "Detener laboratorio y volver al inicio" cierra la sesion de esa pestana.
+   Si no quedan otras pestanas activas, detiene solamente el servidor del
+   laboratorio y vuelve a Home. El servidor principal sigue funcionando.
+
+5. SUPERVISION Y CIERRE AUTOMATICO
+----------------------------------
+Cada pestana del LAB envia una senal de actividad aproximadamente cada
+20 segundos. Cada pestana tiene un identificador distinto. El servidor
+principal conserva las sesiones activas y elimina las que no han renovado su
+senal durante el tiempo limite.
+
+El tiempo limite inicial es de 120 segundos (2 minutos), configurado en:
+  web\platform_config.json
+
+Para cambiarlo, modifica el valor entero "lab_idle_timeout_seconds" y reinicia
+la plataforma. Los cambios se aplican al iniciar el servidor principal.
+Tambien se puede usar la variable de entorno
+AWS_ACADEMY_LAB_IDLE_TIMEOUT_SECONDS para una ejecucion controlada.
+
+Al cerrar una pestana normalmente, el navegador intenta avisar al servidor,
+pero ese aviso no es la unica proteccion. Si el navegador se cierra
+abruptamente, el supervisor detecta la perdida al vencer la ultima senal,
+elimina esa sesion y detiene el LAB si no quedan otras sesiones.
+Cerrar una pestana no detiene un laboratorio que otra pestana sigue usando.
+La Home y el servidor principal no se detienen por salir de AWS.
+
+6. DETENER SERVICIOS
+--------------------
+- Para detener solo el LAB cuando no esta en uso, haz doble clic en:
+  labs\lab01-aws-production-support\detener_laboratorio.bat
+  Si detecta sesiones activas, se niega a detenerlo. La plataforma principal
+  debe estar respondiendo para consultar las sesiones.
+- Para detener el LAB y el servicio principal, haz doble clic en:
+  labs\lab01-aws-production-support\detener_web.bat
+  La plataforma se niega si todavia hay sesiones activas.
+- Los botones BAT solicitan el cierre por la API local; no usan
+  taskkill /IM python.exe ni detienen procesos Python ajenos.
+- La consola del servidor principal tambien puede detenerlo con Ctrl+C. El
+  cierre ordenado intenta detener el LAB que administra.
+
+El archivo iniciar_laboratorio.bat existe como respaldo manual. Normalmente
+no es necesario: es preferible iniciar el LAB desde el curso AWS para que se
+registre la sesion y funcione la supervision automatica.
+
+7. PROBLEMAS FRECUENTES
+-----------------------
+Puerto 8765 ocupado:
+- iniciar_web.bat comprueba si ya es academyLab. Si lo es, reutiliza
+  esa instancia. Si no puede identificarlo, no la finaliza.
+- No cierres procesos Python desde el Administrador de tareas. Comprueba que
+  la direccion corresponda a la plataforma y usa detener_web.bat.
+
+Puerto 8766 ocupado:
+- La plataforma informa el conflicto y no inicia una instancia duplicada ni
+  termina el proceso que ocupa el puerto.
+- Si el LAB ya esta activo, ingresa desde academyLab. El boton crea
+  una sesion supervisada sobre ese servicio.
+
+No se encuentra Python:
+- Comprueba que exista la ruta completa indicada en Requisitos. No se cambia
+  la instalacion ni la configuracion de Python.
+
+El laboratorio no se detiene:
+- Asegurate de cerrar todas las pestanas con "Detener laboratorio y volver
+  al inicio", o espera el limite de inactividad. Luego usa el BAT de parada.
+- Si el servicio principal no responde, los BAT no fuerzan la terminacion de
+  procesos. Inicia o repara la plataforma antes de volver a intentarlo.
+
+El analisis o las pruebas fallan:
+- Lee el error mostrado en la interfaz y la consola del servicio del LAB.
+- Las pruebas web se ejecutan en una carpeta temporal para evitar sobrescribir
+  archivos de evidencia existentes.
+
+8. CURSO LINUX Y WSL
+--------------------
+El curso integrado se define en web\catalog\linux_basic.json y contiene siete
+modulos pedagogicos, 14 practicas reales predefinidas y evaluaciones. El backend
+esta en web\linux_runtime.py.
+
+Estado verificado el 2026-11-19:
+- Windows 10 Pro 22H2, compilacion 19045.
+- WSL 2 operativo.
+- Distribucion Ubuntu-24.04 disponible y predeterminada.
+- Usuario Linux juan, UID 1000, HOME /home/juan.
+- Kernel WSL 2 6.18.58.1-microsoft-standard-WSL2.
+- Las 14 practicas allowlisted dieron PASS al ejecutarlas en Ubuntu real.
+- El analisis integrador real con grep encontro PX-510 y PX-513 como ERROR y
+  PX-511 como PENDIENTE.
+
+Linux ya puede mostrarse disponible por entorno. Una competencia no se aprueba
+solo por estas comprobaciones: el alumno debe completar las practicas y
+evaluaciones y conservar sus intentos en SQLite.
+
+Comandos de comprobacion:
+  wsl --status
+  wsl --list --verbose
+  wsl -d Ubuntu-24.04 -- uname -a
+  wsl -d Ubuntu-24.04 -- cat /etc/os-release
+  wsl -d Ubuntu-24.04 -- id -un
+
+No ejecutar apt install preventivamente. Primero se comprobaran con command -v
+las herramientas requeridas por el runtime: bash, pwd, ls, mkdir, touch, cp,
+mv, rm, cat, less, head, tail, grep, find, chmod, chown, ps, top, kill,
+date, df, id, sed, sleep y timeout. Solo se instalara una herramienta si falta
+y su practica realmente la requiere.
+
+El runtime ejecuta scripts fijos elegidos por identificadores allowlisted en el
+servidor; no recibe comandos de shell, rutas ni PID desde el navegador. Cada
+alumno y ejercicio usa un directorio dedicado bajo
+~/academyLab/linux-course. Las ejecuciones se serializan, tienen timeout
+y salida limitada. El proyecto integrador copia su fixture a un espacio aislado
+y ejecuta grep real para validar el analisis. Ninguna practica modifica recursos
+AWS ni ejecuta operaciones AWS.
+
+9. EVALUACIONES Y PROGRESO
+--------------------------
+Los modulos Basicos tienen evaluaciones de cinco preguntas y practicas
+verificables donde es tecnicamente seguro. El puntaje minimo es 80%; los
+intentos son ilimitados, se conserva su historial y se muestra retroalimentacion
+y repaso recomendado. La competencia se aprueba solo al completar los criterios
+del modulo. Las opciones se mezclan en la interfaz y una respuesta incorrecta
+recomienda repasar el tema asociado. En la ruta se muestra el porcentaje de
+cursos disponibles aprobados; Linux no se incluye hasta que el entorno real sea
+verificado. El proyecto final requiere la competencia Linux y su analisis real
+del log, ademas de las competencias previas. No se emiten
+certificaciones.
+
+El progreso aparece en "Mi progreso". El servidor emite una cookie anonima
+HttpOnly y SameSite=Strict para vincular este navegador a su perfil local. El
+cliente no puede elegir el perfil enviando un learner_id en la URL o el cuerpo
+de una solicitud. SQLite conserva sesiones (solo hash de token), cursos,
+modulos, ejercicios, intentos, respuestas, resultados, competencias y evidencias en:
+  web\data\learning_progress.sqlite3
+La base se crea al iniciar el servidor principal. El perfil persiste en ese
+navegador; otro navegador crea otro perfil. No existen cuentas ni autenticacion
+de personas, sincronizacion entre equipos ni aislamiento multiusuario. Las
+practicas y evaluaciones requieren matricula y se habilitan en orden. Los
+puntajes se calculan en el servidor. El proyecto exige las competencias
+disponibles previas, pero no puede aprobarse ni otorgar competencia mientras
+falte la verificacion Linux real.
+Las ocho pruebas automatizadas de LAB 01 prueban el analizador; no califican al
+alumno. Los detalles del modelo y sus limites estan en
+docs\especificacion-evaluaciones.md.
+
+10. SEGURIDAD Y LIMITES
+----------------------
+- Los servidores usan Python estandar y solo escuchan en 127.0.0.1.
+- Las mutaciones educativas aceptan solo un origen local permitido; la identidad
+  procede de una cookie emitida por el servidor, no de un UUID enviado por el
+  navegador.
+- El navegador no recibe claves de respuesta ni puede fijar puntajes o
+  competencias; el servidor verifica matricula, orden de modulos y criterios.
+- El navegador no puede enviar comandos de consola al servidor AWS.
+- El analizador acepta nombres de logs permitidos del laboratorio.
+- No se ejecutan consultas Athena ni operaciones AWS.
+- Los BAT no finalizan procesos Python ajenos.
+- No se han modificado los documentos protegidos de diagnostico y auditoria.

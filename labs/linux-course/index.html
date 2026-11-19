@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <title>Linux con Ubuntu | academyLab</title>
+  <link rel="stylesheet" href="../../web/assets/platform.css">
+  <link rel="stylesheet" href="linux-course.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="http://127.0.0.1:8765/" aria-label="academyLab, inicio">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a class="site-nav__link" href="http://127.0.0.1:8765/">Volver a perfiles</a>
+      <span class="site-nav__local">Curso en preparación</span>
+    </nav>
+  </header>
+
+  <main class="course-page linux-page">
+    <section class="course-hero" aria-labelledby="course-title">
+      <div class="course-hero__icon" aria-hidden="true">$_</div>
+      <div class="course-hero__copy">
+        <p class="eyebrow">SISTEMAS · CURSO 02</p>
+        <div class="course-hero__title-row">
+          <h1 id="course-title">Linux con Ubuntu (WSL)</h1>
+          <span class="status-badge status-badge--preparing">En preparación</span>
+        </div>
+        <p>Prácticas diseñadas para ejecutarse en una distribución Ubuntu real dentro de WSL 2.</p>
+      </div>
+    </section>
+
+    <section class="linux-blocker" aria-labelledby="linux-status-title">
+      <h2 id="linux-status-title">Entorno todavía no disponible</h2>
+      <p>WSL 2 requiere habilitar características de Windows desde una sesión elevada y posiblemente reiniciar. Ubuntu no está instalado. No se ejecutan comandos ni se muestran resultados simulados.</p>
+      <p>La terminal permanecerá deshabilitada hasta que Ubuntu real esté instalado y las verificaciones del entorno se aprueben.</p>
+    </section>
+
+    <section aria-labelledby="modules-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">CONTENIDO PREPARADO</p>
+          <h2 id="modules-title">Módulos del curso</h2>
+        </div>
+      </div>
+      <div id="linux-modules" class="linux-modules" aria-live="polite">
+        <p class="empty">Cargando el temario preparado...</p>
+      </div>
+    </section>
+
+    <section class="linux-terminal" aria-labelledby="terminal-title">
+      <h2 id="terminal-title">Terminal Ubuntu</h2>
+      <p>La terminal real aún no está conectada. Esta área no envía comandos ni inventa salidas.</p>
+      <label for="linux-command">Comando</label>
+      <textarea id="linux-command" rows="2" placeholder="Ubuntu real no disponible" disabled></textarea>
+      <button class="button button--disabled" type="button" disabled>Ejecutar en Ubuntu — no disponible</button>
+      <pre id="linux-output" aria-live="polite">Sin ejecución: WSL y Ubuntu están pendientes.</pre>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand brand--footer" href="http://127.0.0.1:8765/">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <p>Linux no habilitado · <code>WSL 2 pendiente</code></p>
+  </footer>
+  <script src="modules.js"></script>
+  <script src="linux-course.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+2026-11-10T10:00:01Z level=INFO id_operacion=OP-1001 cliente=ACME estado=OK importe=150.00 causa="procesada correctamente"
+this is not a valid log line
+2026-11-10T10:01:15Z level=ERROR id_operacion=OP-1002 cliente=NOVA estado=ERROR importe=980.50 causa="timeout al validar pago"
+bad line here too

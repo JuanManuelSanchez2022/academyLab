@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <title>Curso Básico | academyLab</title>
+  <link rel="stylesheet" href="/assets/platform.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="academyLab, inicio">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a class="site-nav__link" href="/">Perfiles</a>
+      <a class="site-nav__link" href="/profiles/cloud-production-support/">Cloud / Production Support</a>
+      <a class="site-nav__link" href="/progress/">Mi progreso</a>
+    </nav>
+  </header>
+
+  <main class="course-page learning-page">
+    <nav class="breadcrumbs" aria-label="Ruta de navegación">
+      <a href="/">Perfiles</a><span aria-hidden="true">/</span>
+      <a href="/profiles/cloud-production-support/">Cloud / Production Support</a><span aria-hidden="true">/</span>
+      <a href="/routes/cloud-production-support/basic/">Básico</a><span aria-hidden="true">/</span>
+      <span id="course-breadcrumb" aria-current="page">Curso</span>
+    </nav>
+
+    <section class="course-hero" aria-labelledby="course-title">
+      <div class="course-hero__icon" aria-hidden="true">BAS</div>
+      <div class="course-hero__copy">
+        <p class="eyebrow">NIVEL BÁSICO · CLOUD / PRODUCTION SUPPORT</p>
+        <div class="course-hero__title-row">
+          <h1 id="course-title">Cargando curso...</h1>
+          <span id="course-availability" class="status-badge">Consultando estado</span>
+        </div>
+        <p id="course-objective"></p>
+        <p id="environment-notice" class="environment-notice" hidden></p>
+      </div>
+    </section>
+
+    <section class="learning-progress" aria-labelledby="progress-title">
+      <div class="learning-progress__heading">
+        <h2 id="progress-title">Tu progreso</h2>
+        <span id="course-progress-label">Sin iniciar</span>
+      </div>
+      <progress id="course-progress-bar" max="100" value="0">0%</progress>
+      <p id="course-progress-detail">Los intentos se guardan en este equipo.</p>
+    </section>
+
+    <section id="module-container" aria-live="polite">
+      <p class="empty">Cargando contenido educativo...</p>
+    </section>
+
+    <section id="project-link-section" class="available-resource" hidden>
+      <h2>Proyecto integrador</h2>
+      <p>Integra logs, comandos Linux reales en Ubuntu, SQL, Python, conectividad y documentación técnica.</p>
+      <a class="button button--primary" href="/projects/support-basic/">Abrir proyecto integrador →</a>
+    </section>
+    <a class="back-link" href="/routes/cloud-production-support/basic/">← Volver a cursos Básicos</a>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand brand--footer" href="/">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <p>Aprendizaje local · <code>127.0.0.1</code></p>
+  </footer>
+  <script src="/learning/common.js"></script>
+  <script src="/learning/course.js"></script>
+</body>
+</html>

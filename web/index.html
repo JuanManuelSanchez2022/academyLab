@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Rutas de aprendizaje por perfil profesional en academyLab.">
+  <title>academyLab | Perfiles profesionales</title>
+  <link rel="stylesheet" href="/assets/platform.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="academyLab, inicio">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a class="site-nav__link site-nav__link--active" href="#profiles">Perfiles</a>
+      <span class="site-nav__local">Aprendizaje local</span>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="home-title">
+      <div class="hero__copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> RUTAS PROFESIONALES</p>
+        <h1 id="home-title">Aprendé <span>con práctica.</span></h1>
+        <p class="hero__description">Elegí un perfil profesional y avanzá por niveles con objetivos, cursos y prácticas verificables.</p>
+        <a class="button button--primary" href="#profiles">Explorar perfiles <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-panel" aria-label="Estado de la plataforma">
+        <div class="hero-panel__icon" aria-hidden="true">&lt;/&gt;</div>
+        <p class="hero-panel__label">ENTORNO LOCAL</p>
+        <p class="hero-panel__title">Cloud / Production Support</p>
+        <p class="hero-panel__text">Módulos Básicos disponibles con prácticas verificables; Linux y el proyecto final requieren Ubuntu real. LAB 01 funciona por separado.</p>
+        <div class="hero-panel__rule"></div>
+        <p class="hero-panel__endpoint"><span class="status-dot" aria-hidden="true"></span> 127.0.0.1 · Solo este equipo</p>
+      </div>
+    </section>
+
+    <section id="profiles" class="courses" aria-labelledby="profiles-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ELEGÍ TU OBJETIVO</p>
+          <h2 id="profiles-title">Perfiles profesionales</h2>
+        </div>
+        <p class="section-heading__note">Las rutas planificadas aún no tienen contenido habilitado.</p>
+      </div>
+      <div id="profile-grid" class="course-grid profile-grid" aria-live="polite">
+        <p class="empty">Cargando perfiles...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand brand--footer" href="/">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <p>Plataforma local de formación técnica · <code>127.0.0.1</code></p>
+  </footer>
+  <script src="/profiles/home.js"></script>
+</body>
+</html>

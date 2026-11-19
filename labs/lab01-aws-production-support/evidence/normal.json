@@ -1,0 +1,69 @@
+{
+  "archivo": "C:\\dev\\academyLab\\labs\\lab01-aws-production-support\\data\\test\\normal.log",
+  "total_eventos_parseados": 10,
+  "lineas_no_parseadas": 0,
+  "conteo_por_estado": {
+    "OK": 4,
+    "ERROR": 3,
+    "PENDIENTE": 3
+  },
+  "operaciones_unicas": 8,
+  "operaciones_error": {
+    "OP-1002": {
+      "eventos": 1,
+      "causas": [
+        "timeout al validar pago"
+      ],
+      "cliente": "NOVA",
+      "importe": 980.5
+    },
+    "OP-1005": {
+      "eventos": 1,
+      "causas": [
+        "saldo insuficiente"
+      ],
+      "cliente": "ACME",
+      "importe": 1200.0
+    },
+    "OP-1008": {
+      "eventos": 1,
+      "causas": [
+        "error de formato en datos"
+      ],
+      "cliente": "ZENIT",
+      "importe": 560.0
+    }
+  },
+  "operaciones_pendiente": {
+    "OP-1002": {
+      "eventos": 1,
+      "causas": [
+        "reintento programado tras timeout"
+      ],
+      "cliente": "NOVA",
+      "importe": 980.5
+    },
+    "OP-1003": {
+      "eventos": 1,
+      "causas": [
+        "esperando confirmacion bancaria"
+      ],
+      "cliente": "ZENIT",
+      "importe": 45.0
+    },
+    "OP-1006": {
+      "eventos": 1,
+      "causas": [
+        "revision manual requerida"
+      ],
+      "cliente": "NOVA",
+      "importe": 300.75
+    }
+  },
+  "importe_total_eventos_error": 2740.5,
+  "importe_total_eventos_pendiente": 1326.25,
+  "alerta": {
+    "hay_errores": true,
+    "hay_pendientes": true
+  }
+}

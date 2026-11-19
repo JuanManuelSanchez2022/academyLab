@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <title>Ruta Cloud / Production Support | academyLab</title>
+  <link rel="stylesheet" href="/assets/platform.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="academyLab, inicio">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a class="site-nav__link" href="/">Perfiles</a>
+      <a class="site-nav__link" href="/profiles/cloud-production-support/">Cloud / Production Support</a>
+    </nav>
+  </header>
+
+  <main class="course-page">
+    <nav class="breadcrumbs" aria-label="Ruta de navegación">
+      <a href="/">Perfiles</a><span aria-hidden="true">/</span>
+      <a href="/profiles/cloud-production-support/">Cloud / Production Support</a><span aria-hidden="true">/</span>
+      <span id="level-breadcrumb" aria-current="page">Nivel</span>
+    </nav>
+
+    <section class="course-hero" aria-labelledby="route-title">
+      <div class="course-hero__icon" aria-hidden="true">OPS</div>
+      <div class="course-hero__copy">
+        <p class="eyebrow">RUTA CLOUD / PRODUCTION SUPPORT</p>
+        <div class="course-hero__title-row">
+          <h1 id="route-title">Cursos del nivel</h1>
+          <span class="status-badge status-badge--preparing">Catálogo en desarrollo</span>
+        </div>
+        <p id="route-description">Consultando los cursos y sus estados de disponibilidad...</p>
+      </div>
+    </section>
+
+    <nav id="level-navigation" class="level-navigation" aria-label="Niveles de la ruta"></nav>
+
+    <section id="level-progress" class="level-progress" aria-labelledby="level-progress-title" aria-live="polite">
+      <div class="level-progress__heading">
+        <h2 id="level-progress-title">Progreso del nivel</h2>
+        <strong id="level-progress-summary">Consultando...</strong>
+      </div>
+      <progress id="level-progress-bar" max="100" value="0" aria-label="Porcentaje de cursos disponibles aprobados"></progress>
+      <p id="level-progress-note">El avance se calcula a partir de las competencias verificadas.</p>
+    </section>
+
+    <section aria-labelledby="courses-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">CATÁLOGO DE CURSOS</p>
+          <h2 id="courses-title">Cursos y disponibilidad</h2>
+        </div>
+        <p class="section-heading__note">El orden numerado es una secuencia recomendada; la navegación no implica que el contenido esté terminado.</p>
+      </div>
+      <div id="route-courses" class="route-course-list" aria-live="polite">
+        <p class="empty">Cargando cursos...</p>
+      </div>
+    </section>
+
+    <section id="capstone-section" class="capstone-section" aria-labelledby="capstone-title">
+      <p class="eyebrow">EVALUACIÓN FINAL DEL NIVEL</p>
+      <h2 id="capstone-title">Proyecto integrador</h2>
+      <div id="capstone-content"><p class="empty">Cargando alcance del proyecto...</p></div>
+    </section>
+
+    <a class="back-link" href="/profiles/cloud-production-support/">← Volver a selección de nivel</a>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand brand--footer" href="/">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <p>Ruta local de formación técnica · <code>127.0.0.1</code></p>
+  </footer>
+  <script src="/learning/common.js"></script>
+  <script src="/routes/route.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1220">
+  <title>Mi progreso | academyLab</title>
+  <link rel="stylesheet" href="/assets/platform.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="academyLab, inicio">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <nav class="site-nav" aria-label="Navegación principal">
+      <a class="site-nav__link" href="/">Perfiles</a>
+      <a class="site-nav__link" href="/profiles/cloud-production-support/">Cloud / Production Support</a>
+      <a class="site-nav__link" href="/routes/cloud-production-support/basic/">Básico</a>
+    </nav>
+  </header>
+
+  <main class="course-page learning-page">
+    <nav class="breadcrumbs" aria-label="Ruta de navegación">
+      <a href="/">Perfiles</a><span aria-hidden="true">/</span>
+      <span aria-current="page">Mi progreso</span>
+    </nav>
+    <section class="course-hero" aria-labelledby="progress-title">
+      <div class="course-hero__icon" aria-hidden="true">PRO</div>
+      <div class="course-hero__copy">
+        <p class="eyebrow">PERFIL LOCAL DE ESTE NAVEGADOR</p>
+        <div class="course-hero__title-row">
+          <h1 id="progress-title">Mi progreso y evaluaciones</h1>
+          <button id="refresh-progress" class="button button--primary" type="button">Actualizar</button>
+        </div>
+        <p id="learner-notice">El progreso se guarda localmente en SQLite en este equipo.</p>
+      </div>
+    </section>
+
+    <div id="progress-error" class="learning-result" role="status" aria-live="polite"></div>
+    <section aria-labelledby="course-progress-title">
+      <h2 id="course-progress-title">Cursos</h2>
+      <div id="course-progress-list" class="progress-course-list">
+        <p class="empty">Cargando progreso...</p>
+      </div>
+    </section>
+    <section aria-labelledby="competencies-title">
+      <h2 id="competencies-title">Competencias aprobadas</h2>
+      <div id="competency-list" class="progress-course-list"></div>
+    </section>
+    <section aria-labelledby="attempts-title">
+      <h2 id="attempts-title">Historial de intentos</h2>
+      <div id="attempt-list" class="attempt-list"></div>
+    </section>
+    <section aria-labelledby="evidence-title">
+      <h2 id="evidence-title">Evidencias disponibles</h2>
+      <div id="evidence-list" class="attempt-list"></div>
+    </section>
+    <p class="availability-note">Este perfil anónimo no sincroniza entre navegadores ni equipos. La base SQLite no ofrece autenticación, cuentas ni soporte multiusuario.</p>
+  </main>
+  <footer class="site-footer">
+    <a class="brand brand--footer" href="/">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span>academyLab</span>
+    </a>
+    <p>Persistencia local · sin certificaciones</p>
+  </footer>
+  <script src="/learning/common.js"></script>
+  <script src="/learning/progress.js"></script>
+</body>
+</html>

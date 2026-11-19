@@ -1,0 +1,288 @@
+ACADEMYLAB
+Indicaciones técnicas y funcionales para continuar el proyecto
+Fecha de auditoría: 2026-11-19
+
+1. IDENTIFICACIÓN DEL PROYECTO
+
+Nombre: academyLab.
+Descripción: plataforma local de aprendizaje para perfiles profesionales de IT,
+con el primer perfil Cloud / Production Support organizado por rutas, niveles,
+cursos, prácticas, evaluaciones y proyectos integradores.
+Finalidad: permitir que una persona aprenda conceptos, practique tareas reales
+o controladas y conserve un registro verificable de su progreso.
+Problema que busca resolver: falta de una vía progresiva y práctica para aprender
+Linux, redes, SQL, AWS, Python y procesos de soporte de producción sin depender
+de cuentas cloud ni servicios que puedan generar costos.
+Público: estudiantes, personas en transición a IT y personal principiante o
+intermedio que necesite practicar soporte de producción en un entorno local.
+
+2. VISIÓN Y OBJETIVOS
+
+La plataforma busca desarrollar una ruta profesional progresiva y reutilizable.
+El resultado esperado es una plataforma donde el alumno pueda elegir un perfil,
+profundidad Básica, Intermedia o Avanzada, completar cursos disponibles y resolver
+escenarios integradores. La orientación debe ser práctica: explicar el propósito,
+mostrar un ejemplo resuelto, realizar prácticas guiadas e independientes,
+verificar resultados, mostrar troubleshooting y aplicar evaluaciones objetivas.
+
+No se pretende presentar una certificación profesional ni un curso completo por
+tener una página. Cada competencia debe conservar evidencias y cumplir criterios
+verificables. Los AWS simulados se mantienen como escenarios sintéticos y las
+integraciones reales deben estar expresamente autorizadas.
+
+3. FILOSOFÍA DE DESARROLLO
+
+- Aprendizaje progresivo y por prerrequisitos.
+- Práctica antes que colección de preguntas.
+- Separación de perfil, ruta, curso reutilizable, nivel, módulo, evaluación,
+  competencia, progreso y evidencia.
+- Evaluaciones con puntaje calculado por el servidor y feedback específico.
+- Ejecución automática cuando la técnica sea segura y reproducible.
+- Separación entre interfaz y mecanismos reales de ejecución.
+- No simular integraciones, terminales o resultados AWS.
+- No otorgar competencias sin intentos y criterios verificables.
+- Mantener archivos y laboratorios independientes del servidor principal.
+- Priorizar Python estándar, SQLite y localhost.
+
+4. ARQUITECTURA Y TECNOLOGÍAS REALES
+
+Backend principal:
+- Python 3.12.
+- web/platform_server.py usa ThreadingHTTPServer de la biblioteca estándar.
+- Enlace principal: 127.0.0.1:8765.
+- API educativa con SQLite y cookies HttpOnly para una sesión anónima local.
+
+LAB 01:
+- labs/lab01-aws-production-support/scripts/web_server.py.
+- Enlace bajo demanda: 127.0.0.1:8766.
+- analizador Python estándar sin Flask, Django o dependencias adicionales.
+
+Frontend:
+- HTML y CSS estáticos dentro de web/.
+- JavaScript sin framework.
+- assets/platform.css y scripts learning/*.js.
+- LAB 01 separado: index.html, styles.css y app.js.
+
+Datos y progreso:
+- web/progress_store.py usa sqlite3.
+- Base actual: web/data/learning_progress.sqlite3.
+- Intentos, puntajes, respuestas, evidencias, competencias y progreso persistidos
+  localmente.
+- Token de sesión guardado como hash; el navegador recibe una cookie HttpOnly.
+
+Catálogos:
+- web/catalog/learning_catalog.json: perfiles, rutas, niveles, cursos, estados,
+  competencias y dependencias.
+- web/catalog/basic_courses.json: cursos de práctica disponibles.
+- web/catalog/linux_basic.json: módulos, prácticas y evaluaciones Linux.
+
+Linux:
+- web/linux_runtime.py usa WSL y Ubuntu-24.04.
+- Solo ejecuta identificadores allowlisted y scripts fijos.
+- El navegador no puede enviar comandos libres.
+- Los ejercicios usan directorios aislados bajo /home/juan/academyLab.
+
+Pruebas:
+- unittest en web/tests/.
+- Pruebas del LAB 01 en labs/lab01-aws-production-support/scripts/run_tests.py.
+
+Dependencias externas:
+- Ninguna dependencia Python externa obligatoria.
+- Python 3.12 indicado en C:\Users\juan\AppData\Local\Programs\Python\Python312.
+- WSL 2 y Ubuntu 24.04 son requeridos por Linux real.
+- Git no estaba instalado al auditar. No existe todavía un repositorio local.
+
+5. ESTRUCTURA IMPORTANTE
+
+web/index.html
+  Página principal de perfiles profesionales.
+web/profiles/
+  Páginas y JavaScript de perfiles.
+web/routes/
+  Selector de nivel y catálogo de cursos por nivel.
+web/courses/
+  Contenedor HTML de cursos, proyecto y progreso.
+web/learning/
+  Cliente JavaScript de curso, proyecto, progreso y sesiones.
+web/catalog/
+  Datos estructurados de ruta y contenidos.
+web/learning_service.py
+  Reglas de matrícula, prerrequisitos, feedback, puntaje, competencias y cursos.
+web/progress_store.py
+  Esquema SQLite e operaciones de progreso.
+web/linux_runtime.py
+  Estado de WSL, allowlist Linux, ejecución real y análisis del proyecto.
+web/tests/
+  Pruebas unitarias y de API.
+labs/lab01-aws-production-support/
+  Laboratorio independiente local con analizador, interfaz, datos de prueba,
+  evidencias y scripts BAT.
+labs/linux-course/
+  Preparación estática anterior de Linux; el curso integrado funciona mediante
+  el catálogo web y linux_runtime.py.
+docs/
+  Arquitectura, evaluación, AWS, procedimientos, troubleshooting y instructivos.
+
+6. FUNCIONALIDADES IMPLEMENTADAS
+
+Verificado y funcional:
+- Home de perfiles profesionales.
+- Perfil Cloud / Production Support disponible en desarrollo.
+- Perfiles adicionales visibles como planificados y sin enlaces rotos.
+- Selector Básico, Intermedio y Avanzado.
+- Catálogo estructurado por ruta y nivel.
+- Intermedio y Avanzado bloqueados por prerrequisitos.
+- Cursos Básicos disponibles: Redes, SQL, AWS, Python y Production Support.
+- Linux disponible y ejecutable con Ubuntu 24.04 real en WSL 2.
+- LAB 01 operativo bajo demanda y aislamiento de sus pruebas.
+- Progreso SQLite por sesión local.
+- Intentos ilimitados con historial.
+- Feedback de respuestas incorrectas y recomendaciones de repaso.
+- Evaluaciones con puntaje mínimo propuesto del 80%.
+- Bloqueo de actividades por matrícula y prerrequisitos.
+- API educativa limitada a localhost.
+- Interfaz del LAB 01 con archivos, análisis, pruebas y evidencia.
+- Servidores y BAT que evitan procesos Python ajenos.
+
+En desarrollo o parcial:
+- Contenidos completos de otros perfiles.
+- Contenidos Intermedio y Avanzado.
+- Proyecto integrador completo sujeto a competencias y al flujo de progreso.
+- Sistema multiusuario, autenticación y sincronización: no existe.
+
+Pendiente o planificado:
+- Certificaciones profesionales.
+- Nueva identidad de usuario con acceso centralizado.
+- Linux ya operativo, pero las aprobaciones dependen de intentos reales del alumno.
+- Integraciones AWS reales y automatización de servicios cloud.
+
+7. TRABAJO REALIZADO
+
+El LAB 01 procesa archivos de operaciones, eventos y estados. Diferencia eventos
+parseados de operaciones únicas y genera conteos por estado. Detecta ERROR,
+PENDIENTE y líneas inválidas. Produce evidencias JSON en la carpeta evidence/.
+
+El analizador conserva el comportamiento original desde
+labs/lab01-aws-production-support/scripts/analizar_logs.py. La interfaz web no
+duplica el analizador: llama al mismo script de Python.
+
+El servidor LAB permite:
+- / para index.html.
+- /styles.css y /app.js.
+- /api/health, /api/files, /api/analyze, /api/tests y /api/evidence.
+
+Resultado verificado al auditar:
+- run_tests.py: 8 pruebas PASS y 0 FAIL.
+- Prueba normal: 10 eventos parseados, 8 operaciones únicas, 0 líneas no
+  parseadas, OK=4, ERROR=3 y PENDIENTE=3.
+- Evidencias normal.json y multi_event.json se generan sin alterar la evidencia
+  original más allá de las pruebas previstas.
+
+Las pruebas web de plataforma dieron 28/28 OK después de incorporar Ubuntu
+24.04. Incluyen sesión, rutas, persistencia, prerrequisitos, feedback,
+evaluaciones, bloqueo de Linux, rechazo de comandos de navegador y criterio
+Linux del proyecto.
+
+Las 14 prácticas Linux allowlisted fueron ejecutadas realmente en Ubuntu
+24.04/WSL 2 y dieron PASS en la auditoría. El análisis integrador real de
+grep encontró PX-510 y PX-513 como ERROR y PX-511 como PENDIENTE.
+
+No se realizaron operaciones AWS ni modificaciones en recursos reales.
+
+8. INTEGRACIÓN CON AWS
+
+Servicios o conceptos efectivamente implementados como práctica local:
+- IAM: contenido conceptual y evaluaciones.
+- S3: contenido conceptual y escenarios sintéticos.
+- CloudWatch: observabilidad e interpretación sintética.
+- Athena/Glue/S3: referencias del LAB 01 y consultas SQL de referencia.
+- SQL: consultas sintéticas SQLite y ejercicios de laboratorio.
+- Linux: validado con Ubuntu real local.
+
+Servicios solo previstos o mencionados:
+- Lambda.
+- Step Functions.
+- EventBridge.
+- Jira.
+- Nagios.
+- Airflow.
+
+Experiencias previas documentadas:
+- Athena/Glue/S3/CloudWatch se analizaron como entorno de referencia.
+- Se conservaron S3, Athena, Glue y CloudWatch en solo lectura.
+- No existen credenciales ni SDK AWS instalados en la plataforma.
+
+9. ESTADO ACTUAL
+
+Completado y probado:
+- Navegación de perfiles, niveles y rutas.
+- Catálogo de cursos básicos disponibles.
+- Servidores locales y restricción 127.0.0.1.
+- LAB 01 y sus ocho pruebas.
+- Persistencia SQLite básica.
+- Linux real con 14 prácticas y análisis integrador real.
+- Pruebas unitarias y de API educativas.
+
+En desarrollo:
+- Activación completa del progreso desde la interfaz para todas las competencias.
+- Completitud pedagógica de los cursos disponibles.
+- Proyecto integrador desde el flujo real del alumno.
+
+Pendiente:
+- Certificaciones.
+- Contenidos Intermedio y Avanzado.
+- Nuevos perfiles profesionales.
+- Integraciones reales AWS.
+- Identidad multiusuario.
+
+La infraestructura de Linux pasó de pendiente a disponible después de verificar
+Ubuntu-24.04 y WSL 2. No se debe marcar una competencia Linux aprobada por el
+entorno solamente: requiere completar las prácticas y evaluaciones del alumno.
+
+10. OBJETIVOS FUTUROS
+
+- Activar rutas Full Stack, Frontend, Backend, Data Analyst, Data Engineer y QA.
+- Completar módulos Intermedio y Avanzado con prerrequisitos reales.
+- Agregar laboratorios de incidentes con Linux, SQL, Python y AWS sintética.
+- Agregar evaluaciones progresivas y proyectos integradores por nivel.
+- Mantener evidencias e historial consultables por perfil.
+- Mejorar accesibilidad, diseño responsivo y retroalimentación.
+- Preparar una interfaz de identidad solo cuando exista autenticación segura.
+- Documentar migraciones desde SQLite a una plataforma multiusuario.
+- Mantener integraciones AWS desactivadas hasta tener autorización explícita.
+
+11. CRITERIOS DE DESARROLLO
+
+- No romper el servidor principal ni el LAB 01.
+- No duplicar cursos, módulos o analizadores.
+- Mantener el catálogo separado del código que ejecuta actividades.
+- No aceptar comandos, rutas o puntajes enviados por el navegador.
+- Mantener 127.0.0.1 salvo cambio explícito y autorizado.
+- Ejecutar pruebas antes de declarar una funcionalidad terminada.
+- Actualizar documentación y estado real en el mismo cambio.
+- No escribir métricas ficticias en JavaScript.
+- No ejecutar recursos AWS ni generar costos sin autorización.
+- No publicar credenciales, bases personales o archivos locales.
+- Usar datos sintéticos por defecto.
+- Preservar el progreso y las evidencias existentes.
+
+12. CÓMO CONTINUAR
+
+Instalar/usar:
+- Windows 10/11, Python 3.12, WSL 2 y Ubuntu 24.04.
+- Doble clic en labs\lab01-aws-production-support\iniciar_web.bat.
+- Abrir http://127.0.0.1:8765.
+- Detener con labs\lab01-aws-production-support\detener_web.bat.
+
+Desarrollo:
+1. Ejecutar python -m unittest discover -s web\tests -v.
+2. Ejecutar labs\lab01-...\scripts\run_tests.py.
+3. Mantener el LAB bajo demanda y no mezclar su servidor con el principal.
+4. Modificar el catálogo y learning_service.py de forma coordinada.
+5. Agregar pruebas antes de ampliar un curso o criterio.
+6. Revisar docs/INSTRUCTIVO_FUNCIONAMIENTO.txt y docs/especificacion-evaluaciones.md.
+
+Git:
+- Git no estaba instalado en el entorno al auditarlo.
+- Debe instalarse Git/GitHub CLI solo si se necesita publicar.
+- No crear visibilidad pública ni subir datos personales sin confirmar el destino.
