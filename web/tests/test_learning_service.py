@@ -65,6 +65,9 @@ class LearningServiceTests(unittest.TestCase):
             payload["answer"] = str(
                 output["counts"][field] if field == "ERROR" else output[field]
             )
+        elif exercise["type"] == "linux_command" and exercise.get("question"):
+            # El valor real lo decide la salida de Ubuntu; aquí verify_answer está simulado.
+            payload["answer"] = "7"
         elif exercise["type"] == "incident_report":
             payload["answer"] = {
                 **exercise["accepted_answer"],
@@ -75,6 +78,18 @@ class LearningServiceTests(unittest.TestCase):
         result = learning_service.submit_exercise(payload)
         self.assertTrue(result["passed"], result["feedback"])
         return result
+
+    @staticmethod
+    def verified_answer(_learner_id, exercise_id, _answer):
+        return {
+            "passed": True,
+            "answer_correct": True,
+            "exercise_id": exercise_id,
+            "commands": ["allowlisted reference"],
+            "stdout": f"{exercise_id} reference-output\n",
+            "stderr": "",
+            "runtime": "test-kernel",
+        }
 
     def complete_course(self, learner_id, course_id):
         course = next(
@@ -556,7 +571,12 @@ class LearningServiceTests(unittest.TestCase):
                 learning_service.linux_runtime,
                 "run_exercise",
                 side_effect=verified_run,
-            ),
+            ) as run_exercise,
+            mock.patch.object(
+                learning_service.linux_runtime,
+                "verify_answer",
+                side_effect=self.verified_answer,
+            ) as verify_answer,
         ):
             progress = self.complete_course(self.learner_id, "linux")
 
@@ -575,6 +595,9 @@ class LearningServiceTests(unittest.TestCase):
             len([item for item in progress["attempts"] if item["course_id"] == "linux" and item["activity_type"] == "exercise"]),
             14,
         )
+        # Piloto: las dos prácticas del módulo de logs se aprueban respondiendo la pregunta.
+        self.assertEqual(verify_answer.call_count, 2)
+        self.assertEqual(run_exercise.call_count, 12)
 
 
     def test_project_keeps_six_verified_criteria_blocked_by_linux(self):
@@ -663,7 +686,12 @@ class LearningServiceTests(unittest.TestCase):
                 learning_service.linux_runtime,
                 "run_exercise",
                 side_effect=verified_run,
-            ),
+            ) as run_exercise,
+            mock.patch.object(
+                learning_service.linux_runtime,
+                "verify_answer",
+                side_effect=self.verified_answer,
+            ) as verify_answer,
         ):
             self.complete_course(self.learner_id, course["id"])
 

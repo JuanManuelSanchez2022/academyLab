@@ -23,6 +23,7 @@ _status_cache = None
 _status_checked_at = 0.0
 _STATUS_TTL = 15
 _SUCCESS_MARKER = "__ACADEMY_CHECK_OK__"
+_ANSWER_MARKER = "__ACADEMY_ANSWER__"
 
 
 class LinuxRuntimeError(ValueError):
@@ -84,28 +85,54 @@ _EXERCISES = {
             "printf 'COPY_REMOVED=yes\\n'\n"
         ),
     },
+    # Piloto de la Fase 3 (prácticas con pregunta): el alumno ejecuta una de las
+    # opciones y responde una pregunta. La respuesta se valida contra la salida
+    # real de answer_script, que nunca se envía al navegador.
     "linux-logs-guided": {
         "commands": ["head", "tail", "less", "grep -n"],
-        "script": (
-            'printf "HEAD\\n"\n'
-            "head -n 2 fixtures/production-support.log\n"
-            'printf "TAIL\\n"\n'
-            "tail -n 2 fixtures/production-support.log\n"
-            'printf "LESS\\n"\n'
-            "LESS=FRX TERM=dumb less -F -X fixtures/production-support.log\n"
-            'printf "ERROR_MATCHES\\n"\n'
-            'grep -n "ERROR" fixtures/production-support.log\n'
-            'grep -q "ERROR" fixtures/production-support.log\n'
-        ),
+        "reference_option": "inspeccionar-log",
+        # -m 1 en lugar de "| head": evita un SIGPIPE que pipefail trataría como fallo.
+        "answer_script": 'grep -n -m 1 "ERROR" fixtures/production-support.log | cut -d: -f1\n',
+        "answer_pattern": r"[0-9]{1,4}",
+        "options": {
+            "inspeccionar-log": {
+                "label": 'head -n 2, tail -n 2, less y grep -n "ERROR" sobre fixtures/production-support.log',
+                "script": (
+                    'printf "HEAD\\n"\n'
+                    "head -n 2 fixtures/production-support.log\n"
+                    'printf "TAIL\\n"\n'
+                    "tail -n 2 fixtures/production-support.log\n"
+                    'printf "LESS\\n"\n'
+                    "LESS=FRX TERM=dumb less -F -X fixtures/production-support.log\n"
+                    'printf "ERROR_MATCHES\\n"\n'
+                    'grep -n "ERROR" fixtures/production-support.log\n'
+                ),
+            },
+        },
     },
     "linux-logs-independent": {
-        "commands": ["find", "grep -n"],
-        "script": (
-            'find "$HOME/academyLab/linux-course/{learner_id}/linux-logs-independent/fixtures" -type f -name "*.log" -print\n'
-            'grep -n "PENDIENTE" fixtures/production-support.log\n'
-            'test "$(grep -c "PENDIENTE" fixtures/production-support.log)" -ge 1\n'
-            'printf "LOG_FILES=%s\\n" "$(find fixtures -type f -name "*.log" | wc -l)"\n'
-        ),
+        "commands": ["find", "grep -n", "grep -c", "tail -n"],
+        "reference_option": "grep-n",
+        "answer_script": 'grep -n "PENDIENTE" fixtures/production-support.log | tail -n 1 | cut -d: -f1\n',
+        "answer_pattern": r"[0-9]{1,4}",
+        "options": {
+            "find-logs": {
+                "label": 'find fixtures -type f -name "*.log"',
+                "script": 'find fixtures -type f -name "*.log"\n',
+            },
+            "grep-c": {
+                "label": 'grep -c "PENDIENTE" fixtures/production-support.log',
+                "script": 'grep -c "PENDIENTE" fixtures/production-support.log\n',
+            },
+            "grep-n": {
+                "label": 'grep -n "PENDIENTE" fixtures/production-support.log',
+                "script": 'grep -n "PENDIENTE" fixtures/production-support.log\n',
+            },
+            "tail-5": {
+                "label": "tail -n 5 fixtures/production-support.log",
+                "script": "tail -n 5 fixtures/production-support.log\n",
+            },
+        },
     },
     "linux-streams-guided": {
         "commands": [">", ">>", "cat"],
@@ -199,6 +226,17 @@ _EXERCISES = {
 
 def exercise_ids():
     return set(_EXERCISES)
+
+
+def question_exercise_ids():
+    """Prácticas que exigen elegir una opción y responder una pregunta."""
+    return {exercise_id for exercise_id, item in _EXERCISES.items() if "options" in item}
+
+
+def exercise_options(exercise_id):
+    """Opciones públicas (id y línea de comando) de una práctica con pregunta."""
+    options = _EXERCISES.get(exercise_id, {}).get("options", {})
+    return [{"id": option_id, "label": option["label"]} for option_id, option in options.items()]
 
 
 def _wsl_executable():
@@ -458,9 +496,8 @@ def _run_script(script, status_result, timeout=COMMAND_TIMEOUT):
     }
 
 
-def run_exercise(learner_id, exercise_id):
-    if exercise_id not in _EXERCISES:
-        raise LinuxRuntimeError("El ejercicio Linux solicitado no está permitido.")
+def _execute_in_workspace(learner_id, exercise_id, body):
+    """Ejecuta un cuerpo de script fijo en el espacio aislado del alumno."""
     with _execution_lock:
         runtime = status()
         if not runtime.get("available"):
@@ -471,23 +508,98 @@ def run_exercise(learner_id, exercise_id):
             runtime,
             COURSE_FIXTURE,
         )
-        command = _EXERCISES[exercise_id]
         script = (
             "set -euo pipefail\n"
             "export LC_ALL=C\n"
             f"workspace={workspace}\n"
             'cd "$workspace"\n'
-            f'{command["script"].format(learner_id=str(uuid.UUID(learner_id)))}'
+            f"{body}"
             f'printf "\\n{_SUCCESS_MARKER}\\n"\n'
         )
         result = _run_script(script, runtime)
-    result["commands"] = command["commands"]
     result["exercise_id"] = exercise_id
     if not result["passed"]:
         result["feedback"] = (
             "La verificación real en Ubuntu no terminó correctamente. "
             "Revisa el error y vuelve a intentar; no se guardó una aprobación."
         )
+    return result
+
+
+def _visible_output(stdout):
+    """Quita los marcadores internos de la salida que ve el alumno."""
+    lines = [
+        line for line in stdout.splitlines()
+        if not line.startswith((_SUCCESS_MARKER, _ANSWER_MARKER))
+    ]
+    return "\n".join(lines).rstrip() + "\n" if lines else ""
+
+
+def _question_exercise(exercise_id):
+    exercise = _EXERCISES.get(exercise_id)
+    if exercise is None or "options" not in exercise:
+        raise LinuxRuntimeError("El ejercicio Linux solicitado no tiene opciones de ejecución.")
+    return exercise
+
+
+def run_exercise(learner_id, exercise_id):
+    """Prácticas sin pregunta: ejecuta el script fijo completo."""
+    if exercise_id not in _EXERCISES:
+        raise LinuxRuntimeError("El ejercicio Linux solicitado no está permitido.")
+    command = _EXERCISES[exercise_id]
+    if "options" in command:
+        raise LinuxRuntimeError("Esta práctica requiere ejecutar una opción y responder la pregunta.")
+    body = command["script"].format(learner_id=str(uuid.UUID(learner_id)))
+    result = _execute_in_workspace(learner_id, exercise_id, body)
+    result["commands"] = command["commands"]
+    return result
+
+
+def run_option(learner_id, exercise_id, option_id):
+    """Ejecuta una opción permitida de una práctica con pregunta (exploración, no evalúa)."""
+    exercise = _question_exercise(exercise_id)
+    if not isinstance(option_id, str) or option_id not in exercise["options"]:
+        raise LinuxRuntimeError("La opción de comando solicitada no está permitida.")
+    option = exercise["options"][option_id]
+    result = _execute_in_workspace(learner_id, exercise_id, option["script"])
+    result["stdout"] = _visible_output(result.get("stdout", ""))
+    result["commands"] = [option["label"]]
+    result["option_id"] = option_id
+    return result
+
+
+def _answers_match(answer, expected, pattern):
+    if not re.fullmatch(pattern, answer) or not re.fullmatch(pattern, expected):
+        return False
+    if answer.isdigit() and expected.isdigit():
+        return int(answer) == int(expected)
+    return answer == expected
+
+
+def verify_answer(learner_id, exercise_id, answer):
+    """Vuelve a ejecutar la opción de referencia y compara la respuesta con su salida real.
+
+    El valor esperado nunca se incluye en el resultado: solo answer_correct.
+    """
+    exercise = _question_exercise(exercise_id)
+    reference = exercise["options"][exercise["reference_option"]]
+    body = (
+        f'{reference["script"]}'
+        f'reference_answer=$({exercise["answer_script"].strip()})\n'
+        f'printf "\\n{_ANSWER_MARKER}=%s\\n" "$reference_answer"\n'
+    )
+    result = _execute_in_workspace(learner_id, exercise_id, body)
+    result["commands"] = [reference["label"]]
+    match = re.search(rf"^{_ANSWER_MARKER}=(.*?)\r?$", result.get("stdout", ""), re.MULTILINE)
+    expected = match.group(1).strip() if match else ""
+    result["stdout"] = _visible_output(result.get("stdout", ""))
+    if result["passed"] and not re.fullmatch(exercise["answer_pattern"], expected):
+        result["passed"] = False
+        result["feedback"] = "La ejecución en Ubuntu no produjo un valor de referencia válido; no se guardó una aprobación."
+    normalized = answer.strip() if isinstance(answer, str) else ""
+    result["answer_correct"] = bool(
+        result["passed"] and _answers_match(normalized, expected, exercise["answer_pattern"])
+    )
     return result
 
 

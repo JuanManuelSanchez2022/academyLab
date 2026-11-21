@@ -651,6 +651,8 @@ class Handler(BaseHTTPRequestHandler):
                     result = learning_service.start_course(payload.get("learner_id"), payload.get("course_id"))
                 elif path == "/api/learning/submit-exercise":
                     result = learning_service.submit_exercise(payload)
+                elif path == "/api/learning/run-linux-option":
+                    result = learning_service.run_linux_option(payload)
                 elif path == "/api/learning/submit-assessment":
                     result = learning_service.submit_assessment(payload)
                 elif path == "/api/learning/submit-project":

@@ -1,5 +1,72 @@
 # Registro de cambios de academyLab
 
+## 2026-11-21 — Fase 3 (piloto): prácticas Linux que exigen demostrar comprensión
+
+### Problema
+Las 14 prácticas Linux se aprobaban con solo pulsar «Ejecutar en Ubuntu»: el alumno no
+tenía que interpretar nada. Este piloto cambia **solo** el módulo `linux-log-investigation`
+(`linux-logs-guided` y `linux-logs-independent`). Las otras 12 prácticas no cambian.
+
+### Nuevo flujo (dos pasos)
+1. **Ejecutar.** El alumno elige una opción de comando de una lista fija y la ejecuta
+   en Ubuntu (`POST /api/learning/run-linux-option`).
+   - La guiada tiene 1 opción y la independiente 4 (`find`, `grep -c`, `grep -n`, `tail -n 5`).
+   - Ejecutar no registra intentos ni aprueba nada.
+   - Sigue sin aceptarse texto de consola desde el navegador.
+2. **Responder.** El alumno responde una pregunta (número de línea del primer ERROR o del
+   último PENDIENTE). Para validarla, el servidor vuelve a ejecutar en Ubuntu la opción de
+   referencia y extrae el valor de su salida real con un marcador interno.
+   - Se aprueba solo si la ejecución terminó bien **y** la respuesta coincide.
+   - Una respuesta incorrecta no muestra la salida de referencia ni el valor esperado.
+
+### Archivos
+- `web/linux_runtime.py`:
+  - Opciones, opción de referencia, `answer_script` y patrón de respuesta para las dos prácticas.
+  - Nuevas funciones `run_option`, `verify_answer`, `question_exercise_ids` y `exercise_options`.
+  - `run_exercise` rechaza las prácticas con pregunta.
+- `web/learning_service.py`:
+  - `run_linux_option`.
+  - Rama `linux_command` con pregunta.
+  - `get_course` agrega las opciones desde el runtime, que es la única fuente.
+  - `validate_catalog` exige pregunta y pista solo donde el runtime define opciones.
+- `web/platform_server.py`: ruta `/api/learning/run-linux-option`.
+- `web/catalog/linux_basic.json`: preguntas, pistas e instrucciones del piloto.
+- `web/learning/course.js`: formulario de dos pasos; las demás prácticas Linux no cambian.
+- `labs/linux-course/fixtures/production-support.log`: pasa de 5 a 30 líneas sintéticas.
+  - Primer ERROR en la línea 7 y último PENDIENTE en la 22, fuera de lo que muestran `head`/`tail`.
+  - Las prácticas existentes que leen este log siguen siendo válidas: buscan "al menos una" coincidencia.
+- `web/assets/platform.css`: corrige un defecto previo. En todas las evaluaciones, los botones
+  de opción ocupaban todo el ancho (`.learning-form input { width: 100% }`) y el texto quedaba
+  desplazado a la derecha.
+
+### Pruebas
+- Nueva `web/tests/test_linux_questions.py`, con 11 pruebas:
+  - Sin respuesta no se aprueba.
+  - Respuesta incorrecta: no se aprueba y no se revela el valor.
+  - Respuesta correcta con una ejecución fallida: no se aprueba.
+  - Se rechazan las opciones desconocidas y el texto de consola.
+  - Ejecutar no registra intentos.
+  - Se respeta el orden de los módulos.
+  - La extracción y la comparación usan el marcador.
+  - El catálogo público no expone el script de la respuesta.
+- `test_learning_service.py`: completar el curso Linux exige responder en el piloto (2 respuestas
+  verificadas + 12 ejecuciones).
+- Suite web: 46/46. LAB 01: 9/9.
+
+### Verificación y límites
+- Los scripts exactos del piloto se ejecutaron con Git Bash (herramientas GNU) sobre una copia
+  del log con fin de línea CRLF, como se copia hoy a Ubuntu:
+  - Las 5 opciones terminan bien.
+  - Las respuestas esperadas son 7 y 22, y se rechazan otros valores.
+  - El marcador no aparece en la salida visible.
+- Navegador: plataforma con Ubuntu **simulado**, porque los scripts corrieron en Git Bash.
+  - Se probó `grep -c`, una respuesta incorrecta (rechazada, sin revelar el valor) y
+    `grep -n` → 22 (aprobada en el intento 2).
+  - Para llegar al módulo 3 sin aprobar los anteriores, la demo omitió el control de orden.
+- **No verificado:** ejecución en Ubuntu/WSL real. Esta PC no tiene WSL. Antes de extender el
+  piloto, hay que probar ambas prácticas en Ubuntu 24.04.
+- Las aprobaciones Linux ya registradas con el criterio anterior se conservan.
+
 ## 2026-11-21 — Fase 2: coherencia de datos del LAB 01 y seguridad del servidor del LAB
 
 ### Datos y ejercicios

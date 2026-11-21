@@ -23,7 +23,9 @@ adicionales, Docker ni credenciales AWS.
   sintéticos; no accede a AWS ni modifica recursos.
 - **Linux:** verificado con Ubuntu 24.04 en WSL 2 el 19/11/2026. Tiene siete
   módulos y 14 prácticas ejecutadas en Ubuntu real mediante una allowlist fija;
-  no se aceptan comandos libres del navegador.
+  no se aceptan comandos libres del navegador. Piloto de la Fase 3: las dos
+  prácticas del módulo de logs exigen responder una pregunta a partir de la salida
+  real; sus scripts nuevos todavía no se verificaron en Ubuntu (ver `docs/CAMBIOS.md`).
 - **Proyecto integrador Básico:** exige las competencias disponibles previas.
   Se verificó el análisis Linux real con grep; su aprobación definitiva depende
   de completar las competencias y prácticas desde el progreso del alumno.
