@@ -6,9 +6,9 @@ Practicar tareas de soporte de producción: identificar operaciones con estado E
 ## Escenario de referencia (solo lectura)
 - Región: us-east-2
 - S3: practica-athena-sql-2026
-- Base Athena/Glue: practica_strata
+- Base Athena/Glue: practica_academylab
 - Archivo fuente: datos/operaciones.csv
-- CloudWatch Log Group: practica-strata-operaciones
+- CloudWatch Log Group: academylab-operaciones
 
 Este laboratorio no se conecta a AWS ni modifica recursos. No requiere credenciales.
 

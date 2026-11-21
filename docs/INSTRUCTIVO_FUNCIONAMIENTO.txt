@@ -197,7 +197,7 @@ Estado verificado el 2026-11-19:
 - Windows 10 Pro 22H2, compilacion 19045.
 - WSL 2 operativo.
 - Distribucion Ubuntu-24.04 disponible y predeterminada.
-- Usuario Linux juan, UID 1000, HOME /home/juan.
+- Usuario Linux no root, UID 1000, HOME /home/<usuario>.
 - Kernel WSL 2 6.18.58.1-microsoft-standard-WSL2.
 - Las 14 practicas allowlisted dieron PASS al ejecutarlas en Ubuntu real.
 - El analisis integrador real con grep encontro PX-510 y PX-513 como ERROR y

@@ -64,7 +64,7 @@ class LinuxRuntimeTests(unittest.TestCase):
                 "_wsl_command",
                 side_effect=[
                     (0, "1000", ""),
-                    (0, "/home/juan", ""),
+                    (0, "/home/alumno", ""),
                     (0, "", ""),
                     (0, "6.18.58.1-microsoft-standard-WSL2", ""),
                 ],

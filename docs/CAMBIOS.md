@@ -1,5 +1,45 @@
 # Registro de cambios de academyLab
 
+## 2026-11-21 — Fase 4: limpieza (código muerto, datos de equipos y nombres de referencia)
+
+Decisiones autorizadas por el responsable técnico antes del cambio.
+
+### Código muerto
+- Se eliminaron `labs/linux-course/index.html`, `linux-course.css`, `linux-course.js` y
+  `modules.js`: era una interfaz estática anterior que ningún servidor publicaba. El curso Linux
+  funciona con el catálogo web y `web/linux_runtime.py`. Se conserva
+  `labs/linux-course/fixtures/production-support.log`, que usa el runtime, y se actualizó su
+  descripción en `indicaciones.txt`. Los archivos se pueden recuperar desde el historial de git.
+
+### Datos de equipos personales
+- `docs/auditoria_entorno.md`: el nombre del equipo y el usuario de Windows pasan a
+  `<EQUIPO>` y `<usuario>`. No cambian las fechas ni los resultados.
+- `docs/INSTRUCTIVO_FUNCIONAMIENTO.txt`: el usuario Linux verificado pasa a «no root».
+- `web/tests/test_linux_runtime.py`: el HOME simulado pasa a `/home/alumno`.
+- Limitación: el historial de git anterior todavía contiene esos datos. Borrarlos de ahí
+  exigiría reescribir el historial publicado, y eso no se hizo.
+
+### Nombres de referencia del LAB 01
+- `practica_strata` → `practica_academylab` (base Glue/Athena) y `practica-strata-operaciones`
+  → `academylab-operaciones` (log group de CloudWatch). Afecta al README, la arquitectura, los
+  ejercicios y `sql/01`–`05`. Son nombres de referencia del escenario: no existen recursos
+  AWS con esos nombres y nada se ejecuta contra AWS.
+
+### Fin de línea de los .bat
+- Nuevo `.gitattributes` con `*.bat text eol=crlf`. Así un clon con `core.autocrlf=false` o
+  hecho fuera de Windows entrega los `.bat` con CRLF; con LF, `cmd.exe` interpreta mal las
+  etiquetas.
+
+### No incluido
+- No se centralizó `appendText` (repetida en 6 scripts de la web). Para hacerlo había que
+  cargar `common.js` en dos páginas más, y el beneficio no justifica el cambio («no realizar
+  refactorizaciones innecesarias»).
+
+### Verificación
+- Suite web: 46/46. LAB 01: 9/9.
+- Ya no aparecen `strata`, `juan` ni `DESKTOP-` fuera de este registro.
+- Un clon nuevo con `core.autocrlf=false` recibe los 5 `.bat` con CRLF.
+
 ## 2026-11-21 — Fase 3 (piloto): prácticas Linux que exigen demostrar comprensión
 
 ### Problema

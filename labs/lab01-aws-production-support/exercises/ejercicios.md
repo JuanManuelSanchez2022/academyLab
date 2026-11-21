@@ -10,7 +10,7 @@ El LAB trabaja con dos vistas de las mismas ocho operaciones:
 Confundir las dos vistas es un error frecuente de soporte: contar eventos `ERROR` no es contar operaciones que hoy están en `ERROR`.
 
 ## Ejercicio 1: Detección de operaciones problemáticas (SQL)
-**Consigna:** Usando la tabla de operaciones en `practica_strata` (referencia, solo lectura), identificar todas las operaciones con estado `ERROR` o `PENDIENTE`.
+**Consigna:** Usando la tabla de operaciones en `practica_academylab` (referencia, solo lectura), identificar todas las operaciones con estado `ERROR` o `PENDIENTE`.
 - Ejecutar: `sql/01_detectar_error_pendiente.sql`
 
 **Resultado esperado (estructura):** listado con `id_operacion`, `cliente`, `importe`, `estado` filtrado a `ERROR` y `PENDIENTE`, ordenado por estado e importe.

@@ -118,9 +118,8 @@ web/tests/
 labs/lab01-aws-production-support/
   Laboratorio independiente local con analizador, interfaz, datos de prueba,
   evidencias y scripts BAT.
-labs/linux-course/
-  Preparación estática anterior de Linux; el curso integrado funciona mediante
-  el catálogo web y linux_runtime.py.
+labs/linux-course/fixtures/
+  Log sintético que linux_runtime.py copia a Ubuntu para las prácticas Linux.
 docs/
   Arquitectura, evaluación, AWS, procedimientos, troubleshooting y instructivos.
 
