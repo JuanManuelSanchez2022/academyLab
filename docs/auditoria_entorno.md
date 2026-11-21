@@ -5,7 +5,7 @@
 **Actualización WSL (ETAPA 1):** 2026-11-11 (UTC: 2026-11-11T02:32:43Z)
 **Verificación preinstalación (ETAPA 2):** 2026-11-11 (UTC: 2026-11-11T16:31:59Z)
 **Etapa:** ETAPA 2 - Verificación preinstalación (finalizada, sin instalaciones)
-**Equipo:** DESKTOP-L05N1FK
+**Equipo:** <EQUIPO>
 
 ## 1. Resumen ejecutivo
 
@@ -48,7 +48,7 @@ Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' | Select-O
 
 | Componente | Valor |
 |---|---|
-| Equipo | DESKTOP-L05N1FK |
+| Equipo | <EQUIPO> |
 | Procesador | Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz |
 | Núcleos físicos | 4 |
 | Procesadores lógicos | 8 |
@@ -107,14 +107,14 @@ Get-PSDrive -PSProvider FileSystem | Select-Object Name, Used, Free, Root
 
 | Herramienta | Estado | Ubicación / Versión | Evidencia |
 |---|---|---|---|
-| winget | Disponible | `C:\Users\juan\AppData\Local\Microsoft\WindowsApps\winget.exe` | `winget --version` → `v1.29.380` |
+| winget | Disponible | `C:\Users\<usuario>\AppData\Local\Microsoft\WindowsApps\winget.exe` | `winget --version` → `v1.29.380` |
 | Python | No instalado | No encontrado en PATH | `Get-Command python` sin resultado |
 | Git | No instalado | No encontrado en PATH | `Get-Command git` sin resultado |
 | WSL | Presente, no configurado | `C:\WINDOWS\system32\wsl.exe` | Ver secciones 5 y 11 |
 | Docker | No instalado | No encontrado en PATH | `Get-Command docker` sin resultado |
 | Node.js | No instalado | No encontrado en PATH | `Get-Command node` sin resultado |
 | npm | No instalado | No encontrado en PATH | `Get-Command npm` sin resultado |
-| Visual Studio Code | Instalado | `C:\Users\juan\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd` | `code --version` → `1.145.2` / commit `c4453f8ea430795f941c1b2ff6c9321135a74a02` |
+| Visual Studio Code | Instalado | `C:\Users\<usuario>\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd` | `code --version` → `1.145.2` / commit `c4453f8ea430795f941c1b2ff6c9321135a74a02` |
 
 **Comandos de verificación:**
 ```powershell
@@ -157,7 +157,7 @@ code --version
 
 | Verificación | Resultado |
 |---|---|
-| Usuario actual | `DESKTOP-L05N1FK\juan` |
+| Usuario actual | `<EQUIPO>\<usuario>` |
 | Sesión elevada (Administrador) | **No** (`IsAdmin=False`) |
 
 **Comando de verificación:**

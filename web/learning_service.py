@@ -217,6 +217,7 @@ def _public_content(value):
         "validator",
         "accepted_answer",
         "answer_field",
+        "example_query",
         "required_terms",
         "correct_feedback",
         "feedback_by_field",
@@ -246,6 +247,13 @@ def get_course(course_id):
         public_course["availability"] = (
             "available" if environment["available"] else "pending_environment"
         )
+        # Las opciones de comando se definen una sola vez, en linux_runtime.
+        question_ids = linux_runtime.question_exercise_ids()
+        for module in public_course["modules"]:
+            for key in ("guided_practice", "independent_practice"):
+                exercise = module[key]
+                if exercise["id"] in question_ids:
+                    exercise["options"] = linux_runtime.exercise_options(exercise["id"])
     return public_course
 
 
@@ -580,11 +588,16 @@ def submit_exercise(payload):
                 correct = Decimal(answer) == Decimal(actual_value)
             except InvalidOperation:
                 correct = False
-            feedback = (
-                f"Correcto: el procesador Python devolvió {actual_value}."
-                if correct
-                else f"El procesador Python devolvió {actual_value}; compara tu respuesta y revisa cómo se filtran las filas."
-            )
+            if correct:
+                feedback = f"Correcto: el procesador Python devolvió {actual_value}."
+            else:
+                # No se revela el valor esperado ni la salida del procesador:
+                # el siguiente intento debe surgir del análisis del alumno.
+                feedback = (
+                    "Tu respuesta no coincide con el resultado del procesador sobre el conjunto local. "
+                    "Revisa qué filas cumplen el filtro y vuelve a calcular."
+                )
+                execution_result = None
             answer_payload = {"answer": answer}
         elif exercise["type"] == "incident_report":
             answer = payload.get("answer")
@@ -596,20 +609,46 @@ def submit_exercise(payload):
                 for key in ("command", "commands", "shell", "script", "cmd", "command_line")
             ):
                 raise ValueError("No se aceptan comandos de consola desde el navegador.")
-            execution_result = linux_runtime.run_exercise(learner_id, exercise["id"])
-            correct = execution_result["passed"]
-            feedback = (
-                "Verificación aprobada: los comandos se ejecutaron realmente en Ubuntu."
-                if correct
-                else execution_result.get(
-                    "feedback",
-                    "La verificación real en Ubuntu falló; revisa la salida y vuelve a intentar.",
+            if exercise.get("question"):
+                answer = _safe_text(payload.get("answer"), "respuesta", 40)
+                if not answer:
+                    raise ValueError("Escribe tu respuesta a la pregunta antes de verificarla.")
+                execution_result = linux_runtime.verify_answer(learner_id, exercise["id"], answer)
+                answer_correct = execution_result.pop("answer_correct", False)
+                correct = bool(execution_result["passed"] and answer_correct)
+                if correct:
+                    feedback = "Correcto: tu respuesta coincide con la salida real que Ubuntu volvió a producir."
+                elif not execution_result["passed"]:
+                    feedback = execution_result.get(
+                        "feedback",
+                        "La verificación real en Ubuntu falló; revisa la salida y vuelve a intentar.",
+                    )
+                else:
+                    # No se muestra la salida de referencia: contiene la respuesta.
+                    feedback = (
+                        "Tu respuesta no coincide con la salida real del log. "
+                        "Vuelve a ejecutar el comando adecuado y lee la salida con atención."
+                    )
+                    execution_result = {
+                        "runtime": execution_result.get("runtime"),
+                        "returncode": execution_result.get("returncode"),
+                    }
+                answer_payload = {"exercise_id": exercise["id"], "answer": answer}
+            else:
+                execution_result = linux_runtime.run_exercise(learner_id, exercise["id"])
+                correct = execution_result["passed"]
+                feedback = (
+                    "Verificación aprobada: los comandos se ejecutaron realmente en Ubuntu."
+                    if correct
+                    else execution_result.get(
+                        "feedback",
+                        "La verificación real en Ubuntu falló; revisa la salida y vuelve a intentar.",
+                    )
                 )
-            )
-            answer_payload = {
-                "exercise_id": exercise["id"],
-                "commands": execution_result.get("commands", []),
-            }
+                answer_payload = {
+                    "exercise_id": exercise["id"],
+                    "commands": execution_result.get("commands", []),
+                }
         else:
             raise ValueError("Tipo de ejercicio no permitido.")
     except ValueError as exc:
@@ -644,6 +683,30 @@ def submit_exercise(payload):
         evidence_kind="exercise_result",
         evidence_summary=f"Ejercicio {exercise['id']}: {'aprobado' if correct else 'requiere repaso'}",
     )
+
+
+def run_linux_option(payload):
+    """Ejecuta una opción permitida de una práctica Linux con pregunta.
+
+    Es exploración: no registra intentos ni aprueba nada. Solo acepta el
+    identificador de la opción; nunca texto de consola.
+    """
+    learner_id = _uuid(payload.get("learner_id"))
+    course = _find_course(payload.get("course_id"))
+    if course["id"] != "linux":
+        raise LookupError("Solo las prácticas Linux ejecutan opciones de comando.")
+    module = _find_module(course, payload.get("module_id"))
+    _assert_module_access(learner_id, course, module, "exercise")
+    exercise = _exercise(module, payload.get("exercise_id"))
+    if exercise["type"] != "linux_command" or not exercise.get("question"):
+        raise ValueError("Esta práctica no tiene opciones de ejecución.")
+    if any(
+        key in payload
+        for key in ("command", "commands", "shell", "script", "cmd", "command_line")
+    ):
+        raise ValueError("No se aceptan comandos de consola desde el navegador.")
+    result = linux_runtime.run_option(learner_id, exercise["id"], payload.get("option_id"))
+    return {"exercise_id": exercise["id"], "execution_result": result}
 
 
 def submit_assessment(payload):
@@ -977,6 +1040,13 @@ def validate_catalog():
                         or any(not isinstance(command, str) or not command for command in exercise["commands"])
                     ):
                         raise ValueError(f"El ejercicio Linux {exercise['id']} no está permitido o no tiene comandos documentados.")
+                    has_question = exercise["id"] in linux_runtime.question_exercise_ids()
+                    if has_question != bool(exercise.get("question")) or (
+                        has_question and not exercise.get("answer_hint")
+                    ):
+                        raise ValueError(
+                            f"El ejercicio Linux {exercise['id']} debe tener pregunta y pista solo si el runtime define opciones."
+                        )
                 elif exercise["type"] not in {"sql_query", "python_result"}:
                     raise ValueError(f"El ejercicio {exercise['id']} tiene un tipo no permitido.")
     catalog_assessment_ids = {

@@ -10,6 +10,7 @@ import signal
 import sqlite3
 import socket
 import subprocess
+import sys
 import threading
 import time
 import urllib.error
@@ -28,7 +29,19 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 WEB_DIR = PROJECT_ROOT / "web"
 LAB_DIR = PROJECT_ROOT / "labs" / "lab01-aws-production-support"
 LAB_SERVER = LAB_DIR / "scripts" / "web_server.py"
-PYTHON = Path(r"C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe")
+def _python_executable():
+    """Intérprete para el LAB: ACADEMYLAB_PYTHON o el ejecutable base del proceso actual.
+
+    Se usa el ejecutable base (no el lanzador de un venv) porque la verificación
+    del PID del LAB compara la ruta real del proceso con esta ruta.
+    """
+    override = os.environ.get("ACADEMYLAB_PYTHON")
+    if override:
+        return Path(override)
+    return Path(getattr(sys, "_base_executable", None) or sys.executable)
+
+
+PYTHON = _python_executable()
 HOST = "127.0.0.1"
 PORT = int(os.environ.get("AWS_ACADEMY_PLATFORM_PORT", "8765"))
 LAB_PORT = int(os.environ.get("AWS_ACADEMY_LAB_PORT", "8766"))
@@ -232,7 +245,7 @@ def _start_lab_locked():
     if _port_is_open(LAB_PORT):
         return False, f"El puerto {LAB_PORT} está ocupado por un servicio no identificado."
     if not PYTHON.is_file():
-        return False, f"No se encontró Python 3.12 en {PYTHON}."
+        return False, f"No se encontró el intérprete Python en {PYTHON}. Revisa ACADEMYLAB_PYTHON."
     if not LAB_SERVER.is_file():
         return False, f"No se encontró el servidor del LAB 01 en {LAB_SERVER}."
 
@@ -600,6 +613,7 @@ class Handler(BaseHTTPRequestHandler):
         self._send(404, {"error": "No encontrado"})
 
     def do_POST(self):
+        global _last_activity
         if not self._local_request():
             self._send(403, {"ok": False, "error": "Solo se permiten solicitudes locales."})
             return
@@ -637,6 +651,8 @@ class Handler(BaseHTTPRequestHandler):
                     result = learning_service.start_course(payload.get("learner_id"), payload.get("course_id"))
                 elif path == "/api/learning/submit-exercise":
                     result = learning_service.submit_exercise(payload)
+                elif path == "/api/learning/run-linux-option":
+                    result = learning_service.run_linux_option(payload)
                 elif path == "/api/learning/submit-assessment":
                     result = learning_service.submit_assessment(payload)
                 elif path == "/api/learning/submit-project":
@@ -690,7 +706,7 @@ class Handler(BaseHTTPRequestHandler):
                     return
                 _pending_sessions.pop(normalized_session, None)
                 _sessions[(normalized_session, str(uuid.UUID(tab_id)))] = time.monotonic()
-                self._last_activity = time.monotonic()
+                _last_activity = time.monotonic()
                 self._send(200, {"ok": True, "idle_timeout_seconds": IDLE_TIMEOUT_SECONDS}, origin)
             return
 

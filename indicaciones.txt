@@ -80,7 +80,7 @@ Linux:
 - web/linux_runtime.py usa WSL y Ubuntu-24.04.
 - Solo ejecuta identificadores allowlisted y scripts fijos.
 - El navegador no puede enviar comandos libres.
-- Los ejercicios usan directorios aislados bajo /home/juan/academyLab.
+- Los ejercicios usan directorios aislados bajo $HOME/academyLab del usuario Ubuntu.
 
 Pruebas:
 - unittest en web/tests/.
@@ -88,9 +88,10 @@ Pruebas:
 
 Dependencias externas:
 - Ninguna dependencia Python externa obligatoria.
-- Python 3.12 indicado en C:\Users\juan\AppData\Local\Programs\Python\Python312.
+- Python 3.12 o superior. Los .bat lo buscan con buscar_python.bat (ACADEMYLAB_PYTHON,
+  py -3.12 o python del PATH); los servidores usan el intérprete que los ejecuta.
 - WSL 2 y Ubuntu 24.04 son requeridos por Linux real.
-- Git no estaba instalado al auditar. No existe todavía un repositorio local.
+- Repositorio Git publicado en github.com/JuanManuelSanchez2022/academyLab (rama main).
 
 5. ESTRUCTURA IMPORTANTE
 
@@ -117,9 +118,8 @@ web/tests/
 labs/lab01-aws-production-support/
   Laboratorio independiente local con analizador, interfaz, datos de prueba,
   evidencias y scripts BAT.
-labs/linux-course/
-  Preparación estática anterior de Linux; el curso integrado funciona mediante
-  el catálogo web y linux_runtime.py.
+labs/linux-course/fixtures/
+  Log sintético que linux_runtime.py copia a Ubuntu para las prácticas Linux.
 docs/
   Arquitectura, evaluación, AWS, procedimientos, troubleshooting y instructivos.
 
@@ -218,7 +218,7 @@ Completado y probado:
 - Navegación de perfiles, niveles y rutas.
 - Catálogo de cursos básicos disponibles.
 - Servidores locales y restricción 127.0.0.1.
-- LAB 01 y sus ocho pruebas.
+- LAB 01 y sus nueve pruebas.
 - Persistencia SQLite básica.
 - Linux real con 14 prácticas y análisis integrador real.
 - Pruebas unitarias y de API educativas.
@@ -283,6 +283,6 @@ Desarrollo:
 6. Revisar docs/INSTRUCTIVO_FUNCIONAMIENTO.txt y docs/especificacion-evaluaciones.md.
 
 Git:
-- Git no estaba instalado en el entorno al auditarlo.
-- Debe instalarse Git/GitHub CLI solo si se necesita publicar.
+- El repositorio oficial es github.com/JuanManuelSanchez2022/academyLab (rama main).
+- Publicar requiere permiso de escritura en ese repositorio o un fork con pull request.
 - No crear visibilidad pública ni subir datos personales sin confirmar el destino.

@@ -126,19 +126,23 @@
         "id": "linux-logs-guided",
         "type": "linux_command",
         "title": "Inspeccionar un log de soporte",
-        "instructions": "Ubuntu lee una copia del fixture sintético del curso; la fuente del proyecto permanece intacta.",
+        "instructions": "Ubuntu lee una copia del fixture sintético del curso; la fuente del proyecto permanece intacta. Primero ejecuta los comandos y lee la salida; después responde la pregunta.",
         "prompt": "Compara inicio y final del log, recórrelo con less y localiza eventos ERROR con números de línea.",
-        "commands": ["head", "tail", "less", "grep -n ERROR"]
+        "commands": ["head", "tail", "less", "grep -n ERROR"],
+        "question": "¿En qué número de línea del log aparece el primer evento ERROR?",
+        "answer_hint": "Escribe solo el número de línea."
       },
       "independent_practice": {
         "id": "linux-logs-independent",
         "type": "linux_command",
         "title": "Encontrar operaciones pendientes",
-        "instructions": "Busca únicamente archivos .log dentro del directorio aislado y correlaciona el estado PENDIENTE.",
-        "prompt": "Localiza el log, encuentra coincidencias PENDIENTE y cuenta cuántos archivos de log hay.",
-        "commands": ["find", "grep -n PENDIENTE", "wc -l"]
+        "instructions": "Elige el comando que te dé la información necesaria y ejecútalo en Ubuntu. Puedes probar varias opciones: ejecutar no cuenta como intento.",
+        "prompt": "Necesitas ubicar, con su número de línea, la última operación PENDIENTE del log para citarla en el ticket.",
+        "commands": ["find", "grep -n PENDIENTE", "grep -c PENDIENTE", "tail -n"],
+        "question": "¿En qué número de línea del log está el último evento PENDIENTE?",
+        "answer_hint": "Escribe solo el número de línea."
       },
-      "verification": "Los comandos se ejecutan realmente en Ubuntu y la salida se guarda en el intento. Las búsquedas deben devolver líneas existentes y la ruta del fixture; no se simula la salida.",
+      "verification": "Los comandos se ejecutan realmente en Ubuntu sobre una copia del log. La práctica se aprueba solo si la respuesta coincide con la salida real que Ubuntu vuelve a producir al verificar; la respuesta correcta no se muestra si te equivocas.",
       "common_errors": [
         {"error": "Interpretar una coincidencia de grep como causa raíz.", "cause": "grep solo busca texto y no correlaciona dependencias.", "recovery": "Cita línea y hora, luego busca señales relacionadas."},
         {"error": "Leer todo un log extenso sin acotar.", "cause": "La salida puede ocultar la evidencia relevante.", "recovery": "Usa head, tail, less y grep con un patrón específico."}

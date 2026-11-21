@@ -591,6 +591,8 @@ main {
 .learning-form legend, .assessment-question legend { padding: 0 5px; color: var(--text); font-weight: 650; }
 .learning-option { display: flex; align-items: flex-start; gap: 10px; margin: 10px 0; color: var(--muted); font-size: 13px; }
 .learning-option input { margin-top: 5px; accent-color: var(--accent); }
+/* Supera a .learning-form input (width: 100%) para que el texto de la opcion quede junto al boton. */
+.learning-option input[type="radio"] { flex: 0 0 auto; width: auto; }
 .learning-form textarea, .learning-form input, .form-field input, .form-field textarea, .form-field select {
   width: 100%;
   padding: 11px 12px;
