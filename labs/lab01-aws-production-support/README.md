@@ -14,7 +14,8 @@ Este laboratorio no se conecta a AWS ni modifica recursos. No requiere credencia
 
 ## Estructura
 - `scripts/analizar_logs.py`: analizador local; mantiene su comportamiento de línea de comandos.
-- `scripts/run_tests.py`: ocho pruebas automatizadas. Escribe sus JSON en una carpeta
+- `scripts/run_tests.py`: nueve pruebas automatizadas, incluida la coherencia entre
+  el CSV de operaciones y el estado actual del log. Escribe sus JSON en una carpeta
   temporal; con `--guardar-evidencia` los guarda en `evidence/`.
 - `scripts/web_server.py`: servidor HTTP dedicado del LAB 01 en `127.0.0.1:8766`.
 - `..\..\web\platform_server.py`: Home en `127.0.0.1:8765`, inicio bajo demanda del LAB y supervisor de sesiones.
@@ -47,7 +48,10 @@ python ".\..\..\web\platform_server.py"
 ## Usar la interfaz
 - El panel muestra el estado del servidor y los resultados de la última ejecución disponible.
 - En **Análisis de logs**, selecciona un archivo `.log` de la lista y pulsa **EJECUTAR ANÁLISIS**. La interfaz indica si está en curso, terminó correctamente o falló, y presenta la salida real del analizador Python.
-- Pulsa **EJECUTAR TODAS LAS PRUEBAS** para lanzar las ocho pruebas existentes. Se muestran los resultados individuales PASS/FAIL y la salida completa.
+- Pulsa **EJECUTAR TODAS LAS PRUEBAS** para lanzar las nueve pruebas existentes. Se muestran los resultados individuales PASS/FAIL y la salida completa.
+- El panel distingue **Con algún evento ERROR** (operaciones que tuvieron al menos un evento ERROR)
+  de **En ERROR ahora** (operaciones cuyo último evento es ERROR).
+- El servidor solo acepta un Host local; los POST de navegador deben provenir de la propia página del LAB.
 - La sección **Evidencia** muestra el JSON de `evidence/resumen_logs.json`. Puedes actualizarlo con **ACTUALIZAR EVIDENCIA**; el estado del servidor y la lista de archivos se actualizan automáticamente cada 30 segundos.
 - Los análisis y las pruebas se serializan. Las pruebas se ejecutan en un directorio temporal para no sobrescribir la evidencia existente.
 - La señal de sesión se envía por pestaña cada 20 segundos. **Continuar practicando** mantiene la pestaña activa; **Detener laboratorio y volver al inicio** cierra su sesión. Si otras pestañas siguen activas, el servidor continúa funcionando.

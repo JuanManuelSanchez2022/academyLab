@@ -219,7 +219,7 @@ Completado y probado:
 - Navegación de perfiles, niveles y rutas.
 - Catálogo de cursos básicos disponibles.
 - Servidores locales y restricción 127.0.0.1.
-- LAB 01 y sus ocho pruebas.
+- LAB 01 y sus nueve pruebas.
 - Persistencia SQLite básica.
 - Linux real con 14 prácticas y análisis integrador real.
 - Pruebas unitarias y de API educativas.

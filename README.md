@@ -36,7 +36,7 @@ se emiten certificaciones.
 ## Laboratorio LAB 01
 
 LAB 01 — AWS Production Support es un recurso independiente para analizar logs y
-ejecutar ocho pruebas automatizadas del analizador. Se inicia bajo demanda desde
+ejecutar nueve pruebas automatizadas del analizador. Se inicia bajo demanda desde
 la plataforma en `127.0.0.1:8766`; el servidor principal permanece en
 `127.0.0.1:8765`.
 
