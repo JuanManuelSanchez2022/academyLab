@@ -2,12 +2,12 @@
 setlocal
 cd /d "%~dp0"
 
-set "PYTHON=C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe"
+call "%~dp0buscar_python.bat"
 set "SERVER=%~dp0scripts\web_server.py"
 
-if not exist "%PYTHON%" (
-    echo ERROR: No se encontro Python 3.12 en:
-    echo %PYTHON%
+if not defined PYTHON (
+    echo ERROR: No se encontro Python 3.12 o superior.
+    echo Instala Python 3.12 o define ACADEMYLAB_PYTHON con la ruta de python.exe.
     pause
     exit /b 1
 )

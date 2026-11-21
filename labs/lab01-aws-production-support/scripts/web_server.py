@@ -4,6 +4,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -12,7 +13,12 @@ from urllib.parse import urlparse
 
 BASE = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = BASE.parent.parent
-PY = Path(r"C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe")
+# ACADEMYLAB_PYTHON o el ejecutable base del proceso actual (mismo criterio que la plataforma).
+PY = Path(
+    os.environ.get("ACADEMYLAB_PYTHON")
+    or getattr(sys, "_base_executable", None)
+    or sys.executable
+)
 SCRIPT_ANALYZER = BASE / "scripts" / "analizar_logs.py"
 SCRIPT_TESTS = BASE / "scripts" / "run_tests.py"
 TEST_DIR = BASE / "data" / "test"

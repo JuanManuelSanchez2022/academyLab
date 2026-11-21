@@ -10,8 +10,7 @@ escenarios y datos sintéticos; no se conecta a cuentas AWS.
 2. Abre Microsoft Edge en `http://127.0.0.1:8765`.
 3. Selecciona **Cloud / Production Support** y luego un nivel.
 
-Requisitos: Windows, Python 3.12 en
-`C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe` y Ubuntu
+Requisitos: Windows, Python 3.12 o superior y Ubuntu
 24.04 en WSL 2 para las prácticas Linux. No se requieren paquetes Python
 adicionales, Docker ni credenciales AWS.
 
@@ -62,7 +61,8 @@ ni el archivo de la base como si fuera un sistema multiusuario.
 Pruebas del servicio educativo y de la API:
 
 ```powershell
-& 'C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe' -m unittest discover -s web\tests -v
+python -m unittest discover -s web\tests -v
+python labs\lab01-aws-production-support\scripts\run_tests.py
 ```
 
 Consulta:
