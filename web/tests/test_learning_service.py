@@ -595,9 +595,9 @@ class LearningServiceTests(unittest.TestCase):
             len([item for item in progress["attempts"] if item["course_id"] == "linux" and item["activity_type"] == "exercise"]),
             14,
         )
-        # Piloto: las dos prácticas del módulo de logs se aprueban respondiendo la pregunta.
-        self.assertEqual(verify_answer.call_count, 2)
-        self.assertEqual(run_exercise.call_count, 12)
+        # Las 14 prácticas se aprueban respondiendo la pregunta; ninguna solo con ejecutar.
+        self.assertEqual(verify_answer.call_count, 14)
+        run_exercise.assert_not_called()
 
 
     def test_project_keeps_six_verified_criteria_blocked_by_linux(self):

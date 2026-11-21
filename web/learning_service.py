@@ -610,7 +610,7 @@ def submit_exercise(payload):
             ):
                 raise ValueError("No se aceptan comandos de consola desde el navegador.")
             if exercise.get("question"):
-                answer = _safe_text(payload.get("answer"), "respuesta", 40)
+                answer = _safe_text(payload.get("answer"), "respuesta", 250)
                 if not answer:
                     raise ValueError("Escribe tu respuesta a la pregunta antes de verificarla.")
                 execution_result = linux_runtime.verify_answer(learner_id, exercise["id"], answer)

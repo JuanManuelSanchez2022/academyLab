@@ -1,5 +1,64 @@
 # Registro de cambios de academyLab
 
+## 2026-11-21 — Fase 5: las 14 prácticas Linux exigen responder a partir de la salida real
+
+Extiende a las 12 prácticas restantes el formato del piloto de la Fase 3. Se hizo antes de
+probar el piloto en Ubuntu real, por decisión del responsable técnico.
+
+### Preguntas
+| Práctica | Opciones | Pregunta (la respuesta sale de la salida real) |
+|---|---|---|
+| `linux-paths-guided` | 1 | Ruta absoluta del HOME (depende del alumno) |
+| `linux-paths-independent` | 3 | Ruta absoluta a la que lleva `cd ../relative` |
+| `linux-files-guided` | 1 | Bytes de `files/renamed.txt` según `ls -l` (18) |
+| `linux-files-independent` | 3 | Archivos que quedan en `files/` (3: la preparación crea archivos que las opciones no mencionan) |
+| `linux-streams-guided` | 1 | Primera operación agregada con `>>` (LINUX-1003) |
+| `linux-streams-independent` | 4 | Líneas ERROR o PENDIENTE (9) |
+| `linux-permissions-guided` | 1 | Permisos antes de `chmod` (dependen del umask del alumno) |
+| `linux-permissions-independent` | 3 | `usuario:grupo` del archivo (depende del alumno) |
+| `linux-processes-guided` | 1 | Nombre del comando de la shell según `ps` (bash) |
+| `linux-processes-independent` | 3 | Código de salida de `wait` tras `kill` (143) |
+| `linux-env-guided` | 1 | Cantidad de entradas de PATH (depende del entorno) |
+| `linux-env-independent` | 4 | Sistema de archivos del HOME según `df` (depende del entorno) |
+
+### Cambios técnicos
+- `web/linux_runtime.py`:
+  - Las 14 prácticas usan opciones.
+  - Nuevo campo `setup`, que se antepone a cada opción y a la verificación. Prepara el estado
+    del espacio aislado sin mostrarlo en las opciones.
+  - Las rutas se comparan ignorando la barra final.
+  - Corrige el conteo de entradas de PATH: antes `wc -l` contaba una de menos.
+  - `run_exercise` queda solo como protección: ya no hay prácticas sin pregunta.
+- `web/learning_service.py` y `web/learning/course.js`: la respuesta admite hasta 250
+  caracteres, porque las rutas absolutas incluyen el identificador del alumno.
+- `web/catalog/linux_basic.json`: instrucciones, preguntas, pistas y verificación de 6 módulos.
+- Docs: `README.md` y `docs/especificacion-evaluaciones.md`. Los registros fechados del
+  INSTRUCTIVO y de la guía de uso («14 prácticas PASS el 19/11») no se modificaron: describen
+  los scripts anteriores.
+
+### Pruebas
+- `test_linux_questions.py`:
+  - Las 14 prácticas tienen pregunta y pista, y sus opciones salen del runtime.
+  - Las independientes ofrecen más de 2 opciones.
+  - El catálogo público no expone `setup`, `answer_script` ni los marcadores.
+  - Las definiciones del runtime son coherentes.
+  - `setup` precede a las opciones y a la referencia.
+  - Las rutas se comparan sin la barra final.
+- `test_learning_service.py`: completar Linux exige 14 respuestas verificadas y ninguna
+  ejecución sin pregunta.
+- Suite web: 49/49. LAB 01: 9/9.
+
+### Verificación y límites
+- Ejecuté los scripts exactos con Git Bash: todas las opciones y las verificaciones de
+  **11 de 14** prácticas terminan bien, la respuesta correcta se acepta, una incorrecta se
+  rechaza y el marcador no aparece en la salida visible.
+- No se pueden probar en Git Bash, porque dependen de Linux real:
+  - `linux-permissions-guided`: en NTFS, `chmod` no cambia el modo.
+  - `linux-processes-guided` y la opción `ver-proceso` de `linux-processes-independent`:
+    el `ps` de MSYS no admite `-o`.
+- **No verificado en Ubuntu/WSL real**: este equipo no tiene WSL. Hay que probar las 14
+  prácticas en Ubuntu 24.04 antes de aceptar este cambio.
+
 ## 2026-11-21 — Fase 4: limpieza (código muerto, datos de equipos y nombres de referencia)
 
 Decisiones autorizadas por el responsable técnico antes del cambio.

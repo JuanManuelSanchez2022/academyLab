@@ -1,4 +1,4 @@
-"""Fase 3 (piloto): prácticas Linux que exigen ejecutar y responder una pregunta."""
+"""Fases 3 y 5: prácticas Linux que exigen ejecutar y responder una pregunta."""
 import sys
 import tempfile
 import unittest
@@ -23,7 +23,6 @@ AVAILABLE = {
     "home": "/home/test",
 }
 PILOT_MODULE = "linux-log-investigation"
-PILOT_EXERCISES = {"linux-logs-guided", "linux-logs-independent"}
 
 
 def reference_result(answer_correct, passed=True, stdout="22:2026-01-15T10:21:46Z operacion=LINUX-1022 estado=PENDIENTE\n"):
@@ -71,23 +70,23 @@ class LinuxQuestionServiceTests(unittest.TestCase):
             if item["course_id"] == "linux"
         ]
 
-    def test_catalog_marks_only_the_pilot_and_options_come_from_the_runtime(self):
-        self.assertEqual(linux_runtime.question_exercise_ids(), PILOT_EXERCISES)
+    def test_every_linux_practice_has_a_question_and_options_come_from_the_runtime(self):
         course = learning_service.get_course("linux")
+        exercise_ids = set()
         for module in course["modules"]:
             for key in ("guided_practice", "independent_practice"):
                 exercise = module[key]
-                if exercise["id"] in PILOT_EXERCISES:
-                    self.assertTrue(exercise["question"])
-                    self.assertEqual(exercise["options"], linux_runtime.exercise_options(exercise["id"]))
-                    serialized = repr(exercise)
-                    for secret in ("answer_script", "reference_option", "answer_pattern", "cut -d"):
-                        self.assertNotIn(secret, serialized)
-                else:
-                    self.assertNotIn("question", exercise)
-                    self.assertNotIn("options", exercise)
-        independent = linux_runtime.exercise_options("linux-logs-independent")
-        self.assertGreater(len(independent), 1, "La práctica independiente debe obligar a elegir.")
+                exercise_ids.add(exercise["id"])
+                self.assertTrue(exercise["question"], exercise["id"])
+                self.assertTrue(exercise["answer_hint"], exercise["id"])
+                self.assertEqual(exercise["options"], linux_runtime.exercise_options(exercise["id"]))
+                serialized = repr(exercise)
+                for secret in ("answer_script", "reference_option", "answer_pattern", "setup", "__ACADEMY"):
+                    self.assertNotIn(secret, serialized)
+                if key == "independent_practice":
+                    self.assertGreater(len(exercise["options"]), 2, f"{exercise['id']} debe obligar a elegir.")
+        self.assertEqual(len(exercise_ids), 14)
+        self.assertEqual(linux_runtime.question_exercise_ids(), exercise_ids)
 
     def test_pilot_cannot_be_approved_by_just_pressing_the_button(self):
         with (
@@ -170,10 +169,11 @@ class LinuxQuestionServiceTests(unittest.TestCase):
         self.assertEqual(result["execution_result"]["stdout"], "3\n")
         self.assertEqual(self.linux_attempts(), [])
 
-    def test_running_options_respects_module_order_and_legacy_practices(self):
+    def test_running_options_respects_module_order_and_other_courses(self):
         # El módulo de logs sigue bloqueado hasta aprobar los anteriores.
         with self.assertRaises(progress_store.LearningAccessError):
             learning_service.run_linux_option(self.payload(option_id="grep-n"))
+        # Las opciones de una práctica no sirven para otra.
         with mock.patch.object(learning_service, "_assert_module_access"):
             with self.assertRaises(ValueError):
                 learning_service.run_linux_option({
@@ -181,10 +181,41 @@ class LinuxQuestionServiceTests(unittest.TestCase):
                     "module_id": "linux-foundations",
                     "exercise_id": "linux-paths-guided",
                 })
+        with self.assertRaises(LookupError):
+            learning_service.run_linux_option({**self.payload(option_id="grep-n"), "course_id": "sql"})
 
 
 class LinuxRuntimeQuestionTests(unittest.TestCase):
     learner_id = str(uuid.uuid4())
+
+    def test_every_runtime_definition_is_consistent(self):
+        import re
+        for exercise_id, exercise in linux_runtime._EXERCISES.items():
+            with self.subTest(exercise_id):
+                self.assertIn(exercise["reference_option"], exercise["options"])
+                re.compile(exercise["answer_pattern"])
+                self.assertTrue(exercise["answer_script"].strip())
+                for option_id, option in exercise["options"].items():
+                    self.assertRegex(option_id, r"^[a-z0-9-]{1,40}$")
+                    self.assertTrue(option["label"] and option["script"].endswith("\n"))
+                self.assertTrue(exercise.get("setup", "\n").endswith("\n"))
+
+    def test_setup_runs_before_options_and_before_the_reference(self):
+        result = {"passed": True, "returncode": 0, "stdout": "__ACADEMY_ANSWER__=3\n", "stderr": "", "runtime": "k"}
+        # side_effect: cada llamada recibe su propio dict (run_option modifica stdout).
+        with mock.patch.object(linux_runtime, "_execute_in_workspace", side_effect=lambda *a: dict(result)) as execute:
+            linux_runtime.run_option(self.learner_id, "linux-files-independent", "ver-contenido")
+            option_body = execute.call_args.args[2]
+            output = linux_runtime.verify_answer(self.learner_id, "linux-files-independent", "3")
+            verify_body = execute.call_args.args[2]
+        setup = linux_runtime._EXERCISES["linux-files-independent"]["setup"]
+        self.assertTrue(option_body.startswith(setup))
+        self.assertTrue(verify_body.startswith(setup))
+        self.assertTrue(output["answer_correct"])
+
+    def test_paths_ignore_a_trailing_slash(self):
+        self.assertTrue(linux_runtime._answers_match("/home/a/", "/home/a", r"/[a-z/]+"))
+        self.assertFalse(linux_runtime._answers_match("/home/b", "/home/a", r"/[a-z/]+"))
 
     def test_unknown_options_and_legacy_paths_are_rejected_before_touching_ubuntu(self):
         with mock.patch.object(linux_runtime, "_execute_in_workspace") as execute:

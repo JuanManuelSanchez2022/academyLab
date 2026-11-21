@@ -11,12 +11,13 @@ de comandos predefinidos; su disponibilidad depende de comprobar Ubuntu en WSL 2
 un usuario no root y las herramientas requeridas. Hasta esa comprobación no se
 ejecutan prácticas ni se otorga la competencia operativa.
 
-Piloto de la Fase 3 (módulo `linux-log-investigation`): sus dos prácticas no se
-aprueban al ejecutar. El alumno elige una opción de comando permitida, lee la
-salida real y responde una pregunta; el servidor vuelve a ejecutar en Ubuntu la
-opción de referencia y compara la respuesta con esa salida. Ejecutar opciones no
-cuenta como intento y una respuesta incorrecta no revela el valor esperado. Las
-otras 12 prácticas conservan el criterio anterior (ejecución correcta del script).
+Desde las Fases 3 y 5, ninguna de las 14 prácticas Linux se aprueba solo con
+ejecutar. El alumno elige una opción de comando permitida, lee la salida real y
+responde una pregunta; el servidor vuelve a ejecutar en Ubuntu la opción de
+referencia y compara la respuesta con esa salida. Cuando es posible, la respuesta
+depende del entorno real del alumno (HOME, usuario y grupo, umask, PATH, sistema
+de archivos). Ejecutar opciones no cuenta como intento y una respuesta incorrecta
+no revela el valor esperado.
 
 Intermedio y Avanzado permanecen bloqueados por requisitos previos. El proyecto
 integrador Básico exige las cinco competencias disponibles previas. Sus

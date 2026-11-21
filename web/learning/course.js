@@ -188,7 +188,7 @@ function buildLinuxQuestionForm(module, exercise) {
   const input = document.createElement("input");
   input.type = "text";
   input.name = "answer";
-  input.maxLength = 40;
+  input.maxLength = 250;
   input.autocomplete = "off";
   input.required = true;
   input.placeholder = exercise.answer_hint;
