@@ -4,6 +4,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -12,7 +13,12 @@ from urllib.parse import urlparse
 
 BASE = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = BASE.parent.parent
-PY = Path(r"C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe")
+# ACADEMYLAB_PYTHON o el ejecutable base del proceso actual (mismo criterio que la plataforma).
+PY = Path(
+    os.environ.get("ACADEMYLAB_PYTHON")
+    or getattr(sys, "_base_executable", None)
+    or sys.executable
+)
 SCRIPT_ANALYZER = BASE / "scripts" / "analizar_logs.py"
 SCRIPT_TESTS = BASE / "scripts" / "run_tests.py"
 TEST_DIR = BASE / "data" / "test"
@@ -96,6 +102,9 @@ def run_tests():
             isolated_tests = isolated_scripts / SCRIPT_TESTS.name
             shutil.copy2(SCRIPT_TESTS, isolated_tests)
             shutil.copytree(TEST_DIR, isolated_data / "test")
+            # La prueba de coherencia CSV/log usa los datos de ejemplo del LAB.
+            shutil.copytree(BASE / "data" / "sample_logs", isolated_data / "sample_logs")
+            shutil.copytree(BASE / "data" / "synthetic", isolated_data / "synthetic")
             proc = subprocess.run(
                 [str(PY), str(isolated_tests)],
                 capture_output=True, text=True, timeout=300, cwd=str(isolated_base)
@@ -154,7 +163,28 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError, json.JSONDecodeError, UnicodeDecodeError) as exc:
             return None, str(exc)
 
+    def _local_request(self):
+        """Acepta solo clientes locales con un Host local (mitiga DNS rebinding)."""
+        if self.client_address[0] != "127.0.0.1":
+            return False
+        host = self.headers.get("Host", "").split(":", 1)[0].strip("[]").lower()
+        return host in {"127.0.0.1", "localhost"}
+
+    def _origin_allowed(self):
+        """Un POST de navegador debe venir de la propia página del LAB.
+
+        Las solicitudes sin Origin (scripts locales, curl) se aceptan; los navegadores
+        siempre envían Origin en un POST, así que una página externa queda rechazada.
+        """
+        origin = self.headers.get("Origin")
+        if origin is None:
+            return True
+        return origin in {f"http://127.0.0.1:{PORT}", f"http://localhost:{PORT}"}
+
     def do_GET(self):
+        if not self._local_request():
+            self._send(403, {"error": "Solo se permiten solicitudes locales."})
+            return
         path = urlparse(self.path).path
         if path in REDIRECTS:
             self.send_response(301)
@@ -209,6 +239,12 @@ class Handler(BaseHTTPRequestHandler):
             self._send(404, {"error": "No encontrado"})
 
     def do_POST(self):
+        if not self._local_request():
+            self._send(403, {"ok": False, "error": "Solo se permiten solicitudes locales."})
+            return
+        if not self._origin_allowed():
+            self._send(403, {"ok": False, "error": "Origen no permitido."})
+            return
         path = urlparse(self.path).path
         payload, error = self._read_json()
         if error:

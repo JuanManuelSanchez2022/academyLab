@@ -55,7 +55,7 @@ contra reglas del escenario.
 ### Laboratorio verificable
 
 Debe definir requisitos, acciones permitidas, estado inicial, verificaciones y
-limpieza segura. LAB 01 conserva su propio analizador de logs y ocho pruebas
+limpieza segura. LAB 01 conserva su propio analizador de logs y nueve pruebas
 técnicas. Las pruebas del programa no cuentan como evaluación ni otorgan una
 competencia del alumno. Linux ejecuta únicamente secuencias allowlisted por el
 servidor, dentro de un directorio dedicado por alumno y ejercicio, con límite de

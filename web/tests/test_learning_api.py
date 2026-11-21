@@ -172,6 +172,27 @@ class LearningApiSecurityTests(unittest.TestCase):
         self.assertEqual(len(restored["progress"]["attempts"]), 1)
         self.assertEqual(restored["progress"]["attempts"][0]["attempt_number"], 1)
 
+    def test_lab_heartbeat_updates_the_shared_last_activity(self):
+        session_id = str(uuid.uuid4())
+        tab_id = str(uuid.uuid4())
+        original_activity = platform_server._last_activity
+        platform_server._last_activity = 0.0
+        platform_server._pending_sessions[session_id] = platform_server.time.monotonic()
+        try:
+            with mock.patch.object(platform_server, "_lab_is_managed", return_value=True):
+                status, payload, _ = self._request(
+                    self.client_a,
+                    "/api/lab/heartbeat",
+                    {"session_id": session_id, "tab_id": tab_id},
+                )
+            self.assertEqual(status, 200)
+            self.assertTrue(payload["ok"])
+            self.assertGreater(platform_server._last_activity, 0.0)
+        finally:
+            platform_server._pending_sessions.pop(session_id, None)
+            platform_server._sessions.pop((session_id, tab_id), None)
+            platform_server._last_activity = original_activity
+
 
 if __name__ == "__main__":
     unittest.main()

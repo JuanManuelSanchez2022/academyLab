@@ -316,7 +316,7 @@
           "availability": "available",
           "level_ids": ["basic"],
           "url": "/courses/aws-production-support/",
-          "description": "Laboratorio local operativo de análisis de logs, evidencia JSON y ocho pruebas automatizadas. No realiza operaciones AWS."
+          "description": "Laboratorio local operativo de análisis de logs, evidencia JSON y nueve pruebas automatizadas. No realiza operaciones AWS."
         }
       ]
     }
