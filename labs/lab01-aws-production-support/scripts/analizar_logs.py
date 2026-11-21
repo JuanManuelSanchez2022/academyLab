@@ -12,6 +12,16 @@ LINE_RE = re.compile(
     r'causa="(?P<causa>[^"]*)"'
 )
 ESTADOS_VALIDOS = {"OK", "ERROR", "PENDIENTE"}
+LAB_DIR = Path(__file__).resolve().parent.parent
+
+
+def ruta_para_evidencia(path):
+    """Ruta relativa a la carpeta del LAB; evita guardar rutas personales en la evidencia."""
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(LAB_DIR).as_posix()
+    except ValueError:
+        return resolved.name
 
 
 def parse_line(line):
@@ -65,8 +75,18 @@ def analyze(path):
     importe_error = round(sum(e["importe"] for e in events if e["estado"] == "ERROR"), 2)
     importe_pendiente = round(sum(e["importe"] for e in events if e["estado"] == "PENDIENTE"), 2)
 
+    # Estado actual: el último evento de cada operación (por marca de tiempo y, ante empate, por línea).
+    estado_actual = {}
+    for op, evs in by_operacion.items():
+        ultimo = max(evs, key=lambda e: (e["ts"], e["linea"]))
+        estado_actual[op] = {"estado": ultimo["estado"], "importe": ultimo["importe"], "causa": ultimo["causa"], "ts": ultimo["ts"]}
+    conteo_actual = Counter(info["estado"] for info in estado_actual.values())
+    importe_actual = defaultdict(float)
+    for info in estado_actual.values():
+        importe_actual[info["estado"]] += info["importe"]
+
     resumen = {
-        "archivo": str(path),
+        "archivo": ruta_para_evidencia(path),
         "total_eventos_parseados": len(events),
         "lineas_no_parseadas": len(parse_errors),
         "conteo_por_estado": dict(by_estado),
@@ -76,6 +96,11 @@ def analyze(path):
         "importe_total_eventos_error": importe_error,
         "importe_total_eventos_pendiente": importe_pendiente,
         "alerta": {"hay_errores": len(error_ops) > 0, "hay_pendientes": len(pendiente_ops) > 0},
+        "estado_actual_por_operacion": dict(sorted(estado_actual.items())),
+        "conteo_operaciones_por_estado_actual": dict(sorted(conteo_actual.items())),
+        "importe_operaciones_por_estado_actual": {
+            estado: round(total, 2) for estado, total in sorted(importe_actual.items())
+        },
     }
     if parse_errors:
         resumen["detalle_no_parseadas"] = parse_errors
@@ -108,6 +133,11 @@ def print_summary(resumen):
     print("\nImportes totales (eventos):")
     print(f"  - ERROR: {resumen['importe_total_eventos_error']}")
     print(f"  - PENDIENTE: {resumen['importe_total_eventos_pendiente']}")
+    print("\nEstado actual (ultimo evento de cada operacion):")
+    for estado, cnt in resumen["conteo_operaciones_por_estado_actual"].items():
+        importe = resumen["importe_operaciones_por_estado_actual"][estado]
+        ops = sorted(op for op, info in resumen["estado_actual_por_operacion"].items() if info["estado"] == estado)
+        print(f"  - {estado}: {cnt} operaciones, importe {importe}: {', '.join(ops)}")
     print(f"\nAlerta: hay_errores={resumen['alerta']['hay_errores']} hay_pendientes={resumen['alerta']['hay_pendientes']}")
 
 

@@ -1,3 +1,4 @@
+import json
 import sys
 import tempfile
 import unittest
@@ -64,6 +65,9 @@ class LearningServiceTests(unittest.TestCase):
             payload["answer"] = str(
                 output["counts"][field] if field == "ERROR" else output[field]
             )
+        elif exercise["type"] == "linux_command" and exercise.get("question"):
+            # El valor real lo decide la salida de Ubuntu; aquí verify_answer está simulado.
+            payload["answer"] = "7"
         elif exercise["type"] == "incident_report":
             payload["answer"] = {
                 **exercise["accepted_answer"],
@@ -74,6 +78,18 @@ class LearningServiceTests(unittest.TestCase):
         result = learning_service.submit_exercise(payload)
         self.assertTrue(result["passed"], result["feedback"])
         return result
+
+    @staticmethod
+    def verified_answer(_learner_id, exercise_id, _answer):
+        return {
+            "passed": True,
+            "answer_correct": True,
+            "exercise_id": exercise_id,
+            "commands": ["allowlisted reference"],
+            "stdout": f"{exercise_id} reference-output\n",
+            "stderr": "",
+            "runtime": "test-kernel",
+        }
 
     def complete_course(self, learner_id, course_id):
         course = next(
@@ -555,7 +571,12 @@ class LearningServiceTests(unittest.TestCase):
                 learning_service.linux_runtime,
                 "run_exercise",
                 side_effect=verified_run,
-            ),
+            ) as run_exercise,
+            mock.patch.object(
+                learning_service.linux_runtime,
+                "verify_answer",
+                side_effect=self.verified_answer,
+            ) as verify_answer,
         ):
             progress = self.complete_course(self.learner_id, "linux")
 
@@ -574,6 +595,9 @@ class LearningServiceTests(unittest.TestCase):
             len([item for item in progress["attempts"] if item["course_id"] == "linux" and item["activity_type"] == "exercise"]),
             14,
         )
+        # Las 14 prácticas se aprueban respondiendo la pregunta; ninguna solo con ejecutar.
+        self.assertEqual(verify_answer.call_count, 14)
+        run_exercise.assert_not_called()
 
 
     def test_project_keeps_six_verified_criteria_blocked_by_linux(self):
@@ -662,7 +686,12 @@ class LearningServiceTests(unittest.TestCase):
                 learning_service.linux_runtime,
                 "run_exercise",
                 side_effect=verified_run,
-            ),
+            ) as run_exercise,
+            mock.patch.object(
+                learning_service.linux_runtime,
+                "verify_answer",
+                side_effect=self.verified_answer,
+            ) as verify_answer,
         ):
             self.complete_course(self.learner_id, course["id"])
 
@@ -721,6 +750,38 @@ class LearningServiceTests(unittest.TestCase):
 
         progress = progress_store.get_progress(self.learner_id)
         self.assertFalse(progress["attempts"])
+
+    def test_public_sql_course_does_not_expose_example_queries(self):
+        raw_course, _ = self.course_module("sql")
+        public_course = learning_service.get_course("sql")
+        serialized = json.dumps(public_course, ensure_ascii=False)
+        self.assertNotIn("example_query", serialized)
+        for module in raw_course["modules"]:
+            for key in ("guided_practice", "independent_practice"):
+                query = module[key].get("example_query")
+                if query:
+                    self.assertNotIn(query, serialized)
+
+    def test_wrong_python_answer_does_not_reveal_the_expected_value(self):
+        course, module = self.course_module("python")
+        learning_service.start_course(self.learner_id, course["id"])
+        exercise = module["guided_practice"]
+        expected = str(learning_service._python_processor(
+            exercise["processor"],
+            learning_service.COURSE_DATA / "basic_operations.csv",
+        )["counts"]["ERROR"])
+        result = learning_service.submit_exercise({
+            "learner_id": self.learner_id,
+            "course_id": course["id"],
+            "module_id": module["id"],
+            "exercise_id": exercise["id"],
+            "answer": "999",
+        })
+        self.assertFalse(result["passed"])
+        self.assertIsNone(result["execution_result"])
+        self.assertNotIn(expected, result["feedback"])
+        progress = json.dumps(progress_store.get_progress(self.learner_id), ensure_ascii=False)
+        self.assertNotIn("counts", progress)
 
 
 if __name__ == "__main__":

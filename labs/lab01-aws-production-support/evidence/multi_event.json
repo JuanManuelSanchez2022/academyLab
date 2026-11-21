@@ -1,5 +1,5 @@
 {
-  "archivo": "C:\\dev\\academyLab\\labs\\lab01-aws-production-support\\data\\test\\multi_event.log",
+  "archivo": "data/test/multi_event.log",
   "total_eventos_parseados": 9,
   "lineas_no_parseadas": 0,
   "conteo_por_estado": {
@@ -65,5 +65,47 @@
   "alerta": {
     "hay_errores": true,
     "hay_pendientes": true
+  },
+  "estado_actual_por_operacion": {
+    "OP-1001": {
+      "estado": "OK",
+      "importe": 150.0,
+      "causa": "ok",
+      "ts": "2026-11-10T10:00:01Z"
+    },
+    "OP-1002": {
+      "estado": "PENDIENTE",
+      "importe": 980.5,
+      "causa": "reintento",
+      "ts": "2026-11-10T10:02:03Z"
+    },
+    "OP-1003": {
+      "estado": "ERROR",
+      "importe": 45.0,
+      "causa": "fallo",
+      "ts": "2026-11-10T10:04:10Z"
+    },
+    "OP-1004": {
+      "estado": "OK",
+      "importe": 210.0,
+      "causa": "ok",
+      "ts": "2026-11-10T10:06:30Z"
+    },
+    "OP-1005": {
+      "estado": "PENDIENTE",
+      "importe": 1200.0,
+      "causa": "otro importe",
+      "ts": "2026-11-10T10:08:41Z"
+    }
+  },
+  "conteo_operaciones_por_estado_actual": {
+    "ERROR": 1,
+    "OK": 2,
+    "PENDIENTE": 2
+  },
+  "importe_operaciones_por_estado_actual": {
+    "ERROR": 45.0,
+    "OK": 360.0,
+    "PENDIENTE": 2180.5
   }
 }

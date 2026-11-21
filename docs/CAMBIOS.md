@@ -1,0 +1,252 @@
+# Registro de cambios de academyLab
+
+## 2026-11-21 — Fase 5: las 14 prácticas Linux exigen responder a partir de la salida real
+
+Extiende a las 12 prácticas restantes el formato del piloto de la Fase 3. Se hizo antes de
+probar el piloto en Ubuntu real, por decisión del responsable técnico.
+
+### Preguntas
+| Práctica | Opciones | Pregunta (la respuesta sale de la salida real) |
+|---|---|---|
+| `linux-paths-guided` | 1 | Ruta absoluta del HOME (depende del alumno) |
+| `linux-paths-independent` | 3 | Ruta absoluta a la que lleva `cd ../relative` |
+| `linux-files-guided` | 1 | Bytes de `files/renamed.txt` según `ls -l` (18) |
+| `linux-files-independent` | 3 | Archivos que quedan en `files/` (3: la preparación crea archivos que las opciones no mencionan) |
+| `linux-streams-guided` | 1 | Primera operación agregada con `>>` (LINUX-1003) |
+| `linux-streams-independent` | 4 | Líneas ERROR o PENDIENTE (9) |
+| `linux-permissions-guided` | 1 | Permisos antes de `chmod` (dependen del umask del alumno) |
+| `linux-permissions-independent` | 3 | `usuario:grupo` del archivo (depende del alumno) |
+| `linux-processes-guided` | 1 | Nombre del comando de la shell según `ps` (bash) |
+| `linux-processes-independent` | 3 | Código de salida de `wait` tras `kill` (143) |
+| `linux-env-guided` | 1 | Cantidad de entradas de PATH (depende del entorno) |
+| `linux-env-independent` | 4 | Sistema de archivos del HOME según `df` (depende del entorno) |
+
+### Cambios técnicos
+- `web/linux_runtime.py`:
+  - Las 14 prácticas usan opciones.
+  - Nuevo campo `setup`, que se antepone a cada opción y a la verificación. Prepara el estado
+    del espacio aislado sin mostrarlo en las opciones.
+  - Las rutas se comparan ignorando la barra final.
+  - Corrige el conteo de entradas de PATH: antes `wc -l` contaba una de menos.
+  - `run_exercise` queda solo como protección: ya no hay prácticas sin pregunta.
+- `web/learning_service.py` y `web/learning/course.js`: la respuesta admite hasta 250
+  caracteres, porque las rutas absolutas incluyen el identificador del alumno.
+- `web/catalog/linux_basic.json`: instrucciones, preguntas, pistas y verificación de 6 módulos.
+- Docs: `README.md` y `docs/especificacion-evaluaciones.md`. Los registros fechados del
+  INSTRUCTIVO y de la guía de uso («14 prácticas PASS el 19/11») no se modificaron: describen
+  los scripts anteriores.
+
+### Pruebas
+- `test_linux_questions.py`:
+  - Las 14 prácticas tienen pregunta y pista, y sus opciones salen del runtime.
+  - Las independientes ofrecen más de 2 opciones.
+  - El catálogo público no expone `setup`, `answer_script` ni los marcadores.
+  - Las definiciones del runtime son coherentes.
+  - `setup` precede a las opciones y a la referencia.
+  - Las rutas se comparan sin la barra final.
+- `test_learning_service.py`: completar Linux exige 14 respuestas verificadas y ninguna
+  ejecución sin pregunta.
+- Suite web: 49/49. LAB 01: 9/9.
+
+### Verificación y límites
+- Ejecuté los scripts exactos con Git Bash: todas las opciones y las verificaciones de
+  **11 de 14** prácticas terminan bien, la respuesta correcta se acepta, una incorrecta se
+  rechaza y el marcador no aparece en la salida visible.
+- No se pueden probar en Git Bash, porque dependen de Linux real:
+  - `linux-permissions-guided`: en NTFS, `chmod` no cambia el modo.
+  - `linux-processes-guided` y la opción `ver-proceso` de `linux-processes-independent`:
+    el `ps` de MSYS no admite `-o`.
+- **No verificado en Ubuntu/WSL real**: este equipo no tiene WSL. Hay que probar las 14
+  prácticas en Ubuntu 24.04 antes de aceptar este cambio.
+
+## 2026-11-21 — Fase 4: limpieza (código muerto, datos de equipos y nombres de referencia)
+
+Decisiones autorizadas por el responsable técnico antes del cambio.
+
+### Código muerto
+- Se eliminaron `labs/linux-course/index.html`, `linux-course.css`, `linux-course.js` y
+  `modules.js`: era una interfaz estática anterior que ningún servidor publicaba. El curso Linux
+  funciona con el catálogo web y `web/linux_runtime.py`. Se conserva
+  `labs/linux-course/fixtures/production-support.log`, que usa el runtime, y se actualizó su
+  descripción en `indicaciones.txt`. Los archivos se pueden recuperar desde el historial de git.
+
+### Datos de equipos personales
+- `docs/auditoria_entorno.md`: el nombre del equipo y el usuario de Windows pasan a
+  `<EQUIPO>` y `<usuario>`. No cambian las fechas ni los resultados.
+- `docs/INSTRUCTIVO_FUNCIONAMIENTO.txt`: el usuario Linux verificado pasa a «no root».
+- `web/tests/test_linux_runtime.py`: el HOME simulado pasa a `/home/alumno`.
+- Limitación: el historial de git anterior todavía contiene esos datos. Borrarlos de ahí
+  exigiría reescribir el historial publicado, y eso no se hizo.
+
+### Nombres de referencia del LAB 01
+- `practica_strata` → `practica_academylab` (base Glue/Athena) y `practica-strata-operaciones`
+  → `academylab-operaciones` (log group de CloudWatch). Afecta al README, la arquitectura, los
+  ejercicios y `sql/01`–`05`. Son nombres de referencia del escenario: no existen recursos
+  AWS con esos nombres y nada se ejecuta contra AWS.
+
+### Fin de línea de los .bat
+- Nuevo `.gitattributes` con `*.bat text eol=crlf`. Así un clon con `core.autocrlf=false` o
+  hecho fuera de Windows entrega los `.bat` con CRLF; con LF, `cmd.exe` interpreta mal las
+  etiquetas.
+
+### No incluido
+- No se centralizó `appendText` (repetida en 6 scripts de la web). Para hacerlo había que
+  cargar `common.js` en dos páginas más, y el beneficio no justifica el cambio («no realizar
+  refactorizaciones innecesarias»).
+
+### Verificación
+- Suite web: 46/46. LAB 01: 9/9.
+- Ya no aparecen `strata`, `juan` ni `DESKTOP-` fuera de este registro.
+- Un clon nuevo con `core.autocrlf=false` recibe los 5 `.bat` con CRLF.
+
+## 2026-11-21 — Fase 3 (piloto): prácticas Linux que exigen demostrar comprensión
+
+### Problema
+Las 14 prácticas Linux se aprobaban con solo pulsar «Ejecutar en Ubuntu»: el alumno no
+tenía que interpretar nada. Este piloto cambia **solo** el módulo `linux-log-investigation`
+(`linux-logs-guided` y `linux-logs-independent`). Las otras 12 prácticas no cambian.
+
+### Nuevo flujo (dos pasos)
+1. **Ejecutar.** El alumno elige una opción de comando de una lista fija y la ejecuta
+   en Ubuntu (`POST /api/learning/run-linux-option`).
+   - La guiada tiene 1 opción y la independiente 4 (`find`, `grep -c`, `grep -n`, `tail -n 5`).
+   - Ejecutar no registra intentos ni aprueba nada.
+   - Sigue sin aceptarse texto de consola desde el navegador.
+2. **Responder.** El alumno responde una pregunta (número de línea del primer ERROR o del
+   último PENDIENTE). Para validarla, el servidor vuelve a ejecutar en Ubuntu la opción de
+   referencia y extrae el valor de su salida real con un marcador interno.
+   - Se aprueba solo si la ejecución terminó bien **y** la respuesta coincide.
+   - Una respuesta incorrecta no muestra la salida de referencia ni el valor esperado.
+
+### Archivos
+- `web/linux_runtime.py`:
+  - Opciones, opción de referencia, `answer_script` y patrón de respuesta para las dos prácticas.
+  - Nuevas funciones `run_option`, `verify_answer`, `question_exercise_ids` y `exercise_options`.
+  - `run_exercise` rechaza las prácticas con pregunta.
+- `web/learning_service.py`:
+  - `run_linux_option`.
+  - Rama `linux_command` con pregunta.
+  - `get_course` agrega las opciones desde el runtime, que es la única fuente.
+  - `validate_catalog` exige pregunta y pista solo donde el runtime define opciones.
+- `web/platform_server.py`: ruta `/api/learning/run-linux-option`.
+- `web/catalog/linux_basic.json`: preguntas, pistas e instrucciones del piloto.
+- `web/learning/course.js`: formulario de dos pasos; las demás prácticas Linux no cambian.
+- `labs/linux-course/fixtures/production-support.log`: pasa de 5 a 30 líneas sintéticas.
+  - Primer ERROR en la línea 7 y último PENDIENTE en la 22, fuera de lo que muestran `head`/`tail`.
+  - Las prácticas existentes que leen este log siguen siendo válidas: buscan "al menos una" coincidencia.
+- `web/assets/platform.css`: corrige un defecto previo. En todas las evaluaciones, los botones
+  de opción ocupaban todo el ancho (`.learning-form input { width: 100% }`) y el texto quedaba
+  desplazado a la derecha.
+
+### Pruebas
+- Nueva `web/tests/test_linux_questions.py`, con 11 pruebas:
+  - Sin respuesta no se aprueba.
+  - Respuesta incorrecta: no se aprueba y no se revela el valor.
+  - Respuesta correcta con una ejecución fallida: no se aprueba.
+  - Se rechazan las opciones desconocidas y el texto de consola.
+  - Ejecutar no registra intentos.
+  - Se respeta el orden de los módulos.
+  - La extracción y la comparación usan el marcador.
+  - El catálogo público no expone el script de la respuesta.
+- `test_learning_service.py`: completar el curso Linux exige responder en el piloto (2 respuestas
+  verificadas + 12 ejecuciones).
+- Suite web: 46/46. LAB 01: 9/9.
+
+### Verificación y límites
+- Los scripts exactos del piloto se ejecutaron con Git Bash (herramientas GNU) sobre una copia
+  del log con fin de línea CRLF, como se copia hoy a Ubuntu:
+  - Las 5 opciones terminan bien.
+  - Las respuestas esperadas son 7 y 22, y se rechazan otros valores.
+  - El marcador no aparece en la salida visible.
+- Navegador: plataforma con Ubuntu **simulado**, porque los scripts corrieron en Git Bash.
+  - Se probó `grep -c`, una respuesta incorrecta (rechazada, sin revelar el valor) y
+    `grep -n` → 22 (aprobada en el intento 2).
+  - Para llegar al módulo 3 sin aprobar los anteriores, la demo omitió el control de orden.
+- **No verificado:** ejecución en Ubuntu/WSL real. Esta PC no tiene WSL. Antes de extender el
+  piloto, hay que probar ambas prácticas en Ubuntu 24.04.
+- Las aprobaciones Linux ya registradas con el criterio anterior se conservan.
+
+## 2026-11-21 — Fase 2: coherencia de datos del LAB 01 y seguridad del servidor del LAB
+
+### Datos y ejercicios
+- `data/synthetic/operaciones_sinteticas.csv` pasa a ser la tabla de **estado actual**
+  (último evento de cada operación): OP-1002 → PENDIENTE y OP-1003 → OK. Antes conservaba el
+  primer estado y contradecía el log.
+- `exercises/ejercicios.md`:
+  - Explica la diferencia entre eventos y estado actual.
+  - Corrige "INFO=4" (es OK=4).
+  - Cifras del ejercicio 2: ERROR 2 operaciones, 1760.00; PENDIENTE 2 operaciones, 1281.25.
+  - Agrega resultados esperados locales al ejercicio 1.
+  - Rehace la priorización del ejercicio 5 según el estado actual.
+- `sql/05_metricas_operaciones_unicas.sql`: la alternativa deduplicada usa `ROW_NUMBER()` en una
+  subconsulta, en lugar de `QUALIFY` y de una columna `ts` inexistente. También documenta que
+  requiere una tabla de eventos con fecha.
+
+### Analizador (cambio aditivo)
+- `analizar_logs.py` agrega `estado_actual_por_operacion`, `conteo_operaciones_por_estado_actual`
+  e `importe_operaciones_por_estado_actual`. Los campos existentes no cambian.
+- `archivo` se guarda relativo a la carpeta del LAB, sin rutas personales. Se regeneraron las tres
+  evidencias versionadas.
+
+### Interfaz del LAB
+- La tarjeta "Errores" pasa a llamarse "Con algun evento ERROR".
+- Nueva tarjeta "En ERROR ahora".
+
+### Seguridad del servidor del LAB
+- `web_server.py` rechaza con 403 las solicitudes con Host no local (mitiga DNS rebinding).
+- Rechaza con 403 los POST con un Origin distinto de la propia página del LAB.
+- Las solicitudes sin Origin, como scripts locales, siguen aceptándose.
+
+### Pruebas
+- LAB: 9 pruebas (antes 8).
+  - `normal` y `multi_event` verifican también el estado actual.
+  - Nueva `csv_matches_log_current_state`: falla si el CSV y el log vuelven a divergir.
+  - El runner web copia `data/sample_logs` y `data/synthetic` a su carpeta temporal.
+- Nueva `web/tests/test_lab_web_server.py` (4 pruebas de Host y Origin). Suite web: 35/35.
+- Las pruebas nuevas fallan con el código de la Fase 1.
+- Verificado en el navegador:
+  - Análisis de `normal.log` con las tarjetas 3 / 2.
+  - 9/9 pruebas desde la interfaz.
+  - Al cerrar la pestaña se cierra la sesión y el apagado ordenado procede.
+- Las consultas `sql/01` y `sql/02` y la alternativa de `sql/05` se ejecutaron en SQLite sobre el
+  CSV y coinciden con las cifras de los ejercicios.
+
+## 2026-11-20 — Fase 1: portabilidad e integridad de las evaluaciones
+
+Origen: auditoría integral del 2026-11-20 sobre el commit `9ca1656`.
+
+### Portabilidad
+- `web/platform_server.py` y `labs/lab01-aws-production-support/scripts/web_server.py`
+  ya no usan `C:\Users\juan\...\python.exe`. Usan `ACADEMYLAB_PYTHON` si está definida;
+  si no, el ejecutable base del intérprete que los ejecuta. Es el mismo criterio
+  en ambos, para que la verificación del PID del LAB siga funcionando.
+- `scripts/run_tests.py` usa `ACADEMYLAB_PYTHON` o `sys.executable`.
+- Nuevo `labs/lab01-aws-production-support/buscar_python.bat`, usado por
+  `iniciar_web.bat` e `iniciar_laboratorio.bat`. Orden de búsqueda:
+  `ACADEMYLAB_PYTHON`, `py -3.12`, `python` (3.12 o superior).
+
+### Integridad de las evaluaciones
+- La API pública ya no envía `example_query`, que era exactamente la consulta
+  aceptada en las prácticas SQL.
+- En las prácticas Python, una respuesta incorrecta ya no muestra el valor
+  esperado en el feedback ni en `execution_result`.
+- Los intentos registrados antes de este cambio pueden conservar el valor
+  revelado en el historial de la base local.
+
+### Errores corregidos
+- El heartbeat del LAB actualiza la variable global `_last_activity`. Antes
+  escribía `self._last_activity` en el objeto de la solicitud y la actividad
+  no se registraba.
+- `run_tests.py` escribe sus JSON en una carpeta temporal y ya no sobrescribe
+  `evidence/normal.json` ni `evidence/multi_event.json`. Con `--guardar-evidencia`
+  conserva el comportamiento anterior.
+
+### Verificación
+- `python -m unittest discover -s web\tests`: 31/31 OK (28 previas + 3 nuevas).
+  Las 3 nuevas fallan con el código anterior.
+- `run_tests.py`: 8/8 PASS, sin cambios en `evidence/`.
+- Ciclo real: inicio de la plataforma, inicio del LAB desde la API, 8/8 pruebas
+  vía web, rechazo del apagado con una sesión pendiente y apagado ordenado
+  de la plataforma y del LAB.
+- No verificado: prácticas Linux, porque WSL no está instalado en el equipo
+  de esta verificación.

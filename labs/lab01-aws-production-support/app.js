@@ -6,6 +6,7 @@ const elements = {
   uniqueOps: document.getElementById("unique-ops"),
   invalidLines: document.getElementById("invalid-lines"),
   errors: document.getElementById("errors"),
+  currentErrors: document.getElementById("current-errors"),
   testsStatus: document.getElementById("tests-status"),
   fileSelect: document.getElementById("file-select"),
   analyzeButton: document.getElementById("analyze-btn"),
@@ -61,6 +62,9 @@ function setSummary(data) {
   elements.uniqueOps.textContent = data.operaciones_unicas ?? "-";
   elements.invalidLines.textContent = data.lineas_no_parseadas ?? "-";
   elements.errors.textContent = Object.keys(data.operaciones_error || {}).length;
+  // Evidencias generadas antes de incorporar el estado actual no traen este campo.
+  const currentCounts = data.conteo_operaciones_por_estado_actual;
+  elements.currentErrors.textContent = currentCounts ? (currentCounts.ERROR ?? 0) : "-";
 }
 
 function showAnalysis(result) {

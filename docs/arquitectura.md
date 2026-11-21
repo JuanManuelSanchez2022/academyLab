@@ -7,7 +7,7 @@
   progreso y API educativa.
 - **LAB 01:** `labs/lab01-aws-production-support/scripts/web_server.py`,
   enlazado a `127.0.0.1:8766` y arrancado bajo demanda. Sirve su propio
-  analizador de logs y ocho pruebas técnicas. La plataforma principal no se
+  analizador de logs y nueve pruebas técnicas. La plataforma principal no se
   detiene al salir del LAB.
 - **Catálogo y contenidos:** `web/catalog/learning_catalog.json` describe
   perfiles, niveles, rutas, cursos, competencias, evaluaciones y disponibilidad.

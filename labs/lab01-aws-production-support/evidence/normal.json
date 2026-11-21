@@ -1,5 +1,5 @@
 {
-  "archivo": "C:\\dev\\academyLab\\labs\\lab01-aws-production-support\\data\\test\\normal.log",
+  "archivo": "data/test/normal.log",
   "total_eventos_parseados": 10,
   "lineas_no_parseadas": 0,
   "conteo_por_estado": {
@@ -65,5 +65,65 @@
   "alerta": {
     "hay_errores": true,
     "hay_pendientes": true
+  },
+  "estado_actual_por_operacion": {
+    "OP-1001": {
+      "estado": "OK",
+      "importe": 150.0,
+      "causa": "procesada correctamente",
+      "ts": "2026-11-10T10:00:01Z"
+    },
+    "OP-1002": {
+      "estado": "PENDIENTE",
+      "importe": 980.5,
+      "causa": "reintento programado tras timeout",
+      "ts": "2026-11-10T10:08:41Z"
+    },
+    "OP-1003": {
+      "estado": "OK",
+      "importe": 45.0,
+      "causa": "confirmacion bancaria recibida",
+      "ts": "2026-11-10T10:09:59Z"
+    },
+    "OP-1004": {
+      "estado": "OK",
+      "importe": 210.0,
+      "causa": "procesada correctamente",
+      "ts": "2026-11-10T10:03:44Z"
+    },
+    "OP-1005": {
+      "estado": "ERROR",
+      "importe": 1200.0,
+      "causa": "saldo insuficiente",
+      "ts": "2026-11-10T10:04:10Z"
+    },
+    "OP-1006": {
+      "estado": "PENDIENTE",
+      "importe": 300.75,
+      "causa": "revision manual requerida",
+      "ts": "2026-11-10T10:05:22Z"
+    },
+    "OP-1007": {
+      "estado": "OK",
+      "importe": 75.25,
+      "causa": "procesada correctamente",
+      "ts": "2026-11-10T10:06:30Z"
+    },
+    "OP-1008": {
+      "estado": "ERROR",
+      "importe": 560.0,
+      "causa": "error de formato en datos",
+      "ts": "2026-11-10T10:07:05Z"
+    }
+  },
+  "conteo_operaciones_por_estado_actual": {
+    "ERROR": 2,
+    "OK": 4,
+    "PENDIENTE": 2
+  },
+  "importe_operaciones_por_estado_actual": {
+    "ERROR": 1760.0,
+    "OK": 480.25,
+    "PENDIENTE": 1281.25
   }
 }

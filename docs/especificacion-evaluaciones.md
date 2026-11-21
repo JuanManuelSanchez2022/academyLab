@@ -11,6 +11,14 @@ de comandos predefinidos; su disponibilidad depende de comprobar Ubuntu en WSL 2
 un usuario no root y las herramientas requeridas. Hasta esa comprobación no se
 ejecutan prácticas ni se otorga la competencia operativa.
 
+Desde las Fases 3 y 5, ninguna de las 14 prácticas Linux se aprueba solo con
+ejecutar. El alumno elige una opción de comando permitida, lee la salida real y
+responde una pregunta; el servidor vuelve a ejecutar en Ubuntu la opción de
+referencia y compara la respuesta con esa salida. Cuando es posible, la respuesta
+depende del entorno real del alumno (HOME, usuario y grupo, umask, PATH, sistema
+de archivos). Ejecutar opciones no cuenta como intento y una respuesta incorrecta
+no revela el valor esperado.
+
 Intermedio y Avanzado permanecen bloqueados por requisitos previos. El proyecto
 integrador Básico exige las cinco competencias disponibles previas. Sus
 criterios automáticos pueden verificarse, pero la aprobación total requiere la
@@ -55,7 +63,7 @@ contra reglas del escenario.
 ### Laboratorio verificable
 
 Debe definir requisitos, acciones permitidas, estado inicial, verificaciones y
-limpieza segura. LAB 01 conserva su propio analizador de logs y ocho pruebas
+limpieza segura. LAB 01 conserva su propio analizador de logs y nueve pruebas
 técnicas. Las pruebas del programa no cuentan como evaluación ni otorgan una
 competencia del alumno. Linux ejecuta únicamente secuencias allowlisted por el
 servidor, dentro de un directorio dedicado por alumno y ejercicio, con límite de

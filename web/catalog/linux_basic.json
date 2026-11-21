@@ -26,19 +26,23 @@
         "id": "linux-paths-guided",
         "type": "linux_command",
         "title": "Identificar el usuario y HOME",
-        "instructions": "Ejecuta la práctica en Ubuntu. El servidor usa una lista fija de comandos y solo lee la configuración básica del usuario.",
-        "prompt": "Comprueba quién ejecuta la práctica, dónde estás y cuál es HOME.",
-        "commands": ["id -un", "pwd", "ls -la", "cd \"$HOME\""]
+        "instructions": "Ejecuta los comandos en Ubuntu, lee la salida y después responde la pregunta. Ejecutar no cuenta como intento.",
+        "prompt": "Comprueba quién ejecuta la práctica, dónde estás y a qué ruta te lleva cd \"$HOME\".",
+        "commands": ["id -un", "pwd", "ls -la", "cd \"$HOME\""],
+        "question": "¿Cuál es la ruta absoluta de tu directorio HOME en Ubuntu?",
+        "answer_hint": "Copia la ruta completa; empieza con /."
       },
       "independent_practice": {
         "id": "linux-paths-independent",
         "type": "linux_command",
         "title": "Comparar rutas absolutas y relativas",
-        "instructions": "La práctica crea directorios de ejemplo dentro del espacio aislado de este ejercicio.",
-        "prompt": "Navega a una ubicación absoluta y luego a otra mediante una ruta relativa; confirma ambas con pwd y find.",
-        "commands": ["mkdir -p", "cd <ruta absoluta>", "cd ../<ruta relativa>", "pwd", "find"]
+        "instructions": "El espacio aislado ya contiene paths/absolute y paths/relative. Elige qué ejecutar; puedes probar varias opciones. Ejecutar no cuenta como intento.",
+        "prompt": "Partiendo de paths/absolute, necesitas saber a qué ruta absoluta te lleva la ruta relativa ../relative.",
+        "commands": ["cd <ruta absoluta>", "cd ../<ruta relativa>", "pwd", "find"],
+        "question": "¿Cuál es la ruta absoluta a la que llegas con cd ../relative desde paths/absolute?",
+        "answer_hint": "Copia la ruta completa; empieza con /."
       },
-      "verification": "Ubuntu ejecuta los comandos, comprueba el directorio informado y guarda la salida real de cada intento. Se requiere completar ambas prácticas antes de evaluar el módulo.",
+      "verification": "Los comandos se ejecutan realmente en Ubuntu dentro del espacio aislado del ejercicio. La práctica se aprueba solo si la respuesta coincide con la salida real que Ubuntu vuelve a producir al verificar; la respuesta correcta no se muestra si te equivocas.",
       "common_errors": [
         {"error": "Confundir una ruta relativa con una absoluta.", "cause": "La ruta relativa depende del directorio actual; la absoluta comienza desde /.", "recovery": "Ejecuta pwd y compara la ruta con la ubicación de destino."},
         {"error": "Suponer que cd cambió de ubicación sin comprobarlo.", "cause": "La ruta puede estar mal escrita o no existir.", "recovery": "Lee el error de la shell y vuelve a ejecutar pwd."}
@@ -76,19 +80,23 @@
         "id": "linux-files-guided",
         "type": "linux_command",
         "title": "Crear, copiar y renombrar un archivo",
-        "instructions": "La práctica prepara archivos sintéticos con nombres fijos en el directorio aislado del ejercicio.",
-        "prompt": "Crea un archivo, copia su contenido, renombra la copia y comprueba el texto con cat.",
-        "commands": ["mkdir", "touch", "cp", "mv", "cat"]
+        "instructions": "La práctica prepara archivos sintéticos con nombres fijos en el directorio aislado del ejercicio. Ejecutar no cuenta como intento.",
+        "prompt": "Crea un archivo, copia su contenido, renombra la copia, comprueba el texto con cat y lista la carpeta con ls -l.",
+        "commands": ["mkdir", "touch", "cp", "mv", "cat", "ls -l"],
+        "question": "Según ls -l, ¿cuántos bytes ocupa files/renamed.txt?",
+        "answer_hint": "Escribe solo el número."
       },
       "independent_practice": {
         "id": "linux-files-independent",
         "type": "linux_command",
         "title": "Eliminar solo un archivo temporal",
-        "instructions": "El ejercicio elimina una copia propia y confirma que el archivo fuente se conserva.",
-        "prompt": "Copia un archivo sintético, comprueba la copia y elimina únicamente esa ruta temporal.",
-        "commands": ["mkdir", "touch", "cp", "rm", "test -e"]
+        "instructions": "El espacio aislado ya tiene una carpeta files/ preparada para el ejercicio. Elige qué ejecutar; puedes probar varias opciones. Ejecutar no cuenta como intento.",
+        "prompt": "Copia incident.txt, elimina únicamente la copia y comprueba qué queda en la carpeta.",
+        "commands": ["cp", "rm", "cat", "ls -l"],
+        "question": "Después de borrar la copia, ¿cuántos archivos quedan en files/?",
+        "answer_hint": "Escribe solo el número."
       },
-      "verification": "Ubuntu ejecuta las operaciones sobre rutas dedicadas, verifica el contenido de la copia y confirma que el archivo fuente siga presente y la copia temporal haya desaparecido.",
+      "verification": "Los comandos se ejecutan realmente en Ubuntu dentro del espacio aislado del ejercicio. La práctica se aprueba solo si la respuesta coincide con la salida real que Ubuntu vuelve a producir al verificar; la respuesta correcta no se muestra si te equivocas. Solo se modifican archivos de ese espacio.",
       "common_errors": [
         {"error": "Usar rm sin inspeccionar el destino.", "cause": "rm elimina la ruta indicada y puede ser irreversible.", "recovery": "Detente, ejecuta pwd y ls y limita la eliminación al archivo temporal del ejercicio."},
         {"error": "Confundir cp con mv.", "cause": "cp conserva el origen; mv lo mueve o renombra.", "recovery": "Comprueba ambas rutas con ls después de la operación."}
@@ -126,19 +134,23 @@
         "id": "linux-logs-guided",
         "type": "linux_command",
         "title": "Inspeccionar un log de soporte",
-        "instructions": "Ubuntu lee una copia del fixture sintético del curso; la fuente del proyecto permanece intacta.",
+        "instructions": "Ubuntu lee una copia del fixture sintético del curso; la fuente del proyecto permanece intacta. Primero ejecuta los comandos y lee la salida; después responde la pregunta.",
         "prompt": "Compara inicio y final del log, recórrelo con less y localiza eventos ERROR con números de línea.",
-        "commands": ["head", "tail", "less", "grep -n ERROR"]
+        "commands": ["head", "tail", "less", "grep -n ERROR"],
+        "question": "¿En qué número de línea del log aparece el primer evento ERROR?",
+        "answer_hint": "Escribe solo el número de línea."
       },
       "independent_practice": {
         "id": "linux-logs-independent",
         "type": "linux_command",
         "title": "Encontrar operaciones pendientes",
-        "instructions": "Busca únicamente archivos .log dentro del directorio aislado y correlaciona el estado PENDIENTE.",
-        "prompt": "Localiza el log, encuentra coincidencias PENDIENTE y cuenta cuántos archivos de log hay.",
-        "commands": ["find", "grep -n PENDIENTE", "wc -l"]
+        "instructions": "Elige el comando que te dé la información necesaria y ejecútalo en Ubuntu. Puedes probar varias opciones: ejecutar no cuenta como intento.",
+        "prompt": "Necesitas ubicar, con su número de línea, la última operación PENDIENTE del log para citarla en el ticket.",
+        "commands": ["find", "grep -n PENDIENTE", "grep -c PENDIENTE", "tail -n"],
+        "question": "¿En qué número de línea del log está el último evento PENDIENTE?",
+        "answer_hint": "Escribe solo el número de línea."
       },
-      "verification": "Los comandos se ejecutan realmente en Ubuntu y la salida se guarda en el intento. Las búsquedas deben devolver líneas existentes y la ruta del fixture; no se simula la salida.",
+      "verification": "Los comandos se ejecutan realmente en Ubuntu sobre una copia del log. La práctica se aprueba solo si la respuesta coincide con la salida real que Ubuntu vuelve a producir al verificar; la respuesta correcta no se muestra si te equivocas.",
       "common_errors": [
         {"error": "Interpretar una coincidencia de grep como causa raíz.", "cause": "grep solo busca texto y no correlaciona dependencias.", "recovery": "Cita línea y hora, luego busca señales relacionadas."},
         {"error": "Leer todo un log extenso sin acotar.", "cause": "La salida puede ocultar la evidencia relevante.", "recovery": "Usa head, tail, less y grep con un patrón específico."}
@@ -176,19 +188,23 @@
         "id": "linux-streams-guided",
         "type": "linux_command",
         "title": "Guardar y anexar hallazgos",
-        "instructions": "El ejercicio escribe solo un archivo de resultados nuevo dentro del espacio aislado.",
-        "prompt": "Redirige ERROR con >, agrega PENDIENTE con >> y comprueba ambas clases de eventos.",
-        "commands": ["grep ERROR > salida nueva", "grep PENDIENTE >> salida nueva", "cat"]
+        "instructions": "El ejercicio escribe solo un archivo de resultados nuevo dentro del espacio aislado. Ejecutar no cuenta como intento.",
+        "prompt": "Redirige ERROR con >, agrega PENDIENTE con >> y revisa el archivo resultante con cat.",
+        "commands": ["grep ERROR > salida nueva", "grep PENDIENTE >> salida nueva", "cat"],
+        "question": "En streams/selected.log, ¿qué operación aparece en la primera línea que agregó >>?",
+        "answer_hint": "Escribe el identificador tal como aparece, por ejemplo LINUX-0000."
       },
       "independent_practice": {
         "id": "linux-streams-independent",
         "type": "linux_command",
         "title": "Contar eventos con una tubería",
-        "instructions": "Usa grep y wc sobre la copia del log; no se modifica el fixture.",
-        "prompt": "Cuenta ERROR y PENDIENTE por separado y compara la suma con el total obtenido mediante una tubería.",
-        "commands": ["grep -c", "grep -E", "|", "wc -l"]
+        "instructions": "Elige qué ejecutar sobre la copia del log; el fixture no se modifica. Puedes probar varias opciones. Ejecutar no cuenta como intento.",
+        "prompt": "Necesitas informar en el ticket cuántas líneas del log corresponden a ERROR o PENDIENTE.",
+        "commands": ["grep -c", "grep -E", "|", "wc -l", "tail"],
+        "question": "¿Cuántas líneas del log son ERROR o PENDIENTE?",
+        "answer_hint": "Escribe solo el número."
       },
-      "verification": "Ubuntu comprueba que las salidas redirigidas contienen ambos estados, que la tubería produce el total esperado y que la fuente del log sigue siendo legible.",
+      "verification": "Los comandos se ejecutan realmente en Ubuntu sobre una copia del log. La práctica se aprueba solo si la respuesta coincide con la salida real que Ubuntu vuelve a producir al verificar; la respuesta correcta no se muestra si te equivocas. El fixture original no se modifica.",
       "common_errors": [
         {"error": "Redirigir a la misma ruta que se está leyendo.", "cause": "> puede truncar el archivo antes de que grep lo lea.", "recovery": "Usa un nombre de salida nuevo y confirma la ruta con pwd."},
         {"error": "Confundir > con >>.", "cause": "> reemplaza el destino; >> agrega al final.", "recovery": "Inspecciona el destino antes y después de cada redirección."}
@@ -226,19 +242,23 @@
         "id": "linux-permissions-guided",
         "type": "linux_command",
         "title": "Leer y restringir permisos",
-        "instructions": "Se crea una nota sintética y se cambia únicamente su modo dentro del espacio aislado.",
-        "prompt": "Inspecciona el modo, aplica chmod 600 y verifica el resultado real con stat.",
-        "commands": ["ls -l", "chmod 600", "stat"]
+        "instructions": "Se crea una nota sintética y se cambia únicamente su modo dentro del espacio aislado. Ejecutar no cuenta como intento.",
+        "prompt": "Inspecciona el modo con ls -l, aplica chmod 600 y verifica el resultado con stat.",
+        "commands": ["ls -l", "chmod 600", "stat"],
+        "question": "Antes de chmod, ¿qué permisos mostraba ls -l para notes.txt?",
+        "answer_hint": "Copia los 10 caracteres de la primera columna de ls -l, incluido el primer carácter."
       },
       "independent_practice": {
         "id": "linux-permissions-independent",
         "type": "linux_command",
-        "title": "Consultar el grupo sin privilegios",
-        "instructions": "La práctica asigna el grupo actual del usuario a un archivo propio; no usa sudo ni cambia su propietario.",
-        "prompt": "Consulta el grupo primario con id y valida el cambio de grupo permitido con chown y stat.",
-        "commands": ["id -gn", "chown :grupo", "stat"]
+        "title": "Consultar propietario y grupo sin privilegios",
+        "instructions": "La preparación crea un archivo propio y le asigna tu grupo primario; no se usa sudo. Elige qué ejecutar. Ejecutar no cuenta como intento.",
+        "prompt": "Necesitas registrar a qué usuario y a qué grupo pertenece permissions/owned-by-learner.txt.",
+        "commands": ["chmod", "ls -l", "touch"],
+        "question": "¿Qué usuario propietario y qué grupo tiene el archivo?",
+        "answer_hint": "Escríbelo como usuario:grupo."
       },
-      "verification": "Ubuntu ejecuta chmod y chown en archivos propios de práctica, y comprueba modo, propietario y grupo. No se usa sudo ni se cambia la propiedad de archivos externos.",
+      "verification": "Los comandos se ejecutan realmente en Ubuntu sobre archivos propios de práctica. La práctica se aprueba solo si la respuesta coincide con la salida real que Ubuntu vuelve a producir al verificar; la respuesta correcta no se muestra si te equivocas. No se usa sudo ni se cambia la propiedad de archivos externos.",
       "common_errors": [
         {"error": "Suponer que chown siempre se puede ejecutar como usuario normal.", "cause": "Cambiar propietario normalmente requiere privilegios administrativos.", "recovery": "Lee el error y solicita autorización; no uses sudo automáticamente."},
         {"error": "Aplicar permisos demasiado amplios.", "cause": "Permisos como 777 exponen escritura o ejecución innecesarias.", "recovery": "Usa el mínimo acceso requerido y valida el modo con stat."}
@@ -276,19 +296,23 @@
         "id": "linux-processes-guided",
         "type": "linux_command",
         "title": "Consultar una vista finita de procesos",
-        "instructions": "ps y top se ejecutan dentro de Ubuntu; top usa una sola iteración y finaliza automáticamente.",
-        "prompt": "Identifica el proceso de la shell y revisa una captura de top sin dejar un proceso interactivo abierto.",
-        "commands": ["ps -p $$", "top -b -n1 -w 80"]
+        "instructions": "ps y top se ejecutan dentro de Ubuntu; top usa una sola iteración y finaliza automáticamente. Ejecutar no cuenta como intento.",
+        "prompt": "Identifica el proceso de la shell con ps y revisa una captura finita de top.",
+        "commands": ["ps -p $$", "top -b -n1 -w 80"],
+        "question": "¿Qué nombre de comando muestra ps para el proceso de la shell actual?",
+        "answer_hint": "Escribe solo el nombre del comando."
       },
       "independent_practice": {
         "id": "linux-processes-independent",
         "type": "linux_command",
         "title": "Terminar el proceso temporal del ejercicio",
-        "instructions": "El servidor no acepta ni recibe PIDs. El script crea sleep, captura su propio PID y lo termina dentro de la misma ejecución.",
-        "prompt": "Observa el PID temporal, envía kill y verifica que terminó.",
-        "commands": ["sleep 30", "ps -p <PID creado>", "kill <PID creado>", "wait"]
+        "instructions": "El servidor no acepta ni recibe PIDs: cada opción crea su propio sleep y lo controla dentro de la misma ejecución. Ejecutar no cuenta como intento.",
+        "prompt": "Necesitas saber qué código de salida informa wait cuando un proceso termina por kill.",
+        "commands": ["sleep 30 &", "ps -p", "kill", "wait", "echo $?"],
+        "question": "¿Qué código de salida devuelve wait para un proceso terminado con kill?",
+        "answer_hint": "Escribe solo el número."
       },
-      "verification": "La verificación comprueba la salida de ps/top y la terminación de un proceso sleep creado por el script. Nunca se ejecuta kill sobre un PID recibido del cliente.",
+      "verification": "Los comandos se ejecutan realmente en Ubuntu dentro del espacio aislado del ejercicio. La práctica se aprueba solo si la respuesta coincide con la salida real que Ubuntu vuelve a producir al verificar; la respuesta correcta no se muestra si te equivocas. Nunca se ejecuta kill sobre un PID recibido del navegador.",
       "common_errors": [
         {"error": "Enviar kill a un PID sin identificarlo.", "cause": "El PID puede pertenecer a un servicio o usuario distinto.", "recovery": "Consulta ps y confirma propietario y propósito; escala si no es un proceso temporal propio."},
         {"error": "Esperar que top interactivo cierre una ejecución automatizada.", "cause": "El modo interactivo espera entrada del usuario.", "recovery": "Usa top -b -n1 para una captura finita."}
@@ -326,19 +350,23 @@
         "id": "linux-env-guided",
         "type": "linux_command",
         "title": "Consultar variables seleccionadas",
-        "instructions": "Solo se consultan HOME y una variable sintética creada durante esta shell; no se vuelca el entorno completo.",
-        "prompt": "Verifica HOME, define ACADEMY_CASE_ID y confirma su valor con printenv.",
-        "commands": ["printenv HOME", "export ACADEMY_CASE_ID=LAB-01-READONLY", "printenv ACADEMY_CASE_ID"]
+        "instructions": "Solo se consultan HOME, PATH y una variable sintética creada durante esta shell; no se vuelca el entorno completo. Ejecutar no cuenta como intento.",
+        "prompt": "Verifica HOME, define ACADEMY_CASE_ID, confírmala con printenv y revisa cuántas entradas tiene PATH.",
+        "commands": ["printenv HOME", "export ACADEMY_CASE_ID=LAB-01-READONLY", "printenv ACADEMY_CASE_ID", "PATH"],
+        "question": "¿Cuántas entradas tiene tu variable PATH en Ubuntu?",
+        "answer_hint": "Escribe solo el número."
       },
       "independent_practice": {
         "id": "linux-env-independent",
         "type": "linux_command",
         "title": "Aplicar una rutina de soporte de solo lectura",
-        "instructions": "Los comandos son de lectura y se ejecutan sobre Ubuntu y una copia local del fixture sintético.",
-        "prompt": "Registra fecha UTC, usuario, espacio disponible y coincidencias ERROR como evidencia inicial.",
-        "commands": ["date -u", "id", "df -h \"$HOME\"", "grep -n ERROR"]
+        "instructions": "Los comandos son de solo lectura y se ejecutan sobre Ubuntu y una copia del fixture sintético. Elige qué ejecutar. Ejecutar no cuenta como intento.",
+        "prompt": "Antes de escalar un incidente de espacio en disco, registra en qué sistema de archivos está tu HOME.",
+        "commands": ["date -u", "id", "df -h \"$HOME\"", "grep -n ERROR"],
+        "question": "¿Qué sistema de archivos (columna Filesystem de df) contiene tu HOME?",
+        "answer_hint": "Copia el valor de la columna Filesystem."
       },
-      "verification": "La plataforma conserva la salida de Ubuntu, verifica variables y resultados de diagnóstico, y limita la práctica a información seleccionada y fixtures sintéticos.",
+      "verification": "Los comandos se ejecutan realmente en Ubuntu sobre información seleccionada y fixtures sintéticos. La práctica se aprueba solo si la respuesta coincide con la salida real que Ubuntu vuelve a producir al verificar; la respuesta correcta no se muestra si te equivocas.",
       "common_errors": [
         {"error": "Imprimir todas las variables con env en un ticket.", "cause": "El entorno puede incluir secretos o tokens.", "recovery": "Consulta solo variables necesarias como HOME o una variable sintética."},
         {"error": "Declarar causa raíz a partir de una sola línea ERROR.", "cause": "La coincidencia no demuestra causalidad ni recuperación.", "recovery": "Cita la evidencia y enumera qué correlación falta."}

@@ -8,10 +8,10 @@ Laboratorio de **AWS Production Support** para seguimiento y análisis de operac
 |---|---|
 | Región | `us-east-2` |
 | Bucket S3 | `practica-athena-sql-2026` |
-| Base Glue/Athena | `practica_strata` |
+| Base Glue/Athena | `practica_academylab` |
 | Archivo fuente | `datos/operaciones.csv` |
 | Columnas | `id_operacion`, `cliente`, `importe`, `estado` |
-| Log group CloudWatch | `practica-strata-operaciones` |
+| Log group CloudWatch | `academylab-operaciones` |
 
 Recursos adicionales existentes (tablas/vistas): operaciones, excepciones, correcciones y seguimiento de errores. **No se modifican ni eliminan.**
 
@@ -20,12 +20,12 @@ Recursos adicionales existentes (tablas/vistas): operaciones, excepciones, corre
 [S3: practica-athena-sql-2026/datos/operaciones.csv]  (referencia, solo lectura)
         |
         v
-[Glue Data Catalog / Athena: practica_strata.operaciones(+vistas)]
+[Glue Data Catalog / Athena: practica_academylab.operaciones(+vistas)]
         |
         v
 [Consultas SQL] --> detección ERROR/PENDIENTE, conteos, importes
 
-[CloudWatch Logs: practica-strata-operaciones]  (referencia, solo lectura)
+[CloudWatch Logs: academylab-operaciones]  (referencia, solo lectura)
         |
         v
 [Export/ejemplos simulados locales] --> data/sample_logs/operaciones.log
