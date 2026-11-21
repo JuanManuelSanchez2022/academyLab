@@ -15,7 +15,7 @@ La plataforma puede:
 - Ejecutar prácticas Linux reales en Ubuntu 24.04 mediante WSL 2.
 - Ejecutar evaluaciones corregidas por el servidor.
 - Analizar logs en el LAB 01.
-- Ejecutar las ocho pruebas técnicas del laboratorio.
+- Ejecutar las nueve pruebas técnicas del laboratorio.
 - Consultar evidencias JSON generadas localmente.
 
 No realiza consultas, cambios o costos en cuentas AWS reales.
@@ -24,7 +24,8 @@ No realiza consultas, cambios o costos en cuentas AWS reales.
 
 Requisitos comprobados o necesarios:
 - Windows.
-- Python 3.12 en C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe.
+- Python 3.12 o superior (lanzador py o python en el PATH). Si hay varios,
+  define ACADEMYLAB_PYTHON con la ruta completa de python.exe.
 - Ubuntu 24.04 en WSL 2 para ejecutar Linux real.
 - Microsoft Edge o otro navegador local.
 
@@ -125,7 +126,7 @@ Uso:
 - Pulsa EJECUTAR ANÁLISIS.
 - Observa "en curso", "terminado" o "fallido".
 - El analizador devuelve métricas reales del archivo seleccionado.
-- Pulsa EJECUTAR TODAS LAS PRUEBAS para ver 8 resultados PASS/FAIL.
+- Pulsa EJECUTAR TODAS LAS PRUEBAS para ver 9 resultados PASS/FAIL.
 - Consulta evidence/resumen_logs.json desde la interfaz.
 - Actualiza sin recargar manualmente.
 
@@ -228,7 +229,7 @@ competencia automáticamente.
 8. Continúa por Redes, SQL, AWS, Python y Production Support.
 9. Abre LAB 01 desde Production Support.
 10. Selecciona normal.log y ejecuta el análisis.
-11. Ejecuta las ocho pruebas.
+11. Ejecuta las nueve pruebas.
 12. Consulta evidencia/resumen_logs.json.
 13. Abre Mi progreso para revisar intentos y competencias.
 
@@ -241,7 +242,7 @@ Resultados comprobados durante la auditoría:
 11. SOLUCIÓN DE PROBLEMAS
 
 El servidor no inicia:
-- Confirma la ruta Python 3.12.
+- Confirma que "py -3.12" o "python --version" respondan, o define ACADEMYLAB_PYTHON.
 - Ejecuta iniciar_web.bat desde su carpeta.
 - Revisa la consola por errores.
 - Comprueba si otro proceso ocupa 8765 sin ser academyLab.

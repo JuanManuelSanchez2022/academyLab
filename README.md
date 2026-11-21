@@ -10,8 +10,7 @@ escenarios y datos sintéticos; no se conecta a cuentas AWS.
 2. Abre Microsoft Edge en `http://127.0.0.1:8765`.
 3. Selecciona **Cloud / Production Support** y luego un nivel.
 
-Requisitos: Windows, Python 3.12 en
-`C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe` y Ubuntu
+Requisitos: Windows, Python 3.12 o superior y Ubuntu
 24.04 en WSL 2 para las prácticas Linux. No se requieren paquetes Python
 adicionales, Docker ni credenciales AWS.
 
@@ -24,7 +23,9 @@ adicionales, Docker ni credenciales AWS.
   sintéticos; no accede a AWS ni modifica recursos.
 - **Linux:** verificado con Ubuntu 24.04 en WSL 2 el 19/11/2026. Tiene siete
   módulos y 14 prácticas ejecutadas en Ubuntu real mediante una allowlist fija;
-  no se aceptan comandos libres del navegador.
+  no se aceptan comandos libres del navegador. Piloto de la Fase 3: las dos
+  prácticas del módulo de logs exigen responder una pregunta a partir de la salida
+  real; sus scripts nuevos todavía no se verificaron en Ubuntu (ver `docs/CAMBIOS.md`).
 - **Proyecto integrador Básico:** exige las competencias disponibles previas.
   Se verificó el análisis Linux real con grep; su aprobación definitiva depende
   de completar las competencias y prácticas desde el progreso del alumno.
@@ -37,7 +38,7 @@ se emiten certificaciones.
 ## Laboratorio LAB 01
 
 LAB 01 — AWS Production Support es un recurso independiente para analizar logs y
-ejecutar ocho pruebas automatizadas del analizador. Se inicia bajo demanda desde
+ejecutar nueve pruebas automatizadas del analizador. Se inicia bajo demanda desde
 la plataforma en `127.0.0.1:8766`; el servidor principal permanece en
 `127.0.0.1:8765`.
 
@@ -62,7 +63,8 @@ ni el archivo de la base como si fuera un sistema multiusuario.
 Pruebas del servicio educativo y de la API:
 
 ```powershell
-& 'C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe' -m unittest discover -s web\tests -v
+python -m unittest discover -s web\tests -v
+python labs\lab01-aws-production-support\scripts\run_tests.py
 ```
 
 Consulta:

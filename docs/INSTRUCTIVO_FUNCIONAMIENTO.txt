@@ -29,8 +29,8 @@ que no haya sido iniciado o identificado como servidor de este proyecto.
 2. REQUISITOS
 -------------
 - Windows 10/11.
-- Python 3.12 en:
-  C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe
+- Python 3.12 o superior. Los .bat lo localizan con buscar_python.bat:
+  ACADEMYLAB_PYTHON, luego py -3.12, luego python del PATH.
 - Microsoft Edge (o el navegador predeterminado de Windows).
 - No se requieren dependencias externas ni acceso a Internet.
 
@@ -254,7 +254,7 @@ practicas y evaluaciones requieren matricula y se habilitan en orden. Los
 puntajes se calculan en el servidor. El proyecto exige las competencias
 disponibles previas, pero no puede aprobarse ni otorgar competencia mientras
 falte la verificacion Linux real.
-Las ocho pruebas automatizadas de LAB 01 prueban el analizador; no califican al
+Las nueve pruebas automatizadas de LAB 01 prueban el analizador; no califican al
 alumno. Los detalles del modelo y sus limites estan en
 docs\especificacion-evaluaciones.md.
 

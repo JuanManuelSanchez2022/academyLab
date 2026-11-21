@@ -109,7 +109,121 @@ function buildExerciseForm(module, exercise) {
   return section;
 }
 
+function buildLinuxQuestionForm(module, exercise) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "learning-form";
+
+  // Paso 1: elegir y ejecutar una opción permitida (no cuenta como intento).
+  const runForm = document.createElement("form");
+  const fieldset = document.createElement("fieldset");
+  appendText(fieldset, "legend", "Paso 1. Elige qué ejecutar en Ubuntu");
+  exercise.options.forEach((option, index) => {
+    const label = document.createElement("label");
+    label.className = "learning-option";
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = `linux-option-${exercise.id}`;
+    input.value = option.id;
+    if (exercise.options.length === 1 && index === 0) input.checked = true;
+    label.append(input);
+    appendText(label, "code", option.label);
+    fieldset.append(label);
+  });
+  runForm.append(fieldset);
+  const runButton = document.createElement("button");
+  runButton.className = "button button--primary";
+  runButton.type = "submit";
+  runButton.textContent = "Ejecutar en Ubuntu";
+  runForm.append(runButton);
+  const runOutput = document.createElement("div");
+  runOutput.setAttribute("aria-live", "polite");
+  runForm.append(runOutput);
+  runForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const selected = runForm.querySelector(`input[name="linux-option-${exercise.id}"]:checked`);
+    if (!selected) {
+      addMessage(runOutput, "Elige una opción antes de ejecutar.", "error");
+      return;
+    }
+    runButton.disabled = true;
+    addMessage(runOutput, "Ejecutando en Ubuntu...", "pending");
+    try {
+      const { result } = await window.learningClient.postJson("/api/learning/run-linux-option", {
+        course_id: courseId,
+        module_id: module.id,
+        exercise_id: exercise.id,
+        option_id: selected.value,
+      });
+      const execution = result.execution_result;
+      runOutput.replaceChildren();
+      appendText(
+        runOutput,
+        "p",
+        execution.passed
+          ? "Salida real de Ubuntu (exploración: no cuenta como intento)."
+          : execution.feedback || "La ejecución en Ubuntu no terminó correctamente.",
+        execution.passed ? "" : "fail"
+      );
+      const output = document.createElement("pre");
+      output.textContent = [
+        execution.runtime ? `Kernel Ubuntu: ${execution.runtime}` : "",
+        `$ ${(execution.commands || []).join(", ")}`,
+        execution.stdout || "",
+        execution.stderr ? `Error:\n${execution.stderr}` : "",
+      ].filter(Boolean).join("\n");
+      runOutput.append(output);
+    } catch (error) {
+      addMessage(runOutput, `No se pudo ejecutar: ${error.message}`, "error");
+    } finally {
+      runButton.disabled = false;
+    }
+  });
+  wrapper.append(runForm);
+
+  // Paso 2: responder la pregunta a partir de la salida.
+  const answerForm = document.createElement("form");
+  const label = document.createElement("label");
+  label.className = "learning-field";
+  appendText(label, "span", `Paso 2. ${exercise.question}`);
+  const input = document.createElement("input");
+  input.type = "text";
+  input.name = "answer";
+  input.maxLength = 40;
+  input.autocomplete = "off";
+  input.required = true;
+  input.placeholder = exercise.answer_hint;
+  label.append(input);
+  answerForm.append(label);
+  const answerButton = document.createElement("button");
+  answerButton.className = "button button--primary";
+  answerButton.type = "submit";
+  answerButton.textContent = "Verificar respuesta";
+  answerForm.append(answerButton);
+  const feedback = document.createElement("div");
+  feedback.setAttribute("aria-live", "polite");
+  answerForm.append(feedback);
+  answerForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const answer = input.value.trim();
+    if (!answer) {
+      addMessage(feedback, "Escribe tu respuesta antes de verificarla.", "error");
+      return;
+    }
+    submitActivity("/api/learning/submit-exercise", {
+      course_id: courseId,
+      module_id: module.id,
+      exercise_id: exercise.id,
+      answer,
+    }, answerButton, feedback);
+  });
+  wrapper.append(answerForm);
+  return wrapper;
+}
+
 function buildLinuxCommandForm(module, exercise) {
+  if (exercise.question && Array.isArray(exercise.options) && exercise.options.length) {
+    return buildLinuxQuestionForm(module, exercise);
+  }
   const form = document.createElement("form");
   form.className = "learning-form";
   addList(form, "Comandos de la práctica", exercise.commands);
