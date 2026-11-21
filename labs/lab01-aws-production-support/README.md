@@ -14,7 +14,8 @@ Este laboratorio no se conecta a AWS ni modifica recursos. No requiere credencia
 
 ## Estructura
 - `scripts/analizar_logs.py`: analizador local; mantiene su comportamiento de línea de comandos.
-- `scripts/run_tests.py`: ocho pruebas automatizadas.
+- `scripts/run_tests.py`: ocho pruebas automatizadas. Escribe sus JSON en una carpeta
+  temporal; con `--guardar-evidencia` los guarda en `evidence/`.
 - `scripts/web_server.py`: servidor HTTP dedicado del LAB 01 en `127.0.0.1:8766`.
 - `..\..\web\platform_server.py`: Home en `127.0.0.1:8765`, inicio bajo demanda del LAB y supervisor de sesiones.
 - `..\..\web\catalog\learning_catalog.json`: perfiles, niveles, cursos reutilizables, dependencias y estados de disponibilidad.
@@ -27,7 +28,7 @@ Este laboratorio no se conecta a AWS ni modifica recursos. No requiere credencia
 
 ## Requisitos
 - Windows y Microsoft Edge.
-- Python 3.12 en `C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe`.
+- Python 3.12 o superior. `buscar_python.bat` usa `ACADEMYLAB_PYTHON`, `py -3.12` o `python`.
 - No se necesitan paquetes externos ni conexión a AWS.
 
 ## Iniciar la web
@@ -40,7 +41,7 @@ Este laboratorio no se conecta a AWS ni modifica recursos. No requiere credencia
 También se puede iniciar desde PowerShell, en la carpeta del laboratorio:
 
 ```powershell
-& "C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe" ".\..\..\web\platform_server.py"
+python ".\..\..\web\platform_server.py"
 ```
 
 ## Usar la interfaz
@@ -70,7 +71,7 @@ La API no acepta rutas ni comandos proporcionados por el navegador. Solo permite
 - Para inicio desde PowerShell, usa **Ctrl+C** en esa misma consola.
 
 ## Solución de problemas
-- **Python no encontrado:** confirma que existe la ruta de Python 3.12 indicada en Requisitos.
+- **Python no encontrado:** confirma que `py -3.12` o `python --version` respondan, o define `ACADEMYLAB_PYTHON`.
 - **Puerto 8765 ocupado:** comprueba si el servicio principal responde. Si no se identifica, no cierres procesos Python ajenos.
 - **Puerto 8766 ocupado:** vuelve al curso AWS e ingresa desde allí si el LAB ya está activo. Un proceso no identificado no se termina automáticamente.
 - **Servidor principal no disponible:** inicia la plataforma antes de usar los BAT de parada; si no responde, los BAT no fuerzan la terminación de procesos.
@@ -82,9 +83,9 @@ La API no acepta rutas ni comandos proporcionados por el navegador. Solo permite
 ## Análisis de línea de comandos
 
 ```powershell
-& "C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe" ".\scripts\analizar_logs.py" --input ".\data\sample_logs\operaciones.log"
-& "C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe" ".\scripts\analizar_logs.py" --input ".\data\sample_logs\operaciones.log" --json ".\evidence\resumen_logs.json"
-& "C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe" ".\scripts\run_tests.py"
+python ".\scripts\analizar_logs.py" --input ".\data\sample_logs\operaciones.log"
+python ".\scripts\analizar_logs.py" --input ".\data\sample_logs\operaciones.log" --json ".\evidence\resumen_logs.json"
+python ".\scripts\run_tests.py"
 ```
 
 ## Métricas esperadas del log normal

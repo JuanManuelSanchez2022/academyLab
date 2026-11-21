@@ -24,7 +24,8 @@ No realiza consultas, cambios o costos en cuentas AWS reales.
 
 Requisitos comprobados o necesarios:
 - Windows.
-- Python 3.12 en C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe.
+- Python 3.12 o superior (lanzador py o python en el PATH). Si hay varios,
+  define ACADEMYLAB_PYTHON con la ruta completa de python.exe.
 - Ubuntu 24.04 en WSL 2 para ejecutar Linux real.
 - Microsoft Edge o otro navegador local.
 
@@ -241,7 +242,7 @@ Resultados comprobados durante la auditoría:
 11. SOLUCIÓN DE PROBLEMAS
 
 El servidor no inicia:
-- Confirma la ruta Python 3.12.
+- Confirma que "py -3.12" o "python --version" respondan, o define ACADEMYLAB_PYTHON.
 - Ejecuta iniciar_web.bat desde su carpeta.
 - Revisa la consola por errores.
 - Comprueba si otro proceso ocupa 8765 sin ser academyLab.

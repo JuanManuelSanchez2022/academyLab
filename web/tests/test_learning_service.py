@@ -1,3 +1,4 @@
+import json
 import sys
 import tempfile
 import unittest
@@ -721,6 +722,38 @@ class LearningServiceTests(unittest.TestCase):
 
         progress = progress_store.get_progress(self.learner_id)
         self.assertFalse(progress["attempts"])
+
+    def test_public_sql_course_does_not_expose_example_queries(self):
+        raw_course, _ = self.course_module("sql")
+        public_course = learning_service.get_course("sql")
+        serialized = json.dumps(public_course, ensure_ascii=False)
+        self.assertNotIn("example_query", serialized)
+        for module in raw_course["modules"]:
+            for key in ("guided_practice", "independent_practice"):
+                query = module[key].get("example_query")
+                if query:
+                    self.assertNotIn(query, serialized)
+
+    def test_wrong_python_answer_does_not_reveal_the_expected_value(self):
+        course, module = self.course_module("python")
+        learning_service.start_course(self.learner_id, course["id"])
+        exercise = module["guided_practice"]
+        expected = str(learning_service._python_processor(
+            exercise["processor"],
+            learning_service.COURSE_DATA / "basic_operations.csv",
+        )["counts"]["ERROR"])
+        result = learning_service.submit_exercise({
+            "learner_id": self.learner_id,
+            "course_id": course["id"],
+            "module_id": module["id"],
+            "exercise_id": exercise["id"],
+            "answer": "999",
+        })
+        self.assertFalse(result["passed"])
+        self.assertIsNone(result["execution_result"])
+        self.assertNotIn(expected, result["feedback"])
+        progress = json.dumps(progress_store.get_progress(self.learner_id), ensure_ascii=False)
+        self.assertNotIn("counts", progress)
 
 
 if __name__ == "__main__":

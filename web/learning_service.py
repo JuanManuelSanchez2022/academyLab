@@ -217,6 +217,7 @@ def _public_content(value):
         "validator",
         "accepted_answer",
         "answer_field",
+        "example_query",
         "required_terms",
         "correct_feedback",
         "feedback_by_field",
@@ -580,11 +581,16 @@ def submit_exercise(payload):
                 correct = Decimal(answer) == Decimal(actual_value)
             except InvalidOperation:
                 correct = False
-            feedback = (
-                f"Correcto: el procesador Python devolvió {actual_value}."
-                if correct
-                else f"El procesador Python devolvió {actual_value}; compara tu respuesta y revisa cómo se filtran las filas."
-            )
+            if correct:
+                feedback = f"Correcto: el procesador Python devolvió {actual_value}."
+            else:
+                # No se revela el valor esperado ni la salida del procesador:
+                # el siguiente intento debe surgir del análisis del alumno.
+                feedback = (
+                    "Tu respuesta no coincide con el resultado del procesador sobre el conjunto local. "
+                    "Revisa qué filas cumplen el filtro y vuelve a calcular."
+                )
+                execution_result = None
             answer_payload = {"answer": answer}
         elif exercise["type"] == "incident_report":
             answer = payload.get("answer")

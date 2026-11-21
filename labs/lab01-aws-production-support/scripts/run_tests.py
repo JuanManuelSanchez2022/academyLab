@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
-"""LAB 01 - Pruebas automatizadas para analizar_logs.py."""
+"""LAB 01 - Pruebas automatizadas para analizar_logs.py.
+
+Por defecto los JSON de las pruebas se escriben en una carpeta temporal para no
+modificar la evidencia versionada. Con --guardar-evidencia se escriben en
+evidence/ como evidencia del laboratorio.
+"""
 import json
+import os
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent.parent
 SCRIPT = BASE / "scripts" / "analizar_logs.py"
 TESTS = BASE / "data" / "test"
 EVIDENCE = BASE / "evidence"
-PY = "C:\\Users\\juan\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+PY = os.environ.get("ACADEMYLAB_PYTHON") or sys.executable
+OUTPUT_DIR = EVIDENCE
 
 
 def run(args):
@@ -17,7 +25,7 @@ def run(args):
 
 
 def test_normal():
-    out = EVIDENCE / "normal.json"
+    out = OUTPUT_DIR / "normal.json"
     r = run(["-i", str(TESTS / "normal.log"), "-j", str(out)])
     assert r.returncode == 0, f"normal failed: {r.stderr}"
     data = json.loads(out.read_text())
@@ -75,7 +83,7 @@ def test_unknown_states():
 
 
 def test_multi_event():
-    out = EVIDENCE / "multi_event.json"
+    out = OUTPUT_DIR / "multi_event.json"
     r = run(["-i", str(TESTS / "multi_event.log"), "-j", str(out)])
     assert r.returncode == 0, f"multi_event failed: {r.stderr}"
     data = json.loads(out.read_text())
@@ -87,7 +95,7 @@ def test_multi_event():
     return True
 
 
-def main():
+def run_all():
     tests = [
         ("normal", test_normal),
         ("empty", test_empty),
@@ -109,6 +117,19 @@ def main():
             print(f"FAIL: {name} -> {e}")
             failed += 1
     print(f"\nResultados: {passed} pasaron, {failed} fallaron")
+    return failed
+
+
+def main():
+    global OUTPUT_DIR
+    if "--guardar-evidencia" in sys.argv[1:]:
+        OUTPUT_DIR = EVIDENCE
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        failed = run_all()
+    else:
+        with tempfile.TemporaryDirectory(prefix="lab01-run-tests-") as temporary_dir:
+            OUTPUT_DIR = Path(temporary_dir)
+            failed = run_all()
     sys.exit(0 if failed == 0 else 1)
 
 
