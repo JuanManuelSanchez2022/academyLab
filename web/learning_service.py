@@ -16,12 +16,21 @@ import linux_runtime
 
 WEB_DIR = Path(__file__).resolve().parent
 CATALOG_PATH = WEB_DIR / "catalog" / "learning_catalog.json"
-CONTENT_PATH = WEB_DIR / "catalog" / "basic_courses.json"
+BASIC_CONTENT_PATH = WEB_DIR / "catalog" / "basic_courses.json"
+INTERMEDIATE_CONTENT_PATH = WEB_DIR / "catalog" / "intermediate_courses.json"
+ADVANCED_CONTENT_PATH = WEB_DIR / "catalog" / "advanced_courses.json"
 LINUX_CONTENT_PATH = WEB_DIR / "catalog" / "linux_basic.json"
 COURSE_DATA = WEB_DIR / "course_data"
 MINIMUM_SCORE = 80
 MAX_QUERY_LENGTH = 4000
 MAX_TEXT_LENGTH = 2000
+
+
+LEVEL_CONTENT_PATHS = {
+    "basic": BASIC_CONTENT_PATH,
+    "intermediate": INTERMEDIATE_CONTENT_PATH,
+    "advanced": ADVANCED_CONTENT_PATH,
+}
 
 
 def _read_json(path):
@@ -32,12 +41,16 @@ def catalog():
     return _read_json(CATALOG_PATH)
 
 
-def content():
-    data = _read_json(CONTENT_PATH)
-    linux_course = _read_json(LINUX_CONTENT_PATH)
-    if any(course["id"] == "linux" for course in data["courses"]):
-        raise ValueError("Linux debe definirse únicamente en linux_basic.json.")
-    data["courses"].insert(0, linux_course)
+def content(level_id: str = "basic"):
+    path = LEVEL_CONTENT_PATHS.get(level_id)
+    if path is None:
+        raise ValueError(f"Nivel desconocido: {level_id}. Niveles válidos: {list(LEVEL_CONTENT_PATHS.keys())}")
+    data = _read_json(path)
+    if level_id == "basic":
+        linux_course = _read_json(LINUX_CONTENT_PATH)
+        if any(course["id"] == "linux" for course in data["courses"]):
+            raise ValueError("Linux debe definirse únicamente en linux_basic.json.")
+        data["courses"].insert(0, linux_course)
     return data
 
 

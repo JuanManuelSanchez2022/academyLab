@@ -564,7 +564,7 @@ class LearningServiceTests(unittest.TestCase):
         self.assertIsNone(course_progress["blocked_reason"])
         self.assertEqual(
             len([item for item in progress["modules"] if item["course_id"] == "linux" and item["status"] == "completed"]),
-            7,
+            9,
         )
         self.assertIn(
             "linux-basic-operations",
@@ -572,7 +572,7 @@ class LearningServiceTests(unittest.TestCase):
         )
         self.assertEqual(
             len([item for item in progress["attempts"] if item["course_id"] == "linux" and item["activity_type"] == "exercise"]),
-            14,
+            18,
         )
 
 

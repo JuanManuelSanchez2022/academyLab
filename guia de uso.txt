@@ -12,7 +12,7 @@ La plataforma puede:
 - Mostrar rutas y cursos disponibles.
 - Registrar progreso local.
 - Ejecutar prácticas SQL y Python sobre datos sintéticos.
-- Ejecutar prácticas Linux reales en Ubuntu 24.04 mediante WSL 2.
+- Ejecutar prácticas Linux reales en Ubuntu 26.04.1 mediante WSL 2.
 - Ejecutar evaluaciones corregidas por el servidor.
 - Analizar logs en el LAB 01.
 - Ejecutar las ocho pruebas técnicas del laboratorio.
@@ -25,7 +25,7 @@ No realiza consultas, cambios o costos en cuentas AWS reales.
 Requisitos comprobados o necesarios:
 - Windows.
 - Python 3.12 en C:\Users\juan\AppData\Local\Programs\Python\Python312\python.exe.
-- Ubuntu 24.04 en WSL 2 para ejecutar Linux real.
+- Ubuntu 26.04.1 en WSL 2 para ejecutar Linux real.
 - Microsoft Edge o otro navegador local.
 
 Inicio:
@@ -110,7 +110,7 @@ Cursos Básicos verificables:
 - AWS: seis módulos con escenarios locales, sin credenciales ni llamadas a AWS.
 - Python: procesadores locales sobre datos sintéticos, sin código arbitrario.
 - Production Support: triage, tickets, evidencias y documentación.
-- Linux: siete módulos y 14 prácticas reales en Ubuntu 24.04/WSL 2.
+- Linux: nueve módulos y 18 prácticas reales en Ubuntu 26.04.1/WSL 2.
 
 6. LABORATORIOS
 
@@ -235,7 +235,7 @@ competencia automáticamente.
 Resultados comprobados durante la auditoría:
 - 28 pruebas educativas PASS.
 - LAB 01: 8 pruebas PASS.
-- 14 prácticas Linux reales PASS.
+- 18 prácticas Linux reales PASS.
 - Proyecto Linux: PX-510 y PX-513 ERROR; PX-511 PENDIENTE.
 
 11. SOLUCIÓN DE PROBLEMAS
@@ -259,8 +259,8 @@ No aparece un curso:
 
 Una práctica Linux no se ejecuta:
 - Ejecuta wsl --list --verbose.
-- Debe existir Ubuntu-24.04 con versión 2.
-- Ejecuta wsl -d Ubuntu-24.04 -- bash -lc 'id -u; echo $HOME'.
+- Debe existir Ubuntu con versión 2 y Ubuntu 26.04.1.
+- Ejecuta wsl -d Ubuntu -- bash -lc 'id -u; echo $HOME'.
 - Debe devolver un UID distinto de 0 y /home/<usuario>.
 - El navegador no puede enviar comandos arbitrarios.
 
@@ -284,3 +284,60 @@ El LAB no se detiene:
 
 No se debe modificar la base SQLite, evidencias AWS o archivos protegidos sin
 comprender qué datos son locales y cuáles deben conservarse.
+
+12. CARGA DE CONTENIDOS POR NIVEL (FASE 1)
+
+La plataforma soporta tres niveles de progresión: Básico, Intermedio y Avanzado.
+Cada nivel carga su propio archivo de contenidos pedagógicos:
+
+- web\catalog\basic_courses.json → Nivel Básico (carga por defecto).
+- web\catalog\intermediate_courses.json → Nivel Intermedio.
+- web\catalog\advanced_courses.json → Nivel Avanzado.
+
+La función content(level_id) resuelve el archivo según el nivel solicitado.
+Sin argumentos, content() carga el nivel Básico para mantener compatibilidad.
+Niveles desconocidos producen un error controlado.
+
+Linux se inyecta únicamente en el nivel Básico desde web\catalog\linux_basic.json.
+Los módulos tienen un ID global único en learning_catalog.json y no se duplican
+entre niveles. Las rutas pueden referenciar módulos de otros niveles como
+prerrequisito, sin obligar a repetir un módulo ya aprobado.
+
+El progreso, los intentos y las evidencias se almacenan en
+web\data\learning_progress.sqlite3 y se asocian al módulo original mediante
+(learner_id, course_id, module_id). Referenciar un módulo no otorga
+automáticamente una competencia.
+
+13. NIVEL INTERMEDIO — PRODUCTION SUPPORT (FASE 2)
+
+El nivel Intermedio de Cloud / Production Support está disponible con
+contenido pedagógico reutilizando módulos existentes de Linux, AWS, SQL,
+Networking y Python sin duplicarlos.
+
+Temas cubiertos:
+- Análisis avanzado de incidentes.
+- Correlación de logs y construcción de líneas de tiempo.
+- Diagnóstico de servicios y procesos.
+- Análisis de impacto operativo.
+- Root Cause Analysis (RCA).
+- Gestión de problemas recurrentes.
+- Recuperación y validación de servicios.
+- Automatización de tareas de soporte.
+- Escalamiento y comunicación técnica.
+- Documentación de incidentes y acciones correctivas.
+
+Requisitos para acceder al nivel Intermedio:
+- Competencia support-basic-triage (Production Support Básico).
+- Competencias técnicas intermedias de Linux, Redes, SQL, AWS y Python.
+
+El proyecto integrador Intermedio ("Investigación de incidente con múltiples
+señales") exige:
+- Correlacionar logs, datos operativos y señales de conectividad.
+- Explicar una falla habitual, su impacto y el escalamiento.
+- Distinguir hechos, hipótesis y datos faltantes.
+- Producir una actualización técnica y un escalamiento accionable.
+
+Puntaje mínimo de aprobación: 80%. Intentos ilimitados. El nivel Avanzado
+permanece bloqueado hasta cumplir todos los requisitos del nivel Intermedio.
+
+No se realizan consultas ni operaciones en cuentas AWS reales.

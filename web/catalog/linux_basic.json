@@ -307,6 +307,106 @@
       }
     },
     {
+      "id": "linux-system-diagnostics",
+      "title": "Sistema y recursos",
+      "objective": "Consultar almacenamiento, uso de disco, memoria y arquitectura de Ubuntu sin modificar componentes del sistema.",
+      "concepts": ["df y du", "Memoria con free", "uname y arquitectura", "Lectura de recursos para soporte"],
+      "explanation": [
+        "df informa capacidad de sistemas de archivos y du calcula cuánto ocupa una ruta. free resume memoria y uname identifica kernel y arquitectura.",
+        "Estas lecturas ayudan a descartar falta de espacio o memoria antes de escalar, pero no reemplazan el diagnóstico del servicio afectado.",
+        "El alumno ejecuta comandos sobre Ubuntu real y mantiene resultados acotados dentro del directorio de prácticas."
+      ],
+      "worked_example": {
+        "title": "Recolectar contexto básico",
+        "steps": ["Consultar el kernel con uname.", "Revisar espacio disponible en HOME con df.", "Medir el directorio de práctica con du.", "Observar memoria disponible con free.", "Registrar cada dato como evidencia, no como causa."],
+        "code": "uname -r\ndf -h \"$HOME\"\ndu -sh ~/academyLab/linux-course\nfree -h",
+        "result": "Se obtiene una fotografía real de kernel, disco, workspace y memoria."
+      },
+      "guided_practice": {
+        "id": "linux-system-guided",
+        "type": "linux_command",
+        "title": "Consultar recursos de Ubuntu",
+        "instructions": "Los comandos son de solo lectura; du mide exclusivamente el workspace del ejercicio.",
+        "prompt": "Consulta kernel, disco, tamaño del workspace y memoria.",
+        "commands": ["df -h", "du -sh", "free -h", "uname -r"]
+      },
+      "independent_practice": {
+        "id": "linux-system-independent",
+        "type": "linux_command",
+        "title": "Crear un resumen de recursos",
+        "instructions": "Crea un archivo sintético dentro del workspace y registra datos derivados de df, du, free y uname.",
+        "prompt": "Produzca un resumen verificable de recursos sin cambiar el sistema.",
+        "commands": ["df", "du", "free", "uname"]
+      },
+      "verification": "Ubuntu devuelve valores reales y el servidor verifica que los comandos producen kernel, disco, memoria y tamaño del workspace.",
+      "common_errors": [
+        {"error": "Interpretar un uso alto de disco como causa sin revisar qué ocupa.", "cause": "df muestra disponibilidad global; du ayuda a localizar rutas.", "recovery": "Medir rutas relevantes y conservar la evidencia."},
+        {"error": "Usar MemFree como único indicador.", "cause": "Linux puede usar memoria disponible para caché.", "recovery": "Consultar available en free y correlacionar con el incidente."}
+      ],
+      "assessment": {
+        "id": "linux-system-diagnostics-assessment",
+        "type": "conceptual",
+        "questions": [
+          {"id": "ls1", "prompt": "¿Qué muestra df?", "options": [{"id": "filesystem", "label": "Uso y disponibilidad de sistemas de archivos"}, {"id": "process", "label": "Lista de procesos"}, {"id": "network", "label": "Direcciones de red"}], "correct_option": "filesystem", "feedback_by_option": {"filesystem": "Correcto: df informa espacios montados.", "process": "ps o top informan procesos.", "network": "ip e ss informan red."}},
+          {"id": "ls2", "prompt": "¿Qué calcula du?", "options": [{"id": "size", "label": "Uso de disco de rutas y directorios"}, {"id": "kernel", "label": "Versión del kernel"}, {"id": "port", "label": "Puertos abiertos"}], "correct_option": "size", "feedback_by_option": {"size": "Correcto: du mide uso de disco por ruta.", "kernel": "uname muestra kernel.", "port": "ss muestra sockets."}},
+          {"id": "ls3", "prompt": "¿Qué resume free?", "options": [{"id": "memory", "label": "Memoria total, usada y disponible"}, {"id": "files", "label": "Archivos modificados"}, {"id": "permissions", "label": "Permisos del usuario"}], "correct_option": "memory", "feedback_by_option": {"memory": "Correcto: free presenta memoria del sistema.", "files": "ls y find inspeccionan archivos.", "permissions": "ls -l muestra permisos."}},
+          {"id": "ls4", "prompt": "¿Qué devuelve uname -r?", "options": [{"id": "kernel", "label": "La versión del kernel activo"}, {"id": "disk", "label": "El disco disponible"}, {"id": "socket", "label": "Los sockets escuchando"}], "correct_option": "kernel", "feedback_by_option": {"kernel": "Correcto: -r solicita la versión del kernel.", "disk": "df informa disco.", "socket": "ss informa sockets."}},
+          {"id": "ls5", "prompt": "¿Qué debe hacerse con los datos de recursos en un incidente?", "options": [{"id": "evidence", "label": "Registrarlos como evidencia y correlacionarlos"}, {"id": "cause", "label": "Declararlos automáticamente como causa raíz"}, {"id": "ignore", "label": "Ignorar el contexto del sistema"}], "correct_option": "evidence", "feedback_by_option": {"evidence": "Correcto: recursos observados apoyan la investigación.", "cause": "Un dato aislado no demuestra causalidad.", "ignore": "El contexto puede excluir una hipótesis."}}
+        ],
+        "review_topics": {"ls1": "Espacio con df", "ls2": "Medición con du", "ls3": "Memoria con free", "ls4": "Kernel con uname", "ls5": "Evidencia de recursos"}
+      }
+    },
+    {
+      "id": "linux-network-diagnostics",
+      "title": "Conectividad básica",
+      "objective": "Verificar conectividad local, interfaces, sockets y acceso HTTP desde Ubuntu sin cambiar red, DNS o firewall.",
+      "concepts": ["ping", "curl", "ss", "ip", "Loopback y localhost"],
+      "explanation": [
+        "ping prueba alcance de red; en ejercicios localmente se usa 127.0.0.1. curl verifica respuestas HTTP. ip inspecciona interfaces y direcciones; ss consulta sockets.",
+        "No se cambian DNS, firewall ni configuración de red. Las comprobaciones son lecturas acotadas sobre loopback y el servidor local.",
+        "Una respuesta negativa puede significar servicio detenido, filtro o destino incorrecto; se registra el dato sin inferir automáticamente la causa."
+      ],
+      "worked_example": {
+        "title": "Comprobar localhost",
+        "steps": ["Hacer ping a 127.0.0.1.", "Consultar interfaces con ip.", "Consultar sockets con ss.", "Solicitar la API local con curl.", "Registrar cada resultado y si el servidor estaba activo."],
+        "code": "ping -c 1 -W 2 127.0.0.1\nip -brief address show\nss -tunl\ncurl -fsS http://127.0.0.1:8765/api/health",
+        "result": "Se distinguen alcance local, interfaces, puertos y respuesta HTTP."
+      },
+      "guided_practice": {
+        "id": "linux-network-guided",
+        "type": "linux_command",
+        "title": "Diagnosticar loopback y API local",
+        "instructions": "La práctica usa solo loopback y consulta el servidor local si está disponible.",
+        "prompt": "Prueba ping, interfaces, sockets y una respuesta HTTP local.",
+        "commands": ["ping -c1", "curl", "ss", "ip"]
+      },
+      "independent_practice": {
+        "id": "linux-network-independent",
+        "type": "linux_command",
+        "title": "Preparar una ficha de conectividad",
+        "instructions": "Cuenta interfaces y filas de sockets sin modificar configuración de red.",
+        "prompt": "Realiza verificaciones de solo lectura y conserva los resultados.",
+        "commands": ["ping", "curl", "ss", "ip"]
+      },
+      "verification": "Ubuntu verifica ping a loopback, datos de interfaces y sockets y muestra si la API local respondió.",
+      "common_errors": [
+        {"error": "Asumir que curl falla por DNS.", "cause": "La URL puede apuntar a un puerto o servicio detenido.", "recovery": "Verifica 127.0.0.1, puerto y ss antes de modificar DNS."},
+        {"error": "Modificar firewall al recibir timeout.", "cause": "Timeout no identifica por sí solo el componente defectuoso.", "recovery": "Correlaciona ping, IP, sockets y respuesta HTTP."}
+      ],
+      "assessment": {
+        "id": "linux-network-diagnostics-assessment",
+        "type": "conceptual",
+        "questions": [
+          {"id": "ln1", "prompt": "¿Qué direcciona 127.0.0.1?", "options": [{"id": "loopback", "label": "La interfaz loopback local"}, {"id": "internet", "label": "Internet público"}, {"id": "dns", "label": "Un servidor DNS externo"}], "correct_option": "loopback", "feedback_by_option": {"loopback": "Correcto: 127.0.0.1 representa loopback local.", "internet": "No es una dirección pública.", "dns": "No consulta DNS."}},
+          {"id": "ln2", "prompt": "¿Qué muestra ip -brief address show?", "options": [{"id": "interfaces", "label": "Interfaces y direcciones resumidas"}, {"id": "logs", "label": "Logs de la aplicación"}, {"id": "processes", "label": "PID de procesos"}], "correct_option": "interfaces", "feedback_by_option": {"interfaces": "Correcto: resume enlaces y direcciones.", "logs": "ip no lee logs.", "processes": "ps inspecciona procesos."}},
+          {"id": "ln3", "prompt": "¿Qué lista ss?", "options": [{"id": "sockets", "label": "Sockets y puertos asociados"}, {"id": "files", "label": "Archivos eliminados"}, {"id": "memory", "label": "Memoria física"}], "correct_option": "sockets", "feedback_by_option": {"sockets": "Correcto: ss inspecciona sockets.", "files": "find inspecciona rutas.", "memory": "free informa memoria."}},
+          {"id": "ln4", "prompt": "¿Qué puede probar curl?", "options": [{"id": "http", "label": "Una respuesta HTTP o HTTPS"}, {"id": "permissions", "label": "Permisos de todos los archivos"}, {"id": "process", "label": "Un PID específico"}], "correct_option": "http", "feedback_by_option": {"http": "Correcto: curl solicita recursos HTTP.", "permissions": "No prueba permisos globales.", "process": "No identifica PID."}},
+          {"id": "ln5", "prompt": "Ante timeout local, ¿qué se debe evitar?", "options": [{"id": "change", "label": "Cambiar firewall o DNS sin evidencias"}, {"id": "inspect", "label": "Inspeccionar ip, ss y curl"}, {"id": "document", "label": "Documentar el resultado observado"}], "correct_option": "change", "feedback_by_option": {"change": "Correcto: no modifiques configuración sin diagnóstico.", "inspect": "Primero debes correlacionar.", "document": "La documentación es parte del proceso."}}
+        ],
+        "review_topics": {"ln1": "Loopback", "ln2": "Interfaces con ip", "ln3": "Sockets con ss", "ln4": "HTTP con curl", "ln5": "No cambiar DNS/firewall sin evidencia"}
+      }
+    },
+    {
       "id": "linux-support-workflow",
       "title": "Variables y diagnóstico inicial",
       "objective": "Consultar variables de entorno seleccionadas y aplicar comandos de solo lectura para ubicar evidencia de un incidente, resumir el entorno y documentar límites.",

@@ -143,7 +143,7 @@
       "contents_by_level": {
         "basic": {
           "contents": ["Terminal y shell", "Rutas y navegación", "Archivos y directorios", "Lectura y búsqueda de logs", "Redirecciones y tuberías", "Permisos y propiedad", "Procesos", "Variables y diagnóstico"],
-          "module_ids": ["linux-foundations", "linux-file-operations", "linux-log-investigation", "linux-streams", "linux-permissions", "linux-processes", "linux-support-workflow"],
+          "module_ids": ["linux-foundations", "linux-file-operations", "linux-log-investigation", "linux-streams", "linux-permissions", "linux-processes", "linux-system-diagnostics", "linux-network-diagnostics", "linux-support-workflow"],
           "prerequisites": [],
           "competency_ids": ["linux-basic-operations"],
           "availability": "pending_environment",
@@ -316,7 +316,7 @@
           "availability": "available",
           "level_ids": ["basic"],
           "url": "/courses/aws-production-support/",
-          "description": "Laboratorio local operativo de análisis de logs, evidencia JSON y ocho pruebas automatizadas. No realiza operaciones AWS."
+          "description": "Laboratorio local operativo de análisis de logs, evidencia JSON y diez pruebas automatizadas. No realiza operaciones AWS."
         }
       ]
     }
@@ -343,6 +343,14 @@
   ],
   "modules": [
     {"id": "linux-foundations", "course_id": "linux", "level_id": "basic"},
+    {"id": "linux-file-operations", "course_id": "linux", "level_id": "basic"},
+    {"id": "linux-log-investigation", "course_id": "linux", "level_id": "basic"},
+    {"id": "linux-streams", "course_id": "linux", "level_id": "basic"},
+    {"id": "linux-permissions", "course_id": "linux", "level_id": "basic"},
+    {"id": "linux-processes", "course_id": "linux", "level_id": "basic"},
+    {"id": "linux-system-diagnostics", "course_id": "linux", "level_id": "basic"},
+    {"id": "linux-network-diagnostics", "course_id": "linux", "level_id": "basic"},
+    {"id": "linux-support-workflow", "course_id": "linux", "level_id": "basic"},
     {"id": "sql-operational-queries", "course_id": "sql", "level_id": "basic"},
     {"id": "aws-cloud-computing-foundations", "course_id": "aws", "level_id": "basic"},
     {"id": "aws-fundamentals", "course_id": "aws", "level_id": "basic"},
@@ -362,6 +370,8 @@
     {"id": "linux-streams-assessment", "module_id": "linux-streams", "type": "conceptual"},
     {"id": "linux-permissions-assessment", "module_id": "linux-permissions", "type": "conceptual"},
     {"id": "linux-processes-assessment", "module_id": "linux-processes", "type": "conceptual"},
+    {"id": "linux-system-diagnostics-assessment", "module_id": "linux-system-diagnostics", "type": "conceptual"},
+    {"id": "linux-network-diagnostics-assessment", "module_id": "linux-network-diagnostics", "type": "conceptual"},
     {"id": "linux-support-workflow-assessment", "module_id": "linux-support-workflow", "type": "conceptual"},
     {"id": "sql-basics-assessment", "module_id": "sql-operational-queries", "type": "conceptual"},
     {"id": "aws-cloud-foundations-assessment", "module_id": "aws-cloud-computing-foundations", "type": "conceptual"},
